@@ -19,11 +19,17 @@ def benchmark_model(model, tokenizer, seq_len=256, batch_size=2):
         _ = model(input_ids=inputs, attention_mask=attention_mask)
 
     # benchmark forward pass
-    torch.cpu.synchronize()
+    if next(model.parameters()).device.type == 'cpu':
+        torch.cpu.synchronize()
+    else:
+        torch.cuda.synchronize()
     start = time.perf_counter()
     with torch.no_grad():
         _ = model(input_ids=inputs, attention_mask=attention_mask)
-    torch.cpu.synchronize()
+    if next(model.parameters()).device.type == 'cpu':
+        torch.cpu.synchronize()
+    else:
+        torch.cuda.synchronize()
     elapsed = time.perf_counter() - start
     tokens_processed = batch_size * seq_len
     

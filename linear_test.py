@@ -36,18 +36,16 @@ for granularity in TEST_GRANULARITIES:
 print('results: ', results_dict)
 
 """
-example output from when I ran it (i think it fucked up on the last two so i have to run it again)
+example output from when I ran it (but some things are weird bc why is the throughput not changing as expected??)
 loaded model
-original model throughput:  348.89910080205584
+original model throughput:  327.4795039528691
 linearized model with 3 blocks
-linearized model throughput: 280.5871691087895 tokens/sec
+linearized model throughput: 269.4920818506612 tokens/sec
 linearized model with 7 blocks
-linearized model throughput: 283.1005132271336 tokens/sec
+linearized model throughput: 330.8355892460407 tokens/sec
 linearized model with 14 blocks
-linearized model throughput: 14.940665790337397 tokens/sec
+linearized model throughput: 338.8972176912656 tokens/sec
 linearized model with 28 blocks
-linearized model throughput: 341.3334594409137 tokens/sec
-results:  {0: 348.89910080205584, 3: 280.5871691087895, 7: 283.1005132271336, 14: 14.940665790337397, 28: 341.3334594409137}
-
-clearly something is very wrong because the throughput is going down but the skeleton is there
+linearized model throughput: 319.70413197785155 tokens/sec
+results:  {0: 327.4795039528691, 3: 269.4920818506612, 7: 330.8355892460407, 14: 338.8972176912656, 28: 319.70413197785155}
 """
