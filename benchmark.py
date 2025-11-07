@@ -3,7 +3,7 @@ import time
 
 torch.manual_seed(67) # xD
 
-def benchmark_model(model, tokenizer, seq_len=512, batch_size=10):
+def benchmark_model(model, tokenizer, seq_len=256, batch_size=2):
     """ purely measures throughput, not accuracy or latency (latency shouldn't be changed by our modifiications I think??) """
     
     inputs = torch.randint(

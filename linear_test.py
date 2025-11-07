@@ -48,4 +48,6 @@ linearized model throughput: 14.940665790337397 tokens/sec
 linearized model with 28 blocks
 linearized model throughput: 341.3334594409137 tokens/sec
 results:  {0: 348.89910080205584, 3: 280.5871691087895, 7: 283.1005132271336, 14: 14.940665790337397, 28: 341.3334594409137}
+
+clearly something is very wrong because the throughput is going down but the skeleton is there
 """
