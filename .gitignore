@@ -9,6 +9,32 @@ wheels/
 # Virtual environments
 .venv
 
+# Model weights and large model files
+models/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.pb
+*.onnx
+*.tflite
+*.pkl
+*.pickle
 
-# downloaded models
-models/*
+# Model directories - ignore entire directories (uncomment if you want to ignore everything)
+# Qwen*/
+# *-*B/
+# *-*M/
+
+# Or ignore weight files but keep config/tokenizer files (recommended)
+# This ignores weight files in model directories while keeping config.json, tokenizer files, etc.
+**/model-*.safetensors
+**/model.safetensors.index.json
+**/pytorch_model*.bin
+**/tf_model*.h5
+
+# Large model checkpoints
+checkpoints/
+checkpoint*/
