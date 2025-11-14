@@ -3,6 +3,7 @@ from transformers import AutoTokenizer, AutoConfig
 from qwen3_model import Qwen3ForCausalLM, Qwen3ForNAS
 import torch
 from fla.layers import MultiScaleRetention
+from transformers import Trainer
  
 
 model_path = "Qwen3-1.7B"
@@ -36,20 +37,10 @@ print(current_hidden[-1][-1][-1])
 
 
 #needed to pip install triton and fla  - going to start needing to use gpu for this
-retnet_model = retnet = MultiScaleRetention(hidden_size=2048, num_heads=16).to(device='cpu', dtype=torch.float32)
+linear_attention_layers = [MultiScaleRetention(hidden_size=2048, num_heads=16).to(device='cpu', dtype=torch.float32)]
 
 optimizer = torch.optim.Adam(retnet_model.parameters(), lr=1e-4)
 loss_fn = torch.nn.MSELoss()
 
-for i in range(10000):
-    optimizer.zero_grad()
-    teacher_result = model(input_ids = input_ids)
-    prev_hidden, current_hidden = teacher_result
-    student_result = retnet_model(prev_hidden)
-    loss =loss_fn(student_result, current_hidden)
-    loss.backward()
-    optimizer.step()
-    print(loss)
+for layer in linear_attention_layers:
 
-print(retnet_model(prev_hidden))
-print(current_hidden)
