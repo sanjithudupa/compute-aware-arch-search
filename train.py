@@ -11,7 +11,7 @@ from transformers import (
 from qwen3_model import Qwen3ForNAS
 from fla.layers import MultiScaleRetention
 import json
-
+from dataset_setup import get_tokenized_dataset, get_data_collator
 
 class LinearAttentionModel(nn.Module):
     def __init__(self, hidden_size, num_heads, **kwargs):
@@ -96,15 +96,15 @@ wrapper_model = AttentionTeacherForcing(
     config=config
 )
 
-# Create dataset
-train_texts = [
-    "Hello, how are you today?",
-    "The quick brown fox jumps over the lazy dog.",
-    "Machine learning is fascinating.",
-    "Python is a great programming language.",
-] * 50  # Repeat for more training data
+train_dataset, tokenizer = get_tokenized_dataset(
+    dataset_url=DATASET_URL,
+    tokenizer=tokenizer,
+    max_length=2048,
+    streaming=True,
+    seed=42,
+)
 
-data = HiddenStateDataset(train_texts, tokenizer)
+data_collator = get_data_collator(tokenizer, mlm=False)
 
 # Training arguments
 training_args = TrainingArguments(
@@ -124,7 +124,9 @@ training_args = TrainingArguments(
 trainer = Trainer(
     model=wrapper_model, 
     args=training_args, 
-    train_dataset=data
+    train_dataset=data,
+    data_collator=data_collator,
+    tokenizer=tokenizer
 )
 
 trainer.train()
