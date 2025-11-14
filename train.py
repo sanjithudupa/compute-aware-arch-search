@@ -122,9 +122,9 @@ training_args = TrainingArguments(
 
 # Create trainer
 trainer = Trainer(
-    model=wrapper_model, 
+    model=wrapper_model,
     args=training_args, 
-    train_dataset=data,
+    train_dataset=train_dataset,
     data_collator=data_collator,
     tokenizer=tokenizer
 )
