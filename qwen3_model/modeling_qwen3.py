@@ -321,11 +321,11 @@ class Qwen3DecoderLayer(GradientCheckpointingLayer):
         cache_position: Optional[torch.LongTensor] = None,
         position_embeddings: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
         **kwargs: Unpack[TransformersKwargs],
-    ) -> torch.Tensor:
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         residual = hidden_states
         hidden_states = self.input_layernorm(hidden_states)
         # Self Attention
-        hidden_states, _ = self.self_attn(
+        pre_mlp_hidden_states, _ = self.self_attn(
             hidden_states=hidden_states,
             attention_mask=attention_mask,
             position_ids=position_ids,
@@ -335,13 +335,13 @@ class Qwen3DecoderLayer(GradientCheckpointingLayer):
             position_embeddings=position_embeddings,
             **kwargs,
         )
-        hidden_states = residual + hidden_states
+        hidden_states = residual + pre_mlp_hidden_states
 
         residual = hidden_states
         hidden_states = self.post_attention_layernorm(hidden_states)
         hidden_states = self.mlp(hidden_states)
         hidden_states = residual + hidden_states
-        return hidden_states
+        return hidden_states, pre_mlp_hidden_states
 
 
 @auto_docstring
@@ -439,7 +439,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
             prev_hidden_states = None
             for decoder_layer in self.layers[: self.config.num_hidden_layers]:
                 num_layer += 1
-                hidden_states = decoder_layer(
+                hidden_states, pre_mlp_hidden_states = decoder_layer(
                     hidden_states,
                     attention_mask=causal_mask_mapping[decoder_layer.attention_type],
                     position_embeddings=position_embeddings,
@@ -450,11 +450,11 @@ class Qwen3Model(Qwen3PreTrainedModel):
                     **kwargs,
                 )
                 if num_layer == layer_minus_1:
-                    prev_hidden_states = hidden_states
+                    prev_hidden_states = pre_mlp_hidden_states
                 if num_layer == self.current_attention_hook_idx:
-                    return (prev_hidden_states, hidden_states)
+                    return (prev_hidden_states, pre_mlp_hidden_states)
         for decoder_layer in self.layers[: self.config.num_hidden_layers]:
-            hidden_states = decoder_layer(
+            hidden_states, _ = decoder_layer(
                 hidden_states,
                 attention_mask=causal_mask_mapping[decoder_layer.attention_type],
                 position_embeddings=position_embeddings,
