@@ -2,11 +2,11 @@ from datasets import load_dataset, IterableDataset, Dataset
 from transformers import AutoTokenizer, DataCollatorForLanguageModeling
 from typing import Optional, Tuple, Union
 
-DATASET_URL = "https://huggingface.co/datasets/mlfoundations/dclm-baseline-1.0"
+DATASET_URL = "mlfoundations/dclm-baseline-1.0"
 
 LAYERS = 28
 TOKENS_PER_DATAPOINT = 2048
-TOTAL_TOKENS = 500_000_000  # ~500 million tokens
+TOTAL_TOKENS = 500_000_000 
 
 
 def get_tokenized_dataset(
@@ -60,12 +60,17 @@ def get_tokenized_dataset(
             padding=False,
         )
     
-    tokenized_dataset = dataset.map(
-        tokenize_function,
-        batched=True,
-        remove_columns=dataset.column_names if not streaming else None,
-        desc="Tokenizing dataset"
-    )
+    map_kwargs = {
+        "function": tokenize_function,
+        "batched": True,
+        # Always drop original columns (like language_id_whole_page_fasttext)
+        # so the collator only sees tokenized fields.
+        "remove_columns": dataset.column_names,
+    }
+    if not streaming:
+        map_kwargs["desc"] = "Tokenizing dataset"
+
+    tokenized_dataset = dataset.map(**map_kwargs)
     
     return tokenized_dataset, tokenizer
 

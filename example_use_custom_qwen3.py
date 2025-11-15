@@ -42,5 +42,4 @@ linear_attention_layers = [MultiScaleRetention(hidden_size=2048, num_heads=16).t
 optimizer = torch.optim.Adam(retnet_model.parameters(), lr=1e-4)
 loss_fn = torch.nn.MSELoss()
 
-for layer in linear_attention_layers:
 
