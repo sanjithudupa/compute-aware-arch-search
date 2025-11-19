@@ -1,0 +1,21 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2/2 [00:01<00:00,  1.09it/s]
+Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/train.py", line 127, in <module>
+    student_model = LinearAttentionModel(config=linear_attention_config)
+  File "/workspace/compute-aware-arch-search/train.py", line 30, in __init__
+    self.decode_block = DeltaFormerBlock(config=config, layer_idx=0)
+                        ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/fla/models/deltaformer/modeling_deltaformer.py", line 54, in __init__
+    self.mlp = DeltaFormerMLP(
+               ~~~~~~~~~~~~~~^
+        hidden_size=config.hidden_size,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        fuse_swiglu=config.fuse_swiglu
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/fla/modules/mlp.py", line 52, in __init__
+    raise ValueError(f'Unsupported hidden_act: {hidden_act}')
+ValueError: Unsupported hidden_act: silu

@@ -1,0 +1,58 @@
+_wandb:
+    value:
+        cli_version: 0.23.0
+        e:
+            1u2afi2krjreqqsz8mf4es929pnce6ej:
+                codePath: train.py
+                codePathLocal: train.py
+                cpu_count: 120
+                cpu_count_logical: 120
+                cudaVersion: "12.8"
+                disk:
+                    /:
+                        total: "32212254720"
+                        used: "240250880"
+                email: mvideet@gmail.com
+                executable: /workspace/compute-aware-arch-search/.venv/bin/python
+                git:
+                    commit: 3a35f5ce46b60614f1ebf6a6edcf83e518bee4a4
+                    remote: https://github.com/sanjithudupa/compute-aware-arch-search.git
+                gpu: NVIDIA GeForce RTX 5090
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Blackwell
+                      cudaCores: 21760
+                      memoryTotal: "34190917632"
+                      name: NVIDIA GeForce RTX 5090
+                      uuid: GPU-dcf84183-d1cf-0fe8-6dd7-75fe7aabc16f
+                host: 766dbb2eb40f
+                memory:
+                    total: "1014509707264"
+                os: Linux-6.11.0-26-generic-x86_64-with-glibc2.39
+                program: /workspace/compute-aware-arch-search/train.py
+                python: CPython 3.13.8
+                root: /workspace/compute-aware-arch-search
+                startedAt: "2025-11-19T06:50:53.368542Z"
+                writerId: 1u2afi2krjreqqsz8mf4es929pnce6ej
+        m: []
+        python_version: 3.13.8
+        t:
+            "1":
+                - 1
+                - 11
+                - 49
+                - 51
+                - 71
+            "2":
+                - 1
+                - 11
+                - 49
+                - 51
+                - 71
+            "3":
+                - 13
+            "4": 3.13.8
+            "5": 0.23.0
+            "6": 4.57.1
+            "12": 0.23.0
+            "13": linux-x86_64

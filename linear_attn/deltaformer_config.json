@@ -6,7 +6,7 @@
   "num_heads": 16,
   "num_kv_heads": 8,
   "attn_mode": "chunk",
-  "hidden_act": "silu",
+  "hidden_act": "swish",
   "max_position_embeddings": 40960,
   "elementwise_affine": true,
   "norm_eps": 1e-6,

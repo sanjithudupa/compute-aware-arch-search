@@ -1,0 +1,69 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2/2 [00:00<00:00, 34.23it/s]
+Resolving data files: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 27838/27838 [00:00<00:00, 29613.51it/s]
+/workspace/compute-aware-arch-search/train.py:166: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                                                    | 0/122070 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/train.py", line 174, in <module>
+    trainer.train()
+    ~~~~~~~~~~~~~^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+        args=args,
+    ...<2 lines>...
+        ignore_keys_for_eval=ignore_keys_for_eval,
+    )
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/transformers/trainer.py", line 4110, in compute_loss
+    outputs = model(**inputs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/compute-aware-arch-search/train.py", line 57, in forward
+    student_output = self.student_model(prev_hidden, attention_mask=attention_mask)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/compute-aware-arch-search/train.py", line 33, in forward
+    output, _ = self.decode_block(hidden_states, attention_mask=attention_mask)
+                ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/transformers/modeling_layers.py", line 94, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/fla/models/deltaformer/modeling_deltaformer.py", line 73, in forward
+    hidden_states, _, past_key_values = self.attn(
+                                        ~~~~~~~~~^
+        hidden_states=hidden_states,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/fla/layers/deltaformer.py", line 138, in forward
+    o = deltaformer_attn(
+        q=q,
+    ...<4 lines>...
+        cu_seqlens=cu_seqlens_kw
+    )
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.13/site-packages/fla/ops/deltaformer/parallel.py", line 953, in deltaformer_attn
+    raise ImportError("Please install Flash Attention via `pip install flash-attn --no-build-isolation` first")
+ImportError: Please install Flash Attention via `pip install flash-attn --no-build-isolation` first
