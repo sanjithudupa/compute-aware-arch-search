@@ -322,6 +322,9 @@ class Qwen3DecoderLayer(GradientCheckpointingLayer):
         position_embeddings: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
         **kwargs: Unpack[TransformersKwargs],
     ) -> tuple[torch.Tensor, torch.Tensor]:
+        # Save the input to the decoder block
+        decoder_input = hidden_states
+        
         residual = hidden_states
         hidden_states = self.input_layernorm(hidden_states)
         # Self Attention
@@ -339,9 +342,10 @@ class Qwen3DecoderLayer(GradientCheckpointingLayer):
 
         residual = hidden_states
         hidden_states = self.post_attention_layernorm(hidden_states)
-        hidden_states = self.mlp(hidden_states)
-        hidden_states = residual + hidden_states
-        return hidden_states, pre_mlp_hidden_states
+        mlp_output = self.mlp(hidden_states)
+        decoder_output = residual + mlp_output
+        # Return (input, output) of the decoder block
+        return decoder_output, decoder_input
 
 
 @auto_docstring
@@ -435,11 +439,9 @@ class Qwen3Model(Qwen3PreTrainedModel):
         position_embeddings = self.rotary_emb(hidden_states, position_ids)
         if self.current_attention_hook_idx is not None:
             num_layer = 0
-            layer_minus_1 = self.current_attention_hook_idx -1 #quick way that we don't have to save the previous layer all the time
-            prev_hidden_states = None
             for decoder_layer in self.layers[: self.config.num_hidden_layers]:
                 num_layer += 1
-                hidden_states, pre_mlp_hidden_states = decoder_layer(
+                decoder_output, decoder_input = decoder_layer(
                     hidden_states,
                     attention_mask=causal_mask_mapping[decoder_layer.attention_type],
                     position_embeddings=position_embeddings,
@@ -449,12 +451,14 @@ class Qwen3Model(Qwen3PreTrainedModel):
                     cache_position=cache_position,
                     **kwargs,
                 )
-                if num_layer == layer_minus_1:
-                    prev_hidden_states = pre_mlp_hidden_states
                 if num_layer == self.current_attention_hook_idx:
-                    return (prev_hidden_states, pre_mlp_hidden_states)
+                    # Return (input to hook layer, output of hook layer)
+                    # decoder_input is the input to this decoder block (output of previous layer)
+                    # decoder_output is the output of this decoder block
+                    return (decoder_input, decoder_output)
+                hidden_states = decoder_output
         for decoder_layer in self.layers[: self.config.num_hidden_layers]:
-            hidden_states, _ = decoder_layer(
+            decoder_output, _ = decoder_layer(
                 hidden_states,
                 attention_mask=causal_mask_mapping[decoder_layer.attention_type],
                 position_embeddings=position_embeddings,
@@ -464,6 +468,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
                 cache_position=cache_position,
                 **kwargs,
             )
+            hidden_states = decoder_output
 
         hidden_states = self.norm(hidden_states)
         return BaseModelOutputWithPast(

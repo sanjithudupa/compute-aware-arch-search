@@ -4,7 +4,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 DEVICE = "cpu" # :(
 
 MODEL_NAME = "Qwen/Qwen3-1.7B"
-SAVE_DIR = f"models/{MODEL_NAME.split('/')[-1].lower()}"
+SAVE_DIR = MODEL_NAME.split('/')[-1]  # Save to "Qwen3-1.7B" in root directory
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForCausalLM.from_pretrained(

@@ -2,31 +2,36 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
 from transformers import (
-    AutoTokenizer, 
-    AutoConfig, 
-    Trainer, 
+    AutoTokenizer,
+    AutoConfig,
+    Trainer,
     TrainingArguments,
     PreTrainedModel,
 )
 import wandb
 from qwen3_model import Qwen3ForNAS
-# from fla.layers import MultiScaleRetention
+from fla.models.deltaformer import DeltaFormerConfig
+from fla.models.deltaformer.modeling_deltaformer import DeltaFormerBlock
 import json
-from dataset_setup import get_tokenized_dataset, get_data_collator, DATASET_URL, TOTAL_TOKENS, TOKENS_PER_DATAPOINT
+from dataset_setup import (
+    get_tokenized_dataset,
+    get_data_collator,
+    DATASET_URL,
+    TOTAL_TOKENS,
+    TOKENS_PER_DATAPOINT,
+)
+
 
 class LinearAttentionModel(nn.Module):
-    #temprorary fix until we start on runpod
-    def __init__(self, hidden_size, num_heads=8, **kwargs):
+    # temporary fix until we start on runpod
+    def __init__(self, config, **kwargs):
         super().__init__()
-        self.self_attn = nn.MultiheadAttention(embed_dim=hidden_size, num_heads=num_heads, batch_first=True)
-        self.norm = nn.LayerNorm(hidden_size)
-    
-    def forward(self, hidden_states):
-        # hidden_states shape: [batch, seq_len, hidden_size]
-        # nn.MultiheadAttention expects (batch, seq, embed_dim) if batch_first=True
-        attn_output, _ = self.self_attn(hidden_states, hidden_states, hidden_states)
-        attn_output = self.norm(attn_output + hidden_states)
-        return attn_output
+        # DeltaFormerBlock requires layer_idx, use 0 for single block
+        self.decode_block = DeltaFormerBlock(config=config, layer_idx=0)
+
+    def forward(self, hidden_states, attention_mask=None):
+        output, _ = self.decode_block(hidden_states, attention_mask=attention_mask)
+        return output
 
 
 class AttentionTeacherForcing(PreTrainedModel):
@@ -37,17 +42,21 @@ class AttentionTeacherForcing(PreTrainedModel):
         self.teacher_model.eval()
         for param in self.teacher_model.parameters():
             param.requires_grad = False
-    
+
     def forward(self, input_ids, attention_mask=None, labels=None, **kwargs):
+        # Teacher (Qwen) handles its own causal mask internally; we don't need to supply one.
         with torch.no_grad():
             prev_hidden, target_hidden = self.teacher_model(
-                input_ids=input_ids, 
-                attention_mask=attention_mask, 
-                **kwargs
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                **kwargs,
             )
-        student_output = self.student_model(prev_hidden)
+
+        # Student (DeltaFormerBlock) gets the same 2D padding mask.
+        # Causality (no look-ahead) is enforced inside deltaformer_attn; the mask here just handles padding.
+        student_output = self.student_model(prev_hidden, attention_mask=attention_mask)
         loss = nn.functional.mse_loss(student_output, target_hidden)
-        return {"loss": loss, 'logits': student_output, 'hidden_states': student_output}
+        return {"loss": loss, "logits": student_output, "hidden_states": student_output}
 
 
 class HiddenStateDataset(Dataset):
@@ -84,40 +93,44 @@ wandb.init(
 )
 
 # Load config and ensure all required attributes are set
-config = AutoConfig.from_pretrained(model_path)
+llm_config = AutoConfig.from_pretrained(model_path)
 
 with open(f"{model_path}/config.json", "r") as f:
-    config_dict = json.load(f)
-    if "attention_hook_idx" in config_dict:
-        config.attention_hook_idx = config_dict["attention_hook_idx"]
+    llm_config_dict = json.load(f)
+    # Check for both possible key names
+    if "attention_hook_idx" in llm_config_dict:
+        llm_config.attention_hook_idx = llm_config_dict["attention_hook_idx"]
+    elif "current_attention_hook_idx" in llm_config_dict:
+        llm_config.attention_hook_idx = llm_config_dict["current_attention_hook_idx"]
     else:
-        config.attention_hook_idx = 2
-    if not hasattr(config, "layer_types") or getattr(config, "layer_types", None) is None:
-        use_sliding_window = config_dict.get("use_sliding_window", False)
+        llm_config.attention_hook_idx = 2
+    if not hasattr(llm_config, "layer_types") or getattr(llm_config, "layer_types", None) is None:
+        use_sliding_window = llm_config_dict.get("use_sliding_window", False)
         if use_sliding_window:
-
-            config.layer_types = ["full_attention"] * config.num_hidden_layers
+            llm_config.layer_types = ["full_attention"] * llm_config.num_hidden_layers
         else:
-            config.layer_types = ["full_attention"] * config.num_hidden_layers
+            llm_config.layer_types = ["full_attention"] * llm_config.num_hidden_layers
 
 # Load teacher model
 teacher_model = Qwen3ForNAS.from_pretrained(
     model_path, 
-    config=config, 
+    config=llm_config, 
     torch_dtype=torch.float32
 )
 
-# Create student model (use config.hidden_size, not hardcoded 1024)
-student_model = LinearAttentionModel(
-    hidden_size=config.hidden_size, 
-    num_heads=config.num_attention_heads
-)
+# Load DeltaFormer config for student model
+with open("linear_attn/deltaformer_config.json", "r") as f:
+    deltaformer_config_dict = json.load(f)
+linear_attention_config = DeltaFormerConfig(**deltaformer_config_dict)
+
+# Create student model
+student_model = LinearAttentionModel(config=linear_attention_config)
 
 # Create wrapper model
 wrapper_model = AttentionTeacherForcing(
     teacher_model=teacher_model, 
     linear_attention=student_model,
-    config=config
+    config=llm_config
 )
 
 train_dataset, tokenizer = get_tokenized_dataset(
