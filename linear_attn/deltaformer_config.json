@@ -4,7 +4,7 @@
   "intermediate_size": 6144,
   "num_hidden_layers": 28,
   "num_heads": 16,
-  "num_kv_heads": 8,
+  "num_kv_heads": 16,
   "attn_mode": "chunk",
   "hidden_act": "swish",
   "max_position_embeddings": 40960,

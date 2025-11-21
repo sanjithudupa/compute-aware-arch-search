@@ -1,0 +1,43 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████████████████████████████| 2/2 [00:02<00:00,  1.38s/it]
+Resolving data files: 100%|████████████████████████████████████████████████████████████████████████████| 27838/27838 [00:01<00:00, 21241.70it/s]
+
+===== Training layer 1/28 =====
+/workspace/compute-aware-arch-search/train.py:189: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  2%|█▍                                                                             | 133/7629 [02:44<2:05:58,  1.01s/it]Traceback (most recent call last):
+{'loss': 0.0989, 'grad_norm': 0.1689453125, 'learning_rate': 5.905511811023622e-07, 'epoch': 0.0}
+{'loss': 0.0978, 'grad_norm': 0.169921875, 'learning_rate': 1.2467191601049869e-06, 'epoch': 0.0}
+{'loss': 0.0982, 'grad_norm': 0.1572265625, 'learning_rate': 1.9028871391076116e-06, 'epoch': 0.0}
+{'loss': 0.0983, 'grad_norm': 0.1669921875, 'learning_rate': 2.5590551181102365e-06, 'epoch': 0.01}
+{'loss': 0.0994, 'grad_norm': 0.16015625, 'learning_rate': 3.215223097112861e-06, 'epoch': 0.01}
+{'loss': 0.0965, 'grad_norm': 0.1533203125, 'learning_rate': 3.871391076115486e-06, 'epoch': 0.01}
+{'loss': 0.0938, 'grad_norm': 0.1474609375, 'learning_rate': 4.527559055118111e-06, 'epoch': 0.01}
+{'loss': 0.092, 'grad_norm': 0.140625, 'learning_rate': 5.183727034120736e-06, 'epoch': 0.01}
+{'loss': 0.0891, 'grad_norm': 0.134765625, 'learning_rate': 5.83989501312336e-06, 'epoch': 0.01}
+{'loss': 0.0867, 'grad_norm': 0.130859375, 'learning_rate': 6.496062992125984e-06, 'epoch': 0.01}
+{'loss': 0.0859, 'grad_norm': 0.12451171875, 'learning_rate': 7.15223097112861e-06, 'epoch': 0.01}
+{'loss': 0.0835, 'grad_norm': 0.11865234375, 'learning_rate': 7.808398950131234e-06, 'epoch': 0.02}
+{'loss': 0.0767, 'grad_norm': 0.111328125, 'learning_rate': 8.46456692913386e-06, 'epoch': 0.02}
+  File "/workspace/compute-aware-arch-search/train.py", line 197, in <module>
+    safetensors_dir = os.path.join("linear_attention_checkpoints", "safetensors")
+                   ^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4071, in training_step
+    self.accelerator.backward(loss, **kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2740, in backward
+    loss.backward(**kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_tensor.py", line 647, in backward
+    torch.autograd.backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/graph.py", line 829, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
