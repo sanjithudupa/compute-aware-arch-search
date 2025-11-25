@@ -327,6 +327,7 @@ class Qwen3DecoderLayer(GradientCheckpointingLayer):
         
         residual = hidden_states
         hidden_states = self.input_layernorm(hidden_states)
+        # decoder_input = hidden_states
         # Self Attention
         pre_mlp_hidden_states, _ = self.self_attn(
             hidden_states=hidden_states,

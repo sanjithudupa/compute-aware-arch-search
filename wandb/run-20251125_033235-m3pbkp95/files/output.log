@@ -1,0 +1,29 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards: 100%|███████████████████████████████████████████████████████████████████████| 2/2 [00:01<00:00,  1.06it/s]
+README.md: 7.46kB [00:00, 18.6MB/s]
+Resolving data files: 100%|█████████████████████████████████████████████████████████████████| 27838/27838 [00:00<00:00, 47966.78it/s]
+
+===== Training layer 1/28 =====
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/fla/layers/rwkv7.py:143: UserWarning: According to Bo, you are using a potentially buggy FLA implementation of RWKV. If you plan to report any numbers based on this implementation, we strongly recommend cross-checking with the official repo: https://github.com/BlinkDL/RWKV-LM. Bo may disagree with results reported from this version.
+  warnings.warn(
+/workspace/compute-aware-arch-search/train.py:185: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/train.py", line 193, in <module>
+    train_result = trainer.train()
+                   ^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2432, in _inner_training_loop
+    self.create_optimizer_and_scheduler(num_training_steps=max_steps)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1264, in create_optimizer_and_scheduler
+    self.create_scheduler(num_training_steps=num_training_steps, optimizer=optimizer)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1852, in create_scheduler
+    self.lr_scheduler = get_scheduler(
+                        ^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/optimization.py", line 680, in get_scheduler
+    return schedule_func(
+           ^^^^^^^^^^^^^^
+TypeError: get_cosine_schedule_with_warmup() got an unexpected keyword argument 'eta_min'

@@ -1,21 +1,24 @@
 import os
 import json
+import math
 
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
+from torch.optim.lr_scheduler import LambdaLR
 from transformers import (
     AutoTokenizer,
     AutoConfig,
     Trainer,
     TrainingArguments,
     PreTrainedModel,
+    TrainerCallback,
 )
 from safetensors.torch import save_file
 import wandb
 from qwen3_model import Qwen3ForNAS
-from fla.models.deltaformer import DeltaFormerConfig
-from fla.models.deltaformer.modeling_deltaformer import DeltaFormerBlock
+from fla.models.rwkv7 import RWKV7Config
+from fla.models.rwkv7.modeling_rwkv7 import RWKV7Block
 from dataset_setup import (
     get_tokenized_dataset,
     get_data_collator,
@@ -26,14 +29,29 @@ from dataset_setup import (
 
 
 class LinearAttentionModel(nn.Module):
-    # temporary fix until we start on runpod
-    def __init__(self, config, **kwargs):
+    def __init__(self, config, layer_idx=0, **kwargs):
         super().__init__()
-        # DeltaFormerBlock requires layer_idx, use 0 for single block
-        self.decode_block = DeltaFormerBlock(config=config, layer_idx=0)
-
+        self.decode_block = RWKV7Block(config=config, layer_idx=layer_idx)
+        self.layer_idx = layer_idx
+        self.config = config
+    
     def forward(self, hidden_states, attention_mask=None):
-        output, _, _ = self.decode_block(hidden_states, attention_mask=attention_mask)
+        # For layer_idx != 0, RWKV7 expects v_first from layer 0
+        # Since we're training independently, create a dummy v_first with the right shape
+        v_first = None
+        if self.layer_idx != 0:
+            # v_first shape: [batch_size, seq_len, value_dim]
+            # value_dim defaults to hidden_size if not specified
+            batch_size, seq_len, _ = hidden_states.shape
+            value_dim = self.config.value_dim[self.layer_idx] if isinstance(self.config.value_dim, list) else (self.config.value_dim or self.config.hidden_size)
+            v_first = torch.zeros(batch_size, seq_len, value_dim, dtype=hidden_states.dtype, device=hidden_states.device)
+        
+        # RWKV7Block returns (hidden_states, attentions, past_key_values, v_first)
+        output, _, _, _ = self.decode_block(
+            hidden_states, 
+            attention_mask=attention_mask,
+            v_first=v_first
+        )
         return output
 
 
@@ -60,12 +78,66 @@ class AttentionTeacherForcing(PreTrainedModel):
         prev_hidden_bf16 = prev_hidden.to(torch.bfloat16)
         target_hidden_bf16 = target_hidden.to(torch.bfloat16)
 
-        # Student (DeltaFormerBlock) gets the same 2D padding mask.
-        # Causality (no look-ahead) is enforced inside deltaformer_attn; the mask here just handles padding.
+        # Student (RWKV7Block) gets the same 2D padding mask.
+        # Causality (no look-ahead) is enforced inside rwkv7 attention; the mask here just handles padding.
         student_output = self.student_model(prev_hidden_bf16, attention_mask=attention_mask)
         # Convert back to float32 for loss computation to maintain precision
         loss = nn.functional.mse_loss(student_output.to(torch.float32), target_hidden_bf16.to(torch.float32))
         return {"loss": loss, "logits": student_output, "hidden_states": student_output}
+
+
+class CosineAnnealingWithMinLRCallback(TrainerCallback):
+    """Callback to replace the default cosine scheduler with one that has a minimum learning rate."""
+    def __init__(self, min_lr=1e-5):
+        self.min_lr = min_lr
+    
+    def on_train_begin(self, args, state, control, model=None, **kwargs):
+        trainer = kwargs.get('trainer')
+        if trainer is None:
+            return
+        
+        # Get the optimizer and current scheduler
+        optimizer = trainer.optimizer
+        num_warmup_steps = args.warmup_steps
+        num_training_steps = args.max_steps
+        initial_lr = args.learning_rate
+        
+        # Create a custom lambda function for cosine annealing with min LR
+        def lr_lambda(current_step):
+            if current_step < num_warmup_steps:
+                return float(current_step) / float(max(1, num_warmup_steps))
+            
+            progress = float(current_step - num_warmup_steps) / float(max(1, num_training_steps - num_warmup_steps))
+            if progress >= 1.0:
+                return self.min_lr / initial_lr
+            
+            # Cosine annealing from 1.0 to min_lr/initial_lr
+            cosine_factor = 0.5 * (1.0 + math.cos(math.pi * progress))
+            min_lr_ratio = self.min_lr / initial_lr
+            return min_lr_ratio + (1.0 - min_lr_ratio) * cosine_factor
+        
+        # Replace the scheduler
+        trainer.lr_scheduler = LambdaLR(optimizer, lr_lambda, last_epoch=-1)
+
+
+class LossTrackerCallback(TrainerCallback):
+    """Callback to track the last N losses for computing rolling average."""
+    def __init__(self, window_size=100):
+        self.window_size = window_size
+        self.recent_losses = []
+    
+    def on_log(self, args, state, control, model=None, logs=None, **kwargs):
+        if logs is not None and 'loss' in logs:
+            self.recent_losses.append(logs['loss'])
+            # Keep only the last window_size losses
+            if len(self.recent_losses) > self.window_size:
+                self.recent_losses.pop(0)
+    
+    def get_average_last_n_losses(self):
+        """Get the average of the last N losses."""
+        if not self.recent_losses:
+            return None
+        return sum(self.recent_losses) / len(self.recent_losses)
 
 
 class HiddenStateDataset(Dataset):
@@ -95,11 +167,6 @@ class HiddenStateDataset(Dataset):
 model_path = "Qwen3-1.7B"
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 
-wandb.init(
-    project="compute-aware-arch-search",
-    name="qwen3_linear_attention_student",
-)
-
 llm_config = AutoConfig.from_pretrained(model_path)
 
 with open(f"{model_path}/config.json", "r") as f:
@@ -123,13 +190,13 @@ teacher_model = Qwen3ForNAS.from_pretrained(
     torch_dtype=torch.float32
 )
 
-with open("linear_attn/deltaformer_config.json", "r") as f:
-    deltaformer_config_dict = json.load(f)
+with open("linear_attn/rwkv7_config.json", "r") as f:
+    rwkv7_config_dict = json.load(f)
 
 train_dataset, tokenizer = get_tokenized_dataset(
     dataset_url=DATASET_URL,
     tokenizer=tokenizer,
-    max_length=2048,
+    max_length=1024,
     streaming=True,
     seed=42,
 )
@@ -149,6 +216,13 @@ num_layers = llm_config.num_hidden_layers
 
 for layer_idx in range(1, num_layers + 1):
     print(f"\n===== Training layer {layer_idx}/{num_layers} =====")
+    
+    # Initialize wandb for each layer separately to get separate plots
+    wandb.init(
+        project="compute-aware-arch-search",
+        name=f"qwen3_linear_attention_student_layer_{layer_idx}",
+        reinit=True,  # Allow reinitialization for each layer
+    )
 
     llm_config.attention_hook_idx = layer_idx
     if hasattr(teacher_model, "model") and hasattr(teacher_model.model, "current_attention_hook_idx"):
@@ -156,8 +230,8 @@ for layer_idx in range(1, num_layers + 1):
     elif hasattr(teacher_model, "current_attention_hook_idx"):
         teacher_model.current_attention_hook_idx = layer_idx
 
-    linear_attention_config = DeltaFormerConfig(**deltaformer_config_dict)
-    student_model = LinearAttentionModel(config=linear_attention_config)
+    linear_attention_config = RWKV7Config(**rwkv7_config_dict)
+    student_model = LinearAttentionModel(config=linear_attention_config, layer_idx=layer_idx)
     student_model = student_model.to(torch.bfloat16)
 
     wrapper_model = AttentionTeacherForcing(
@@ -170,11 +244,12 @@ for layer_idx in range(1, num_layers + 1):
     training_args = TrainingArguments(
         output_dir=layer_output_dir,
         max_steps=max_steps,
-        per_device_train_batch_size=per_device_batch_size,
-        per_device_eval_batch_size=per_device_batch_size,
-        learning_rate=1e-4,
-        lr_scheduler_type="cosine",
+        per_device_train_batch_size=per_device_train_batch_size,
+        per_device_eval_batch_size=per_device_eval_batch_size,
+        learning_rate=1e-3,
+        lr_scheduler_type="cosine",  # Will be replaced by callback
         warmup_steps=int(max_steps * 0.1),
+        max_grad_norm=1.0,  # Enable g sradient clipping at norm 1.0
         logging_steps=10,
         save_strategy="no",
         eval_strategy="no",
@@ -183,16 +258,30 @@ for layer_idx in range(1, num_layers + 1):
         run_name=f"qwen3_linear_attention_student_layer_{layer_idx}",
     )
 
+    # Create loss tracker callback to track last 100 losses
+    loss_tracker = LossTrackerCallback(window_size=100)
+    
     trainer = Trainer(
         model=wrapper_model,
         args=training_args,
         train_dataset=train_dataset,
         data_collator=data_collator,
         tokenizer=tokenizer,
+        callbacks=[
+            CosineAnnealingWithMinLRCallback(min_lr=1e-5),  # Cosine annealing from 1e-3 to 1e-5
+            loss_tracker,  # Track losses for rolling average
+        ],
     )
 
     train_result = trainer.train()
-    final_loss = float(getattr(train_result, "training_loss", None) or train_result.metrics.get("train_loss", 0.0))
+    
+    # Get average loss over last 100 steps
+    avg_last_100_loss = loss_tracker.get_average_last_n_losses()
+    if avg_last_100_loss is None:
+        # Fallback to overall average if we don't have enough steps
+        avg_last_100_loss = float(getattr(train_result, "training_loss", None) or train_result.metrics.get("train_loss", 0.0))
+    
+    final_loss = avg_last_100_loss
 
     safetensors_dir = os.path.join("linear_attention_checkpoints", "safetensors")
     os.makedirs(safetensors_dir, exist_ok=True)
@@ -207,3 +296,6 @@ for layer_idx in range(1, num_layers + 1):
     # Append final loss for this layer to results file
     with open(results_path, "a") as f:
         f.write(f"{layer_idx},{final_loss}\n")
+    
+    # Finish wandb run for this layer
+    wandb.finish()
