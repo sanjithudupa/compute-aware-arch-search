@@ -17,8 +17,15 @@ from transformers import (
 from safetensors.torch import save_file
 import wandb
 from qwen3_model import Qwen3ForNAS
+
+# OPTION 1: RWKV7 (currently active)
 from fla.models.rwkv7 import RWKV7Config
 from fla.models.rwkv7.modeling_rwkv7 import RWKV7Block
+
+# OPTION 2: GLA (Gated Linear Attention)
+# from fla.models.gla import GLAConfig
+# from fla.models.gla.modeling_gla import GLABlock
+
 from dataset_setup import (
     get_tokenized_dataset,
     get_data_collator,
@@ -31,7 +38,12 @@ from dataset_setup import (
 class LinearAttentionModel(nn.Module):
     def __init__(self, config, layer_idx=0, **kwargs):
         super().__init__()
+        # OPTION 1: RWKV7 (currently active)
         self.decode_block = RWKV7Block(config=config, layer_idx=layer_idx)
+        
+        # OPTION 2: GLA 
+        # self.decode_block = GLABlock(config=config, layer_idx=layer_idx)
+        
         self.layer_idx = layer_idx
         self.config = config
     
@@ -190,8 +202,13 @@ teacher_model = Qwen3ForNAS.from_pretrained(
     torch_dtype=torch.float32
 )
 
+# OPTION 1: RWKV7 (currently active)
 with open("linear_attn/rwkv7_config.json", "r") as f:
     rwkv7_config_dict = json.load(f)
+
+# OPTION 2: GLA
+# with open("linear_attn/gla_config.json", "r") as f:
+#     gla_config_dict = json.load(f)
 
 train_dataset, tokenizer = get_tokenized_dataset(
     dataset_url=DATASET_URL,
@@ -230,7 +247,12 @@ for layer_idx in range(1, num_layers + 1):
     elif hasattr(teacher_model, "current_attention_hook_idx"):
         teacher_model.current_attention_hook_idx = layer_idx
 
+    # OPTION 1: RWKV7 (currently active)
     linear_attention_config = RWKV7Config(**rwkv7_config_dict)
+    
+    # OPTION 2: GLA
+    # linear_attention_config = GLAConfig(**gla_config_dict)
+    
     student_model = LinearAttentionModel(config=linear_attention_config, layer_idx=layer_idx)
     student_model = student_model.to(torch.bfloat16)
 
