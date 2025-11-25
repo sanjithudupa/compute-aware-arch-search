@@ -244,12 +244,11 @@ for layer_idx in range(1, num_layers + 1):
     training_args = TrainingArguments(
         output_dir=layer_output_dir,
         max_steps=max_steps,
-        per_device_train_batch_size=per_device_train_batch_size,
-        per_device_eval_batch_size=per_device_eval_batch_size,
+        per_device_train_batch_size=per_device_batch_size,
         learning_rate=1e-3,
         lr_scheduler_type="cosine",  # Will be replaced by callback
         warmup_steps=int(max_steps * 0.1),
-        max_grad_norm=1.0,  # Enable g sradient clipping at norm 1.0
+        max_grad_norm=1.0,  # Enable gradient clipping at norm 1.0
         logging_steps=10,
         save_strategy="no",
         eval_strategy="no",
