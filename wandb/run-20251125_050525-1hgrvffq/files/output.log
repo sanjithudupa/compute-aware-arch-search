@@ -1,0 +1,7 @@
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/fla/layers/rwkv7.py:143: UserWarning: According to Bo, you are using a potentially buggy FLA implementation of RWKV. If you plan to report any numbers based on this implementation, we strongly recommend cross-checking with the official repo: https://github.com/BlinkDL/RWKV-LM. Bo may disagree with results reported from this version.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/train.py", line 247, in <module>
+    per_device_train_batch_size=per_device_train_batch_size,
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'per_device_train_batch_size' is not defined. Did you mean: 'per_device_batch_size'?

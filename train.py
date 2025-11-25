@@ -73,17 +73,33 @@ class AttentionTeacherForcing(PreTrainedModel):
                 **kwargs,
             )
 
-        # FlashAttention only supports fp16/bf16 – use bfloat16 for better numerical stability
-        # Convert hidden states to bfloat16 for FlashAttention compatibility
         prev_hidden_bf16 = prev_hidden.to(torch.bfloat16)
         target_hidden_bf16 = target_hidden.to(torch.bfloat16)
-
-        # Student (RWKV7Block) gets the same 2D padding mask.
-        # Causality (no look-ahead) is enforced inside rwkv7 attention; the mask here just handles padding.
         student_output = self.student_model(prev_hidden_bf16, attention_mask=attention_mask)
-        # Convert back to float32 for loss computation to maintain precision
-        loss = nn.functional.mse_loss(student_output.to(torch.float32), target_hidden_bf16.to(torch.float32))
-        return {"loss": loss, "logits": student_output, "hidden_states": student_output}
+        student_output_fp32 = student_output.to(torch.float32)
+        target_hidden_fp32 = target_hidden_bf16.to(torch.float32)
+        prev_hidden_fp32 = prev_hidden_bf16.to(torch.float32)
+        
+        # MSE loss for backpropagation (training)
+        loss = nn.functional.mse_loss(student_output_fp32, target_hidden_fp32)
+        
+        # Normalized loss: relative to teacher's update magnitude
+        # Teacher's update: target_hidden - prev_hidden
+        # Normalized by: MSE(prev_hidden, target_hidden) = baseline error
+        # This gives relative error: 0.0 = perfect, 1.0 = as bad as input, <1.0 = improvement
+        teacher_update_mse = nn.functional.mse_loss(prev_hidden_fp32, target_hidden_fp32)
+        # Avoid division by zero
+        if teacher_update_mse > 1e-8:
+            normalized_loss = loss / teacher_update_mse
+        else:
+            normalized_loss = loss  # Fallback if teacher update is too small
+        
+        return {
+            "loss": loss,  # Use this for backprop
+            "normalized_loss": normalized_loss,  # Use this for reporting/comparison
+            "logits": student_output,
+            "hidden_states": student_output
+        }
 
 
 class CosineAnnealingWithMinLRCallback(TrainerCallback):
@@ -120,24 +136,81 @@ class CosineAnnealingWithMinLRCallback(TrainerCallback):
         trainer.lr_scheduler = LambdaLR(optimizer, lr_lambda, last_epoch=-1)
 
 
+class CustomTrainer(Trainer):
+    """Custom Trainer that ensures normalized_loss gets logged to wandb."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._current_normalized_loss = None
+    
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        """
+        Override compute_loss to extract normalized_loss and store it for logging.
+        """
+        outputs = model(**inputs)
+        loss = outputs.get("loss")
+        normalized_loss = outputs.get("normalized_loss")
+        
+        # Store normalized_loss as instance variable for logging
+        if normalized_loss is not None:
+            if torch.is_tensor(normalized_loss):
+                normalized_loss = normalized_loss.item()
+            self._current_normalized_loss = float(normalized_loss)
+        else:
+            self._current_normalized_loss = None
+        
+        return (loss, outputs) if return_outputs else loss
+    
+    def log(self, logs, start_time=None):
+        """
+        Override log to add normalized_loss before logging to wandb.
+        """
+        # Add normalized_loss to logs if available
+        if hasattr(self, '_current_normalized_loss') and self._current_normalized_loss is not None:
+            logs['normalized_loss'] = self._current_normalized_loss
+        
+        # Call parent log method (this will trigger callbacks and send to wandb)
+        super().log(logs, start_time)
+
+
 class LossTrackerCallback(TrainerCallback):
     """Callback to track the last N losses for computing rolling average."""
     def __init__(self, window_size=100):
         self.window_size = window_size
         self.recent_losses = []
+        self.recent_normalized_losses = []
     
-    def on_log(self, args, state, control, model=None, logs=None, **kwargs):
-        if logs is not None and 'loss' in logs:
-            self.recent_losses.append(logs['loss'])
-            # Keep only the last window_size losses
-            if len(self.recent_losses) > self.window_size:
-                self.recent_losses.pop(0)
+    def on_log(self, args, state, control, model=None, logs=None, trainer=None, **kwargs):
+        if logs is not None:
+            # Extract normalized_loss from trainer if available and add to logs
+            if trainer is not None and hasattr(trainer, '_current_normalized_loss'):
+                normalized_loss = trainer._current_normalized_loss
+                logs['normalized_loss'] = normalized_loss
+            
+            # Track losses
+            if 'loss' in logs:
+                self.recent_losses.append(logs['loss'])
+                # Keep only the last window_size losses
+                if len(self.recent_losses) > self.window_size:
+                    self.recent_losses.pop(0)
+            
+            # Track normalized losses (either from trainer or already in logs)
+            if 'normalized_loss' in logs:
+                self.recent_normalized_losses.append(logs['normalized_loss'])
+                # Keep only the last window_size normalized losses
+                if len(self.recent_normalized_losses) > self.window_size:
+                    self.recent_normalized_losses.pop(0)
     
     def get_average_last_n_losses(self):
         """Get the average of the last N losses."""
         if not self.recent_losses:
             return None
         return sum(self.recent_losses) / len(self.recent_losses)
+    
+    def get_average_last_n_normalized_losses(self):
+        """Get the average of the last N normalized losses."""
+        if not self.recent_normalized_losses:
+            return None
+        return sum(self.recent_normalized_losses) / len(self.recent_normalized_losses)
 
 
 class HiddenStateDataset(Dataset):
@@ -244,8 +317,8 @@ for layer_idx in range(1, num_layers + 1):
     training_args = TrainingArguments(
         output_dir=layer_output_dir,
         max_steps=max_steps,
-        per_device_train_batch_size=per_device_train_batch_size,
-        per_device_eval_batch_size=per_device_eval_batch_size,
+        per_device_train_batch_size=per_device_batch_size,
+        per_device_eval_batch_size=per_device_batch_size,
         learning_rate=1e-3,
         lr_scheduler_type="cosine",  # Will be replaced by callback
         warmup_steps=int(max_steps * 0.1),
@@ -261,7 +334,7 @@ for layer_idx in range(1, num_layers + 1):
     # Create loss tracker callback to track last 100 losses
     loss_tracker = LossTrackerCallback(window_size=100)
     
-    trainer = Trainer(
+    trainer = CustomTrainer(
         model=wrapper_model,
         args=training_args,
         train_dataset=train_dataset,
@@ -275,13 +348,23 @@ for layer_idx in range(1, num_layers + 1):
 
     train_result = trainer.train()
     
-    # Get average loss over last 100 steps
+    # Get average normalized loss over last 100 steps (for reporting/comparison across layers)
+    avg_last_100_normalized_loss = loss_tracker.get_average_last_n_normalized_losses()
+    if avg_last_100_normalized_loss is None:
+        # Fallback: if we don't have enough logged steps, compute from final metrics
+        # This shouldn't happen if training completed, but handle edge case
+        avg_last_100_normalized_loss = 0.0
+    
+    # Also get regular MSE loss for reference
     avg_last_100_loss = loss_tracker.get_average_last_n_losses()
     if avg_last_100_loss is None:
         # Fallback to overall average if we don't have enough steps
         avg_last_100_loss = float(getattr(train_result, "training_loss", None) or train_result.metrics.get("train_loss", 0.0))
     
-    final_loss = avg_last_100_loss
+    # Use normalized loss for reporting (comparable across layers)
+    # Normalized loss = MSE(student, target) / MSE(prev, target)
+    # This gives relative error: 0.0 = perfect match, 1.0 = as bad as input, <1.0 = improvement
+    final_loss = avg_last_100_normalized_loss if avg_last_100_normalized_loss is not None else avg_last_100_loss
 
     safetensors_dir = os.path.join("linear_attention_checkpoints", "safetensors")
     os.makedirs(safetensors_dir, exist_ok=True)

@@ -1,0 +1,40 @@
+{
+  "os": "Linux-6.11.0-26-generic-x86_64-with-glibc2.39",
+  "python": "CPython 3.12.3",
+  "startedAt": "2025-11-25T10:40:09.326127Z",
+  "program": "/workspace/compute-aware-arch-search/train.py",
+  "codePath": "train.py",
+  "codePathLocal": "train.py",
+  "git": {
+    "remote": "https://github.com/sanjithudupa/compute-aware-arch-search.git",
+    "commit": "0dc4d362ad3c80775a5e276c50da4ae4d474b7a9"
+  },
+  "email": "mvideet@gmail.com",
+  "root": "/workspace/compute-aware-arch-search",
+  "host": "06ef83264932",
+  "executable": "/workspace/compute-aware-arch-search/.venv/bin/python",
+  "cpu_count": 120,
+  "cpu_count_logical": 120,
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "32212254720",
+      "used": "388956160"
+    }
+  },
+  "memory": {
+    "total": "1014509744128"
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 5090",
+      "memoryTotal": "34190917632",
+      "cudaCores": 21760,
+      "architecture": "Blackwell",
+      "uuid": "GPU-dbde956c-a2df-1e28-3752-145e55d35ae7"
+    }
+  ],
+  "cudaVersion": "12.8",
+  "writerId": "cd7uzt7neu4jfinr22q1d6q1udxcal3y"
+}

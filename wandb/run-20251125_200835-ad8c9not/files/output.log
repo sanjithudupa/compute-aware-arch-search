@@ -1,0 +1,17 @@
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/fla/layers/rwkv7.py:143: UserWarning: According to Bo, you are using a potentially buggy FLA implementation of RWKV. If you plan to report any numbers based on this implementation, we strongly recommend cross-checking with the official repo: https://github.com/BlinkDL/RWKV-LM. Bo may disagree with results reported from this version.
+  warnings.warn(
+/workspace/compute-aware-arch-search/train.py:142: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `CustomTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                           | 10/7629 [00:08<32:57,  3.85it/s]Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/train.py", line 349, in <module>
+    train_result = trainer.train()
+                   ^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2756, in _inner_training_loop
+    self._maybe_log_save_evaluate(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 3217, in _maybe_log_save_evaluate
+    self.log(logs, start_time)
+TypeError: CustomTrainer.log() takes 2 positional arguments but 3 were given
