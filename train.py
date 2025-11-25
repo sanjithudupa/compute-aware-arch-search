@@ -18,13 +18,13 @@ from safetensors.torch import save_file
 import wandb
 from qwen3_model import Qwen3ForNAS
 
-# OPTION 1: RWKV7 (currently active)
-from fla.models.rwkv7 import RWKV7Config
-from fla.models.rwkv7.modeling_rwkv7 import RWKV7Block
+# OPTION 1: RWKV7
+# from fla.models.rwkv7 import RWKV7Config
+# from fla.models.rwkv7.modeling_rwkv7 import RWKV7Block
 
-# OPTION 2: GLA (Gated Linear Attention)
-# from fla.models.gla import GLAConfig
-# from fla.models.gla.modeling_gla import GLABlock
+# OPTION 2: GLA (Gated Linear Attention) - ACTIVE
+from fla.models.gla import GLAConfig
+from fla.models.gla.modeling_gla import GLABlock
 
 from dataset_setup import (
     get_tokenized_dataset,
@@ -38,31 +38,21 @@ from dataset_setup import (
 class LinearAttentionModel(nn.Module):
     def __init__(self, config, layer_idx=0, **kwargs):
         super().__init__()
-        # OPTION 1: RWKV7 (currently active)
-        self.decode_block = RWKV7Block(config=config, layer_idx=layer_idx)
+        # OPTION 1: RWKV7
+        # self.decode_block = RWKV7Block(config=config, layer_idx=layer_idx)
         
-        # OPTION 2: GLA 
-        # self.decode_block = GLABlock(config=config, layer_idx=layer_idx)
+        # OPTION 2: GLA - ACTIVE
+        self.decode_block = GLABlock(config=config, layer_idx=layer_idx)
         
         self.layer_idx = layer_idx
         self.config = config
     
     def forward(self, hidden_states, attention_mask=None):
-        # For layer_idx != 0, RWKV7 expects v_first from layer 0
-        # Since we're training independently, create a dummy v_first with the right shape
-        v_first = None
-        if self.layer_idx != 0:
-            # v_first shape: [batch_size, seq_len, value_dim]
-            # value_dim defaults to hidden_size if not specified
-            batch_size, seq_len, _ = hidden_states.shape
-            value_dim = self.config.value_dim[self.layer_idx] if isinstance(self.config.value_dim, list) else (self.config.value_dim or self.config.hidden_size)
-            v_first = torch.zeros(batch_size, seq_len, value_dim, dtype=hidden_states.dtype, device=hidden_states.device)
-        
-        # RWKV7Block returns (hidden_states, attentions, past_key_values, v_first)
-        output, _, _, _ = self.decode_block(
+        # GLA doesn't need v_first - simpler forward pass than RWKV7
+        # GLABlock returns (hidden_states, attentions, past_key_values)
+        output, _, _ = self.decode_block(
             hidden_states, 
-            attention_mask=attention_mask,
-            v_first=v_first
+            attention_mask=attention_mask
         )
         return output
 
@@ -275,13 +265,13 @@ teacher_model = Qwen3ForNAS.from_pretrained(
     torch_dtype=torch.float32
 )
 
-# OPTION 1: RWKV7 (currently active)
-with open("linear_attn/rwkv7_config.json", "r") as f:
-    rwkv7_config_dict = json.load(f)
+# OPTION 1: RWKV7
+# with open("linear_attn/rwkv7_config.json", "r") as f:
+#     rwkv7_config_dict = json.load(f)
 
-# OPTION 2: GLA
-# with open("linear_attn/gla_config.json", "r") as f:
-#     gla_config_dict = json.load(f)
+# OPTION 2: GLA - ACTIVE
+with open("linear_attn/gla_config.json", "r") as f:
+    gla_config_dict = json.load(f)
 
 train_dataset, tokenizer = get_tokenized_dataset(
     dataset_url=DATASET_URL,
@@ -320,11 +310,11 @@ for layer_idx in range(1, num_layers + 1):
     elif hasattr(teacher_model, "current_attention_hook_idx"):
         teacher_model.current_attention_hook_idx = layer_idx
 
-    # OPTION 1: RWKV7 (currently active)
-    linear_attention_config = RWKV7Config(**rwkv7_config_dict)
+    # OPTION 1: RWKV7
+    # linear_attention_config = RWKV7Config(**rwkv7_config_dict)
     
-    # OPTION 2: GLA
-    # linear_attention_config = GLAConfig(**gla_config_dict)
+    # OPTION 2: GLA - ACTIVE
+    linear_attention_config = GLAConfig(**gla_config_dict)
     
     student_model = LinearAttentionModel(config=linear_attention_config, layer_idx=layer_idx)
     student_model = student_model.to(torch.bfloat16)
@@ -340,10 +330,7 @@ for layer_idx in range(1, num_layers + 1):
         output_dir=layer_output_dir,
         max_steps=max_steps,
         per_device_train_batch_size=per_device_batch_size,
-<<<<<<< HEAD
         per_device_eval_batch_size=per_device_batch_size,
-=======
->>>>>>> 869de4de327143ec43102e86506bfe2e94550b79
         learning_rate=1e-3,
         lr_scheduler_type="cosine",  # Will be replaced by callback
         warmup_steps=int(max_steps * 0.1),
