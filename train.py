@@ -294,7 +294,8 @@ if not os.path.exists(results_path):
 
 num_layers = llm_config.num_hidden_layers
 
-for layer_idx in range(1, num_layers + 1):
+# Resume from layer 6 (layers 1-5 already completed)
+for layer_idx in range(6, num_layers + 1):
     print(f"\n===== Training layer {layer_idx}/{num_layers} =====")
     
     # Initialize wandb for each layer separately to get separate plots
