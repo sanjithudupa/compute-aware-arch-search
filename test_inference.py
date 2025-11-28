@@ -5,7 +5,7 @@ model_path = "models/qwen3-1.7b"
 
 print('loading model')
 tokenizer = AutoTokenizer.from_pretrained(model_path)
-model = AutoModelForCausalLM.from_pretrained(model_path, device_map="cpu")
+model = AutoModelForCausalLM.from_pretrained(model_path, device_map="cuda")
 print('loaded model')
 
 inputs = tokenizer("Hello, how are you?", return_tensors="pt")

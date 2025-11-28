@@ -630,9 +630,39 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                 raise ValueError("rwkv7_config must be provided for RWKV7 attention")
             try:
                 from fla.models.rwkv7.modeling_rwkv7 import RWKV7Block
+                from fla.layers.rwkv7 import RWKV7Attention
             except ImportError:
                 raise ImportError("fla package not installed. Install with: pip install flash-linear-attention")
             self.attention = RWKV7Block(config=rwkv7_config, layer_idx=layer_idx)
+            
+            # Patch the RWKV7Attention forward method to handle v_first=None correctly
+            # The FLA library checks self.layer_idx == 0, but in hybrid models,
+            # the first RWKV7 layer might not be at index 0.
+            if hasattr(self.attention, 'attn') and isinstance(self.attention.attn, RWKV7Attention):
+                original_forward = self.attention.attn.forward
+                attn_instance = self.attention.attn  # Store reference to the instance
+                
+                def patched_forward(self_attn, hidden_states, attention_mask=None, past_key_values=None, 
+                                   use_cache=False, output_attentions=False, v_first=None, cu_seqlens=None, **kwargs):
+                    # If v_first is None, treat it as if this is the first layer (compute v_first from v)
+                    # This allows hybrid models where the first RWKV7 layer is not at index 0
+                    if v_first is None:
+                        # Temporarily set layer_idx to 0 to make the library compute v_first
+                        original_layer_idx = self_attn.layer_idx
+                        self_attn.layer_idx = 0
+                        try:
+                            result = original_forward(hidden_states, attention_mask, past_key_values,
+                                                     use_cache, output_attentions, v_first, cu_seqlens, **kwargs)
+                        finally:
+                            self_attn.layer_idx = original_layer_idx
+                        return result
+                    else:
+                        return original_forward(hidden_states, attention_mask, past_key_values,
+                                               use_cache, output_attentions, v_first, cu_seqlens, **kwargs)
+                
+                # Bind the patched function to the instance
+                import types
+                self.attention.attn.forward = types.MethodType(patched_forward, attn_instance)
         elif attention_type == "gla":
             if gla_config is None:
                 raise ValueError("gla_config must be provided for GLA attention")
@@ -674,6 +704,7 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
             v_first_out = None
         elif self.attention_type == "rwkv7":
             # RWKV7Block returns (hidden_states, attentions, past_key_values, v_first)
+            # The patched forward method handles v_first=None correctly even when layer_idx != 0
             attn_output, _, _, v_first_out = self.attention(
                 hidden_states,
                 attention_mask=attention_mask,

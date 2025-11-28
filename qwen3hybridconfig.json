@@ -1,6 +1,6 @@
 {
   "base_model_path": "Qwen3-1.7B",
-  "weights_base_path": "linear_attention_checkpoints",
+  "weights_base_path": "TESTING_RANDOM",
   "layer_attention_types": [
     "gla", "gla", "gla", "gla", "gla", "gla", "gla", "gla", "gla", "gla",
     "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7",
