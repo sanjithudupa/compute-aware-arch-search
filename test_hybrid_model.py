@@ -1,25 +1,12 @@
 from transformers import AutoTokenizer
-from qwen3_model import Qwen3WithLinearAttention, SUPPORTED_ATTENTION_VARIANTS
+from qwen3_model import Qwen3WithLinearAttention
 import torch
 
-model_path = "Qwen3-1.7B"
-weights_base_path = "linear_attention_checkpoints"
-
-layer_attention_types = (
-    ["gla"] * 10 +           # Layers 0-9: GLA
-    ["rwkv7"] * 10 +         # Layers 10-19: RWKV7
-    ["full_attention"] * 8    # Layers 20-27: Full self-attention
+model = Qwen3WithLinearAttention.from_config_json(
+    config_path="qwen3hybridconfig.json",
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_path)
-
-model = Qwen3WithLinearAttention.from_pretrained(
-    base_model_path=model_path,
-    layer_attention_types=layer_attention_types,
-    weights_base_path=weights_base_path,
-    rwkv7_config_path="linear_attn/rwkv7_config.json",
-    gla_config_path="linear_attn/gla_config.json",
-)
+tokenizer = AutoTokenizer.from_pretrained("Qwen3-1.7B")
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model = model.to(device)

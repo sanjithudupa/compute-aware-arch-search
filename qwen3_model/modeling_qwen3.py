@@ -19,6 +19,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from collections.abc import Callable
 from typing import Optional, Union
 
@@ -928,48 +929,61 @@ class Qwen3WithLinearAttention(Qwen3ForCausalLM):
         
         # Load trained linear attention weights
         if weights_base_path is not None:
-            for layer_idx, attn_type in enumerate(self._layer_attention_types):
-                if attn_type != "full_attention":
-                    # Construct path: weights_base_path/{attn_type}/safetensors/student_layer_{layer_idx+1}.safetensors
-                    # Note: layer_idx is 0-indexed, but saved files use 1-indexed
-                    safetensors_path = os.path.join(
-                        weights_base_path,
-                        attn_type,
-                        "safetensors",
-                        f"student_layer_{layer_idx + 1}.safetensors"
-                    )
-                    
-                    if not os.path.exists(safetensors_path):
-                        print(f"Warning: Linear attention weights not found: {safetensors_path}")
-                        continue
-                    
-                    # Load weights
-                    linear_weights = load_file(safetensors_path)
-                    
-                    # Get the decoder layer
-                    decoder_layer = self.model.layers[layer_idx]
-                    
-                    # Map keys from safetensors (which have "decode_block." prefix) to model keys
-                    mapped_weights = {}
-                    for key, value in linear_weights.items():
-                        # Remove "decode_block." prefix if present
-                        if key.startswith("decode_block."):
-                            new_key = key[len("decode_block."):]
-                        else:
-                            new_key = key
-                        mapped_weights[new_key] = value
-                    
-                    # Load weights into the attention block
-                    attention_state_dict = decoder_layer.attention.state_dict()
-                    loaded_keys = []
-                    for key, value in mapped_weights.items():
-                        if key in attention_state_dict:
-                            if attention_state_dict[key].shape == value.shape:
-                                attention_state_dict[key] = value
-                                loaded_keys.append(key)
-                    
-                    decoder_layer.attention.load_state_dict(attention_state_dict, strict=False)
-                    print(f"Loaded {attn_type} weights for layer {layer_idx + 1} ({len(loaded_keys)} keys)")
+            # Special case: use random weights for testing
+            if weights_base_path == "TESTING_RANDOM":
+                print("Using random weights for linear attention layers (TESTING_RANDOM mode)")
+                for layer_idx, attn_type in enumerate(self._layer_attention_types):
+                    if attn_type != "full_attention":
+                        decoder_layer = self.model.layers[layer_idx]
+                        # Initialize with random weights
+                        for param in decoder_layer.attention.parameters():
+                            if param.requires_grad:
+                                torch.nn.init.normal_(param, mean=0.0, std=0.02)
+                        print(f"Initialized {attn_type} with random weights for layer {layer_idx + 1}")
+            else:
+                # Normal case: load from files
+                for layer_idx, attn_type in enumerate(self._layer_attention_types):
+                    if attn_type != "full_attention":
+                        # Construct path: weights_base_path/{attn_type}/safetensors/student_layer_{layer_idx+1}.safetensors
+                        # Note: layer_idx is 0-indexed, but saved files use 1-indexed
+                        safetensors_path = os.path.join(
+                            weights_base_path,
+                            attn_type,
+                            "safetensors",
+                            f"student_layer_{layer_idx + 1}.safetensors"
+                        )
+                        
+                        if not os.path.exists(safetensors_path):
+                            print(f"Warning: Linear attention weights not found: {safetensors_path}")
+                            continue
+                        
+                        # Load weights
+                        linear_weights = load_file(safetensors_path)
+                        
+                        # Get the decoder layer
+                        decoder_layer = self.model.layers[layer_idx]
+                        
+                        # Map keys from safetensors (which have "decode_block." prefix) to model keys
+                        mapped_weights = {}
+                        for key, value in linear_weights.items():
+                            # Remove "decode_block." prefix if present
+                            if key.startswith("decode_block."):
+                                new_key = key[len("decode_block."):]
+                            else:
+                                new_key = key
+                            mapped_weights[new_key] = value
+                        
+                        # Load weights into the attention block
+                        attention_state_dict = decoder_layer.attention.state_dict()
+                        loaded_keys = []
+                        for key, value in mapped_weights.items():
+                            if key in attention_state_dict:
+                                if attention_state_dict[key].shape == value.shape:
+                                    attention_state_dict[key] = value
+                                    loaded_keys.append(key)
+                        
+                        decoder_layer.attention.load_state_dict(attention_state_dict, strict=False)
+                        print(f"Loaded {attn_type} weights for layer {layer_idx + 1} ({len(loaded_keys)} keys)")
     
     @classmethod
     def from_pretrained(
@@ -995,8 +1009,8 @@ class Qwen3WithLinearAttention(Qwen3ForCausalLM):
         """
         import json
         
-        # Load base config
-        config = AutoConfig.from_pretrained(base_model_path)
+        # Load base config using Qwen3Config directly
+        config = Qwen3Config.from_pretrained(base_model_path)
         
         # Load linear attention configs if needed
         rwkv7_config = None
@@ -1032,6 +1046,59 @@ class Qwen3WithLinearAttention(Qwen3ForCausalLM):
         )
         
         return model
+    
+    @classmethod
+    def from_config_json(
+        cls,
+        config_path: str,
+        **kwargs,
+    ):
+        """
+        Create a Qwen3WithLinearAttention model from a JSON config file.
+        
+        Args:
+            config_path: Path to JSON config file containing:
+                - base_model_path: Path to base Qwen3 model
+                - weights_base_path: Base path for trained linear attention weights (or "TESTING_RANDOM")
+                - layer_attention_types: List of attention types per layer
+                - rwkv7_config_path: (optional) Path to RWKV7 config JSON file
+                - gla_config_path: (optional) Path to GLA config JSON file
+            **kwargs: Additional arguments passed to from_pretrained
+        """
+        import json
+        
+        if not os.path.exists(config_path):
+            raise FileNotFoundError(f"Config file not found: {config_path}")
+        
+        with open(config_path, "r") as f:
+            config_dict = json.load(f)
+        
+        # Extract required fields
+        base_model_path = config_dict.get("base_model_path")
+        if base_model_path is None:
+            raise ValueError("base_model_path must be specified in config file")
+        
+        weights_base_path = config_dict.get("weights_base_path")
+        layer_attention_types = config_dict.get("layer_attention_types")
+        if layer_attention_types is None:
+            raise ValueError("layer_attention_types must be specified in config file")
+        
+        if not isinstance(layer_attention_types, list):
+            raise ValueError("layer_attention_types must be a list in the config file")
+        
+        # Optional config paths
+        rwkv7_config_path = config_dict.get("rwkv7_config_path", "linear_attn/rwkv7_config.json")
+        gla_config_path = config_dict.get("gla_config_path", "linear_attn/gla_config.json")
+        
+        # Use from_pretrained with extracted values
+        return cls.from_pretrained(
+            base_model_path=base_model_path,
+            layer_attention_types=layer_attention_types,
+            weights_base_path=weights_base_path,
+            rwkv7_config_path=rwkv7_config_path,
+            gla_config_path=gla_config_path,
+            **kwargs,
+        )
 
 
 class Qwen3ForSequenceClassification(GenericForSequenceClassification, Qwen3PreTrainedModel):
