@@ -9,6 +9,8 @@ from .modeling_qwen3 import (
     Qwen3MLP,
     Qwen3RMSNorm,
     Qwen3RotaryEmbedding,
+    Qwen3WithLinearAttention,
+    SUPPORTED_ATTENTION_VARIANTS,
 )
 
 __all__ = [
@@ -21,5 +23,7 @@ __all__ = [
     "Qwen3MLP",
     "Qwen3RMSNorm",
     "Qwen3RotaryEmbedding",
+    "Qwen3WithLinearAttention",
+    "SUPPORTED_ATTENTION_VARIANTS",
 ]
 

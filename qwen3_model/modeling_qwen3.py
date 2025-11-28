@@ -43,6 +43,7 @@ from transformers.modeling_utils import ALL_ATTENTION_FUNCTIONS, PreTrainedModel
 from transformers.processing_utils import Unpack
 from transformers.utils import TransformersKwargs, auto_docstring, can_return_tuple
 from transformers.models.qwen3.configuration_qwen3 import Qwen3Config
+from transformers import AutoConfig
 
 
 @use_kernel_forward_from_hub("RMSNorm")
@@ -590,9 +591,447 @@ class Qwen3ForNAS(Qwen3ForCausalLM):
         print("result shape: ", result.shape)
         return result
 
-    
-        
 
+# Constants for supported attention variants per layer
+# Layer indices are 0-indexed (0-27 for 28 layers)
+SUPPORTED_ATTENTION_VARIANTS = {
+    "full_attention": list(range(28)),  # All layers 0-27
+    "rwkv7": list(range(28)),  # All layers 0-27
+    "gla": list(range(10)),  # Only layers 0-9
+}
+
+
+class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
+    """Decoder layer that supports full attention, RWKV7, or GLA"""
+    def __init__(
+        self,
+        config: Qwen3Config,
+        layer_idx: int,
+        attention_type: str = "full_attention",
+        rwkv7_config=None,
+        gla_config=None,
+    ):
+        super().__init__()
+        self.hidden_size = config.hidden_size
+        self.layer_idx = layer_idx
+        self.attention_type = attention_type
+        
+        # MLP and layer norms are always the same
+        self.mlp = Qwen3MLP(config)
+        self.input_layernorm = Qwen3RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.post_attention_layernorm = Qwen3RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        
+        # Choose attention mechanism
+        if attention_type == "full_attention":
+            self.attention = Qwen3Attention(config=config, layer_idx=layer_idx)
+        elif attention_type == "rwkv7":
+            if rwkv7_config is None:
+                raise ValueError("rwkv7_config must be provided for RWKV7 attention")
+            try:
+                from fla.models.rwkv7.modeling_rwkv7 import RWKV7Block
+            except ImportError:
+                raise ImportError("fla package not installed. Install with: pip install flash-linear-attention")
+            self.attention = RWKV7Block(config=rwkv7_config, layer_idx=layer_idx)
+        elif attention_type == "gla":
+            if gla_config is None:
+                raise ValueError("gla_config must be provided for GLA attention")
+            try:
+                from fla.models.gla.modeling_gla import GLABlock
+            except ImportError:
+                raise ImportError("fla package not installed. Install with: pip install flash-linear-attention")
+            self.attention = GLABlock(config=gla_config, layer_idx=layer_idx)
+        else:
+            raise ValueError(f"Unsupported attention type: {attention_type}")
+    
+    def forward(
+        self,
+        hidden_states: torch.Tensor,
+        attention_mask: Optional[torch.Tensor] = None,
+        position_ids: Optional[torch.LongTensor] = None,
+        past_key_values: Optional[Cache] = None,
+        use_cache: Optional[bool] = False,
+        cache_position: Optional[torch.LongTensor] = None,
+        position_embeddings: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
+        v_first: Optional[torch.Tensor] = None,
+        **kwargs: Unpack[TransformersKwargs],
+    ):
+        residual = hidden_states
+        hidden_states = self.input_layernorm(hidden_states)
+        
+        # Self Attention
+        if self.attention_type == "full_attention":
+            attn_output, _ = self.attention(
+                hidden_states=hidden_states,
+                attention_mask=attention_mask,
+                position_ids=position_ids,
+                past_key_values=past_key_values,
+                use_cache=use_cache,
+                cache_position=cache_position,
+                position_embeddings=position_embeddings,
+                **kwargs,
+            )
+            v_first_out = None
+        elif self.attention_type == "rwkv7":
+            # RWKV7Block returns (hidden_states, attentions, past_key_values, v_first)
+            attn_output, _, _, v_first_out = self.attention(
+                hidden_states,
+                attention_mask=attention_mask,
+                v_first=v_first,
+            )
+        elif self.attention_type == "gla":
+            # GLABlock returns (hidden_states, attentions, past_key_values, ...)
+            # GLA doesn't use v_first
+            attn_output, _, _, *_ = self.attention(
+                hidden_states,
+                attention_mask=attention_mask,
+            )
+            v_first_out = None
+        else:
+            raise ValueError(f"Unsupported attention type: {self.attention_type}")
+        
+        hidden_states = residual + attn_output
+        
+        residual = hidden_states
+        hidden_states = self.post_attention_layernorm(hidden_states)
+        mlp_output = self.mlp(hidden_states)
+        hidden_states = residual + mlp_output
+        
+        return hidden_states, v_first_out
+
+
+class Qwen3WithLinearAttentionModel(Qwen3PreTrainedModel):
+    """Qwen3Model with configurable linear/full attention per layer"""
+    def __init__(
+        self,
+        config: Qwen3Config,
+        layer_attention_types: list[str],
+        weights_base_path: Optional[str] = None,
+        rwkv7_config=None,
+        gla_config=None,
+    ):
+        super().__init__(config)
+        self.padding_idx = config.pad_token_id
+        self.vocab_size = config.vocab_size
+        self.layer_attention_types = layer_attention_types
+        self.weights_base_path = weights_base_path
+        
+        # Validate layer attention types
+        if len(layer_attention_types) != config.num_hidden_layers:
+            raise ValueError(
+                f"layer_attention_types must have length {config.num_hidden_layers}, "
+                f"got {len(layer_attention_types)}"
+            )
+        
+        for layer_idx, attn_type in enumerate(layer_attention_types):
+            if attn_type not in SUPPORTED_ATTENTION_VARIANTS:
+                raise ValueError(f"Unsupported attention type: {attn_type} at layer {layer_idx}")
+            if layer_idx not in SUPPORTED_ATTENTION_VARIANTS[attn_type]:
+                raise ValueError(
+                    f"Attention type {attn_type} not supported for layer {layer_idx}. "
+                    f"Supported layers: {SUPPORTED_ATTENTION_VARIANTS[attn_type]}"
+                )
+        
+        self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size, self.padding_idx)
+        self.layers = nn.ModuleList([
+            Qwen3LinearAttentionDecoderLayer(
+                config=config,
+                layer_idx=layer_idx,
+                attention_type=layer_attention_types[layer_idx],
+                rwkv7_config=rwkv7_config,
+                gla_config=gla_config,
+            )
+            for layer_idx in range(config.num_hidden_layers)
+        ])
+        self.norm = Qwen3RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.rotary_emb = Qwen3RotaryEmbedding(config=config)
+        self.gradient_checkpointing = False
+        
+        # Initialize weights and apply final processing
+        self.post_init()
+    
+    @auto_docstring
+    def forward(
+        self,
+        input_ids: Optional[torch.LongTensor] = None,
+        attention_mask: Optional[torch.Tensor] = None,
+        position_ids: Optional[torch.LongTensor] = None,
+        past_key_values: Optional[Cache] = None,
+        inputs_embeds: Optional[torch.FloatTensor] = None,
+        use_cache: Optional[bool] = None,
+        cache_position: Optional[torch.LongTensor] = None,
+        **kwargs: Unpack[TransformersKwargs],
+    ) -> BaseModelOutputWithPast:
+        if (input_ids is None) ^ (inputs_embeds is not None):
+            raise ValueError("You must specify exactly one of input_ids or inputs_embeds")
+
+        if inputs_embeds is None:
+            inputs_embeds = self.embed_tokens(input_ids)
+
+        if use_cache and past_key_values is None:
+            past_key_values = DynamicCache(config=self.config)
+
+        if cache_position is None:
+            past_seen_tokens = past_key_values.get_seq_length() if past_key_values is not None else 0
+            cache_position = torch.arange(
+                past_seen_tokens, past_seen_tokens + inputs_embeds.shape[1], device=inputs_embeds.device
+            )
+
+        if position_ids is None:
+            position_ids = cache_position.unsqueeze(0)
+
+        # Prepare attention masks
+        if not isinstance(causal_mask_mapping := attention_mask, dict):
+            mask_kwargs = {
+                "config": self.config,
+                "input_embeds": inputs_embeds,
+                "attention_mask": attention_mask,
+                "cache_position": cache_position,
+                "past_key_values": past_key_values,
+                "position_ids": position_ids,
+            }
+            causal_mask_mapping = {
+                "full_attention": create_causal_mask(**mask_kwargs),
+            }
+
+        hidden_states = inputs_embeds
+        position_embeddings = self.rotary_emb(hidden_states, position_ids)
+        
+        # Find the first RWKV7 layer index (for v_first)
+        first_rwkv7_idx = None
+        for layer_idx, attn_type in enumerate(self.layer_attention_types):
+            if attn_type == "rwkv7":
+                first_rwkv7_idx = layer_idx
+                break
+        
+        v_first = None
+        for layer_idx, decoder_layer in enumerate(self.layers):
+            if decoder_layer.attention_type == "full_attention":
+                hidden_states, _ = decoder_layer(
+                    hidden_states,
+                    attention_mask=causal_mask_mapping["full_attention"],
+                    position_ids=position_ids,
+                    past_key_values=past_key_values,
+                    use_cache=use_cache,
+                    cache_position=cache_position,
+                    position_embeddings=position_embeddings,
+                    **kwargs,
+                )
+            elif decoder_layer.attention_type == "rwkv7":
+                # For the first RWKV7 layer, v_first is None (will be computed)
+                # For subsequent RWKV7 layers, use v_first from the first one
+                if layer_idx == first_rwkv7_idx:
+                    current_v_first = None
+                else:
+                    current_v_first = v_first
+                
+                hidden_states, v_first_out = decoder_layer(
+                    hidden_states,
+                    attention_mask=attention_mask,  # 2D mask for linear attention
+                    position_ids=position_ids,
+                    past_key_values=past_key_values,
+                    use_cache=use_cache,
+                    cache_position=cache_position,
+                    position_embeddings=position_embeddings,
+                    v_first=current_v_first,
+                    **kwargs,
+                )
+                
+                # Store v_first from the first RWKV7 layer for subsequent layers
+                if layer_idx == first_rwkv7_idx and v_first_out is not None:
+                    v_first = v_first_out
+            elif decoder_layer.attention_type == "gla":
+                hidden_states, _ = decoder_layer(
+                    hidden_states,
+                    attention_mask=attention_mask,  # 2D mask for linear attention
+                    position_ids=position_ids,
+                    past_key_values=past_key_values,
+                    use_cache=use_cache,
+                    cache_position=cache_position,
+                    position_embeddings=position_embeddings,
+                    **kwargs,
+                )
+            else:
+                raise ValueError(f"Unsupported attention type: {decoder_layer.attention_type}")
+
+        hidden_states = self.norm(hidden_states)
+        return BaseModelOutputWithPast(
+            last_hidden_state=hidden_states,
+            past_key_values=past_key_values if use_cache else None,
+        )
+
+
+class Qwen3WithLinearAttention(Qwen3ForCausalLM):
+    """Qwen3ForCausalLM with configurable linear/full attention per layer"""
+    
+    def __init__(
+        self,
+        config: Qwen3Config,
+        layer_attention_types: list[str],
+        base_model_path: Optional[str] = None,
+        weights_base_path: Optional[str] = None,
+        rwkv7_config=None,
+        gla_config=None,
+    ):
+        # Temporarily store configs
+        self._layer_attention_types = layer_attention_types
+        self._base_model_path = base_model_path
+        self._weights_base_path = weights_base_path
+        self._rwkv7_config = rwkv7_config
+        self._gla_config = gla_config
+        
+        # Call parent init but we'll replace the model
+        super().__init__(config)
+        
+        # Replace the model with our mixed architecture model
+        self.model = Qwen3WithLinearAttentionModel(
+            config=config,
+            layer_attention_types=layer_attention_types,
+            weights_base_path=weights_base_path,
+            rwkv7_config=rwkv7_config,
+            gla_config=gla_config,
+        )
+        
+        # Load weights
+        self._load_weights(base_model_path, weights_base_path)
+    
+    def _load_weights(self, base_model_path: Optional[str], weights_base_path: Optional[str]):
+        """Load weights from base model and trained linear attention checkpoints"""
+        import os
+        from safetensors.torch import load_file
+        
+        # First, load base model weights for all components
+        if base_model_path is not None:
+            base_model = Qwen3ForCausalLM.from_pretrained(
+                base_model_path,
+                config=self.config,
+                torch_dtype=torch.float32,
+            )
+            base_state_dict = base_model.state_dict()
+            student_state_dict = self.state_dict()
+            
+            # Copy weights from base model, excluding attention layers that will be replaced
+            for key, value in base_state_dict.items():
+                if key in student_state_dict:
+                    # Check if this is an attention weight for a layer that uses linear attention
+                    is_linear_attn_weight = False
+                    for layer_idx, attn_type in enumerate(self._layer_attention_types):
+                        if attn_type != "full_attention":
+                            if f"model.layers.{layer_idx}.attention" in key:
+                                is_linear_attn_weight = True
+                                break
+                    
+                    if not is_linear_attn_weight and student_state_dict[key].shape == value.shape:
+                        student_state_dict[key] = value
+            
+            self.load_state_dict(student_state_dict, strict=False)
+            print("Loaded base model weights (excluding linear attention layers)")
+        
+        # Load trained linear attention weights
+        if weights_base_path is not None:
+            for layer_idx, attn_type in enumerate(self._layer_attention_types):
+                if attn_type != "full_attention":
+                    # Construct path: weights_base_path/{attn_type}/safetensors/student_layer_{layer_idx+1}.safetensors
+                    # Note: layer_idx is 0-indexed, but saved files use 1-indexed
+                    safetensors_path = os.path.join(
+                        weights_base_path,
+                        attn_type,
+                        "safetensors",
+                        f"student_layer_{layer_idx + 1}.safetensors"
+                    )
+                    
+                    if not os.path.exists(safetensors_path):
+                        print(f"Warning: Linear attention weights not found: {safetensors_path}")
+                        continue
+                    
+                    # Load weights
+                    linear_weights = load_file(safetensors_path)
+                    
+                    # Get the decoder layer
+                    decoder_layer = self.model.layers[layer_idx]
+                    
+                    # Map keys from safetensors (which have "decode_block." prefix) to model keys
+                    mapped_weights = {}
+                    for key, value in linear_weights.items():
+                        # Remove "decode_block." prefix if present
+                        if key.startswith("decode_block."):
+                            new_key = key[len("decode_block."):]
+                        else:
+                            new_key = key
+                        mapped_weights[new_key] = value
+                    
+                    # Load weights into the attention block
+                    attention_state_dict = decoder_layer.attention.state_dict()
+                    loaded_keys = []
+                    for key, value in mapped_weights.items():
+                        if key in attention_state_dict:
+                            if attention_state_dict[key].shape == value.shape:
+                                attention_state_dict[key] = value
+                                loaded_keys.append(key)
+                    
+                    decoder_layer.attention.load_state_dict(attention_state_dict, strict=False)
+                    print(f"Loaded {attn_type} weights for layer {layer_idx + 1} ({len(loaded_keys)} keys)")
+    
+    @classmethod
+    def from_pretrained(
+        cls,
+        base_model_path: str,
+        layer_attention_types: list[str],
+        weights_base_path: Optional[str] = None,
+        rwkv7_config_path: Optional[str] = None,
+        gla_config_path: Optional[str] = None,
+        **kwargs,
+    ):
+        """
+        Create a Qwen3WithLinearAttention model from pretrained weights.
+        
+        Args:
+            base_model_path: Path to base Qwen3 model
+            layer_attention_types: List of attention types per layer (e.g., ["full_attention", "rwkv7", ...])
+            weights_base_path: Base path for trained linear attention weights
+                Expected structure: weights_base_path/{attn_type}/safetensors/student_layer_{idx}.safetensors
+            rwkv7_config_path: Path to RWKV7 config JSON file
+            gla_config_path: Path to GLA config JSON file
+            **kwargs: Additional arguments passed to from_pretrained
+        """
+        import json
+        
+        # Load base config
+        config = AutoConfig.from_pretrained(base_model_path)
+        
+        # Load linear attention configs if needed
+        rwkv7_config = None
+        gla_config = None
+        
+        if "rwkv7" in layer_attention_types:
+            if rwkv7_config_path is None:
+                rwkv7_config_path = "linear_attn/rwkv7_config.json"
+            with open(rwkv7_config_path, "r") as f:
+                rwkv7_config_dict = json.load(f)
+            from fla.models.rwkv7 import RWKV7Config
+            rwkv7_config = RWKV7Config(**rwkv7_config_dict)
+        
+        if "gla" in layer_attention_types:
+            if gla_config_path is None:
+                gla_config_path = "linear_attn/gla_config.json"
+            with open(gla_config_path, "r") as f:
+                gla_config_dict = json.load(f)
+            try:
+                from fla.models.gla import GLAConfig
+            except ImportError:
+                raise ImportError("fla package not installed. Install with: pip install flash-linear-attention")
+            gla_config = GLAConfig(**gla_config_dict)
+        
+        # Create model instance
+        model = cls(
+            config=config,
+            layer_attention_types=layer_attention_types,
+            base_model_path=base_model_path,
+            weights_base_path=weights_base_path,
+            rwkv7_config=rwkv7_config,
+            gla_config=gla_config,
+        )
+        
+        return model
 
 
 class Qwen3ForSequenceClassification(GenericForSequenceClassification, Qwen3PreTrainedModel):
@@ -615,4 +1054,6 @@ __all__ = [
     "Qwen3ForSequenceClassification",
     "Qwen3ForTokenClassification",
     "Qwen3ForNAS",
+    "Qwen3WithLinearAttention",
+    "SUPPORTED_ATTENTION_VARIANTS",
 ]
