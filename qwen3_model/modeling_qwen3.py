@@ -633,21 +633,22 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                 from fla.layers.rwkv7 import RWKV7Attention
             except ImportError:
                 raise ImportError("fla package not installed. Install with: pip install flash-linear-attention")
-            self.attention = RWKV7Block(config=rwkv7_config, layer_idx=layer_idx)
+            # IMPORTANT: Use 1-based layer_idx to match training setup
+            # Training uses layer_idx from range(1, num_layers + 1), so we convert 0-based to 1-based
+            rwkv7_layer_idx = layer_idx + 1
+            self.attention = RWKV7Block(config=rwkv7_config, layer_idx=rwkv7_layer_idx)
             
-            # Patch the RWKV7Attention forward method to handle v_first=None correctly
-            # The FLA library checks self.layer_idx == 0, but in hybrid models,
-            # the first RWKV7 layer might not be at index 0.
+            # Patch RWKV7Attention to handle layer_idx=1 as first layer (for v_first computation)
+            # RWKV7 internally checks layer_idx == 0, but training uses 1-based indices
             if hasattr(self.attention, 'attn') and isinstance(self.attention.attn, RWKV7Attention):
                 original_forward = self.attention.attn.forward
-                attn_instance = self.attention.attn  # Store reference to the instance
+                attn_instance = self.attention.attn
                 
-                def patched_forward(self_attn, hidden_states, attention_mask=None, past_key_values=None, 
+                def patched_forward(self_attn, hidden_states, attention_mask=None, past_key_values=None,
                                    use_cache=False, output_attentions=False, v_first=None, cu_seqlens=None, **kwargs):
-                    # If v_first is None, treat it as if this is the first layer (compute v_first from v)
-                    # This allows hybrid models where the first RWKV7 layer is not at index 0
-                    if v_first is None:
-                        # Temporarily set layer_idx to 0 to make the library compute v_first
+                    # If this is the first RWKV7 layer (layer_idx=1 in 1-based) and v_first is None,
+                    # temporarily set layer_idx to 0 so RWKV7 computes v_first internally
+                    if v_first is None and self_attn.layer_idx == 1:
                         original_layer_idx = self_attn.layer_idx
                         self_attn.layer_idx = 0
                         try:
@@ -660,7 +661,6 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                         return original_forward(hidden_states, attention_mask, past_key_values,
                                                use_cache, output_attentions, v_first, cu_seqlens, **kwargs)
                 
-                # Bind the patched function to the instance
                 import types
                 self.attention.attn.forward = types.MethodType(patched_forward, attn_instance)
         elif attention_type == "gla":
@@ -703,8 +703,31 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
             )
             v_first_out = None
         elif self.attention_type == "rwkv7":
-            # RWKV7Block returns (hidden_states, attentions, past_key_values, v_first)
-            # The patched forward method handles v_first=None correctly even when layer_idx != 0
+            # Match training setup: training doesn't pass past_key_values or use_cache
+            # Convert 0-based layer_idx to 1-based for v_first logic (matching training)
+            rwkv7_layer_idx = self.layer_idx + 1
+            
+            # Match training logic exactly:
+            # - For layer_idx=0 (1-based = first RWKV7 layer): v_first=None (computed internally)
+            # - For layer_idx != 0 (1-based): create dummy v_first with zeros
+            # But if v_first is provided from a previous RWKV7 layer, use that instead
+            if v_first is None:
+                if rwkv7_layer_idx == 1:
+                    # First RWKV7 layer: v_first=None (will be computed by RWKV7)
+                    pass
+                else:
+                    # Not first RWKV7 layer: create dummy v_first like in training
+                    batch_size, seq_len, _ = hidden_states.shape
+                    # Get value_dim from config (same logic as training)
+                    if hasattr(self.attention, 'config'):
+                        config = self.attention.config
+                        value_dim = config.value_dim[rwkv7_layer_idx] if isinstance(getattr(config, 'value_dim', None), list) else (getattr(config, 'value_dim', None) or config.hidden_size)
+                    else:
+                        value_dim = hidden_states.shape[-1]
+                    v_first = torch.zeros(batch_size, seq_len, value_dim, dtype=hidden_states.dtype, device=hidden_states.device)
+            
+            # Match training: only pass hidden_states, attention_mask, and v_first
+            # Do NOT pass past_key_values or use_cache (they weren't used in training)
             attn_output, _, _, v_first_out = self.attention(
                 hidden_states,
                 attention_mask=attention_mask,
@@ -942,21 +965,58 @@ class Qwen3WithLinearAttention(Qwen3ForCausalLM):
             student_state_dict = self.state_dict()
             
             # Copy weights from base model, excluding attention layers that will be replaced
+            # Map base model keys to student model keys (self_attn -> attention)
+            def map_key(key: str) -> str:
+                """Map base model key to student model key"""
+                # Replace self_attn with attention for full_attention layers
+                if "model.layers." in key and ".self_attn." in key:
+                    # Extract layer index
+                    parts = key.split(".")
+                    layer_idx = int(parts[2])
+                    # Check if this layer uses full_attention
+                    if layer_idx < len(self._layer_attention_types):
+                        if self._layer_attention_types[layer_idx] == "full_attention":
+                            # Map self_attn to attention
+                            new_key = key.replace(".self_attn.", ".attention.")
+                            return new_key
+                return key
+            
+            loaded_count = 0
+            skipped_count = 0
+            shape_mismatch_count = 0
             for key, value in base_state_dict.items():
-                if key in student_state_dict:
-                    # Check if this is an attention weight for a layer that uses linear attention
-                    is_linear_attn_weight = False
-                    for layer_idx, attn_type in enumerate(self._layer_attention_types):
-                        if attn_type != "full_attention":
-                            if f"model.layers.{layer_idx}.attention" in key:
-                                is_linear_attn_weight = True
-                                break
-                    
-                    if not is_linear_attn_weight and student_state_dict[key].shape == value.shape:
-                        student_state_dict[key] = value
+                # Map the key to student model key format
+                student_key = map_key(key)
+                
+                # Check if this is an attention weight for a layer that uses linear attention
+                is_linear_attn_weight = False
+                if "model.layers." in key and ".attention." in key:
+                    # Extract layer index from original key (before mapping)
+                    parts = key.split(".")
+                    layer_idx = int(parts[2])
+                    if layer_idx < len(self._layer_attention_types):
+                        if self._layer_attention_types[layer_idx] != "full_attention":
+                            is_linear_attn_weight = True
+                
+                if not is_linear_attn_weight:
+                    if student_key in student_state_dict:
+                        if student_state_dict[student_key].shape == value.shape:
+                            student_state_dict[student_key] = value
+                            loaded_count += 1
+                        else:
+                            shape_mismatch_count += 1
+                            if "attention" in key or "lm_head" in key or "embed" in key:
+                                print(f"Shape mismatch for {key} -> {student_key}: base={value.shape}, student={student_state_dict[student_key].shape}")
+                    elif key in student_state_dict:
+                        # Try original key as fallback
+                        if student_state_dict[key].shape == value.shape:
+                            student_state_dict[key] = value
+                            loaded_count += 1
+                else:
+                    skipped_count += 1
             
             self.load_state_dict(student_state_dict, strict=False)
-            print("Loaded base model weights (excluding linear attention layers)")
+            print(f"Loaded base model weights: {loaded_count} loaded, {skipped_count} skipped (linear attention), {shape_mismatch_count} shape mismatches")
         
         # Load trained linear attention weights
         if weights_base_path is not None:

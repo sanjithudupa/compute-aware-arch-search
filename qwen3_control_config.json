@@ -2,8 +2,8 @@
   "base_model_path": "Qwen3-1.7B",
   "weights_base_path": "linear-attention-checkpoints",
   "layer_attention_types": [
-    "gla", "gla", "gla", "gla", "gla", "gla", "gla", "gla", "gla", "gla",
-    "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7", "rwkv7",
+    "rwkv7", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention",
+    "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention",
     "full_attention", "full_attention", "full_attention", "full_attention",
     "full_attention", "full_attention", "full_attention", "full_attention"
   ],
