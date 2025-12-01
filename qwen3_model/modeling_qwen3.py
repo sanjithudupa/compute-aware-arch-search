@@ -719,9 +719,15 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                     # Not first RWKV7 layer: create dummy v_first like in training
                     batch_size, seq_len, _ = hidden_states.shape
                     # Get value_dim from config (same logic as training)
+                    # Training uses: self.config.value_dim[self.layer_idx] if isinstance(self.config.value_dim, list) else (self.config.value_dim or self.config.hidden_size)
+                    # where self.layer_idx is 1-based (1, 2, 3, ...)
                     if hasattr(self.attention, 'config'):
                         config = self.attention.config
-                        value_dim = config.value_dim[rwkv7_layer_idx] if isinstance(getattr(config, 'value_dim', None), list) else (getattr(config, 'value_dim', None) or config.hidden_size)
+                        # Match training exactly: use rwkv7_layer_idx (1-based) to index into value_dim list if it's a list
+                        if isinstance(getattr(config, 'value_dim', None), list):
+                            value_dim = config.value_dim[rwkv7_layer_idx]
+                        else:
+                            value_dim = getattr(config, 'value_dim', None) or config.hidden_size
                     else:
                         value_dim = hidden_states.shape[-1]
                     v_first = torch.zeros(batch_size, seq_len, value_dim, dtype=hidden_states.dtype, device=hidden_states.device)
@@ -879,9 +885,26 @@ class Qwen3WithLinearAttentionModel(Qwen3PreTrainedModel):
                 else:
                     current_v_first = v_first
                 
+                # Match training: RWKV7 expects 2D attention_mask [batch_size, seq_len]
+                # During generation, attention_mask might be None - create all-ones mask
+                rwkv7_attention_mask = attention_mask
+                if rwkv7_attention_mask is None:
+                    # Create a simple all-ones mask matching hidden_states shape
+                    batch_size, seq_len = hidden_states.shape[:2]
+                    rwkv7_attention_mask = torch.ones(batch_size, seq_len, dtype=torch.long, device=hidden_states.device)
+                elif rwkv7_attention_mask.dim() != 2:
+                    # If it's not 2D, try to extract or create 2D mask
+                    if rwkv7_attention_mask.dim() == 4:
+                        # 4D causal mask - extract 2D mask (all positions are valid)
+                        rwkv7_attention_mask = torch.ones(hidden_states.shape[0], hidden_states.shape[1], dtype=torch.long, device=hidden_states.device)
+                    else:
+                        # Fallback: create all-ones mask
+                        batch_size, seq_len = hidden_states.shape[:2]
+                        rwkv7_attention_mask = torch.ones(batch_size, seq_len, dtype=torch.long, device=hidden_states.device)
+                
                 hidden_states, v_first_out = decoder_layer(
                     hidden_states,
-                    attention_mask=attention_mask,  # 2D mask for linear attention
+                    attention_mask=rwkv7_attention_mask,  # 2D mask for linear attention
                     position_ids=position_ids,
                     past_key_values=past_key_values,
                     use_cache=use_cache,
