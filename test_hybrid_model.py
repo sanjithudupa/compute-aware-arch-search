@@ -3,7 +3,7 @@ from qwen3_model import Qwen3WithLinearAttention
 import torch
 
 model = Qwen3WithLinearAttention.from_config_json(
-    config_path="qwen3_control_config.json",
+    config_path="hybrid_model_configs/top10.json",
 )
 
 tokenizer = AutoTokenizer.from_pretrained("Qwen3-1.7B")

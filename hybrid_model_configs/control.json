@@ -1,8 +1,9 @@
 {
   "base_model_path": "Qwen3-1.7B",
   "weights_base_path": "linear-attention-checkpoints",
+  "description": "Control - default with just using FSA for all layers, legit just the base model",
   "layer_attention_types": [
-    "rwkv7", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention",
+    "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention",
     "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention", "full_attention",
     "full_attention", "full_attention", "full_attention", "full_attention",
     "full_attention", "full_attention", "full_attention", "full_attention"
