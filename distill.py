@@ -17,7 +17,7 @@ class DistillationTrainer(Trainer):
         for param in self.teacher_model.parameters():
             param.requires_grad = False
     
-    def compute_loss(self, model, inputs, return_outputs=False):
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         labels = inputs.pop("labels")
         student_outputs = model(**inputs)
         student_logits = student_outputs.logits
@@ -44,7 +44,7 @@ class DistillationTrainer(Trainer):
 
 if __name__ == "__main__":
     
-    CONFIG_NAME = "top10"
+    CONFIG_NAME = "top10_gla"
     
     config_path = f"hybrid_model_configs/{CONFIG_NAME}.json"
     teacher_path = "Qwen3-1.7B"

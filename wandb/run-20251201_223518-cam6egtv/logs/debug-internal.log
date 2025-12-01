@@ -1,0 +1,11 @@
+{"time":"2025-12-01T22:35:18.326518684Z","level":"INFO","msg":"stream: starting","core version":"0.23.0"}
+{"time":"2025-12-01T22:35:18.548614086Z","level":"INFO","msg":"stream: created new stream","id":"cam6egtv"}
+{"time":"2025-12-01T22:35:18.548742715Z","level":"INFO","msg":"handler: started","stream_id":"cam6egtv"}
+{"time":"2025-12-01T22:35:18.548973084Z","level":"INFO","msg":"stream: started","id":"cam6egtv"}
+{"time":"2025-12-01T22:35:18.549018434Z","level":"INFO","msg":"writer: started","stream_id":"cam6egtv"}
+{"time":"2025-12-01T22:35:18.549046004Z","level":"INFO","msg":"sender: started","stream_id":"cam6egtv"}
+{"time":"2025-12-01T22:35:38.276582999Z","level":"INFO","msg":"stream: closing","id":"cam6egtv"}
+{"time":"2025-12-01T22:35:38.519559375Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-12-01T22:35:38.680246157Z","level":"INFO","msg":"handler: closed","stream_id":"cam6egtv"}
+{"time":"2025-12-01T22:35:38.680442545Z","level":"INFO","msg":"sender: closed","stream_id":"cam6egtv"}
+{"time":"2025-12-01T22:35:38.680461755Z","level":"INFO","msg":"stream: closed","id":"cam6egtv"}

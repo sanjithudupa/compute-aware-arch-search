@@ -629,6 +629,10 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
             if rwkv7_config is None:
                 raise ValueError("rwkv7_config must be provided for RWKV7 attention")
             try:
+                import warnings
+                # Suppress FLA RWKV7 false positive warnings about tensor format
+                # These warnings occur when seq_len < num_heads, which is normal for short sequences
+                warnings.filterwarnings("ignore", message=".*Input tensor shape suggests potential format mismatch.*", category=UserWarning, module="fla.ops.rwkv7.fused_recurrent")
                 from fla.models.rwkv7.modeling_rwkv7 import RWKV7Block
                 from fla.layers.rwkv7 import RWKV7Attention
             except ImportError:
@@ -646,6 +650,19 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                 
                 def patched_forward(self_attn, hidden_states, attention_mask=None, past_key_values=None,
                                    use_cache=False, output_attentions=False, v_first=None, cu_seqlens=None, **kwargs):
+                    # CRITICAL FIX: Convert v_first IMMEDIATELY and FORCE dtype match
+                    # RWKV7 uses v_first in torch.lerp(v, v_first, ...) where v is in hidden_states.dtype
+                    # If v_first is float32 but v is fp16, torch.lerp will crash
+                    # We MUST convert v_first BEFORE it's used, and ensure it's a new tensor (not in-place)
+                    if v_first is not None:
+                        # Force conversion by creating a new tensor with explicit dtype
+                        target_dtype = hidden_states.dtype
+                        # CRITICAL: Must convert to match v's dtype (which is in hidden_states.dtype)
+                        # Use .to() with explicit dtype and ensure it's actually converted
+                        v_first = v_first.to(dtype=target_dtype)
+                        # Double-check the conversion worked
+                        assert v_first.dtype == target_dtype, f"v_first dtype conversion failed: expected {target_dtype}, got {v_first.dtype}"
+                    
                     # If this is the first RWKV7 layer (layer_idx=1 in 1-based) and v_first is None,
                     # temporarily set layer_idx to 0 so RWKV7 computes v_first internally
                     if v_first is None and self_attn.layer_idx == 1:
@@ -656,10 +673,19 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                                                      use_cache, output_attentions, v_first, cu_seqlens, **kwargs)
                         finally:
                             self_attn.layer_idx = original_layer_idx
+                        # Ensure v_first in result matches hidden_states dtype
+                        if len(result) >= 4 and result[3] is not None:
+                            result = (*result[:3], result[3].to(dtype=hidden_states.dtype), *result[4:])
                         return result
                     else:
-                        return original_forward(hidden_states, attention_mask, past_key_values,
+                        # For non-first layers, v_first MUST be in correct dtype before lerp
+                        # Pass the converted v_first to original_forward
+                        result = original_forward(hidden_states, attention_mask, past_key_values,
                                                use_cache, output_attentions, v_first, cu_seqlens, **kwargs)
+                        # Ensure v_first in result matches hidden_states dtype
+                        if len(result) >= 4 and result[3] is not None:
+                            result = (*result[:3], result[3].to(dtype=hidden_states.dtype), *result[4:])
+                        return result
                 
                 import types
                 self.attention.attn.forward = types.MethodType(patched_forward, attn_instance)
@@ -730,7 +756,13 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                             value_dim = getattr(config, 'value_dim', None) or config.hidden_size
                     else:
                         value_dim = hidden_states.shape[-1]
+                    # Ensure v_first matches hidden_states dtype (important for fp16 training)
                     v_first = torch.zeros(batch_size, seq_len, value_dim, dtype=hidden_states.dtype, device=hidden_states.device)
+            
+            # CRITICAL: Convert v_first to match hidden_states dtype BEFORE passing to attention
+            # RWKV7 uses v_first directly in torch.lerp(v, v_first, ...) and v is in hidden_states.dtype
+            if v_first is not None:
+                v_first = v_first.to(dtype=hidden_states.dtype)
             
             # Match training: only pass hidden_states, attention_mask, and v_first
             # Do NOT pass past_key_values or use_cache (they weren't used in training)
@@ -739,6 +771,9 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                 attention_mask=attention_mask,
                 v_first=v_first,
             )
+            # Ensure v_first_out matches hidden_states dtype (RWKV7 may return it in float32)
+            if v_first_out is not None:
+                v_first_out = v_first_out.to(dtype=hidden_states.dtype)
         elif self.attention_type == "gla":
             # GLABlock returns (hidden_states, attentions, past_key_values, ...)
             # GLA doesn't use v_first
@@ -883,7 +918,9 @@ class Qwen3WithLinearAttentionModel(Qwen3PreTrainedModel):
                 if layer_idx == first_rwkv7_idx:
                     current_v_first = None
                 else:
-                    current_v_first = v_first
+                    # CRITICAL: Always convert v_first to match hidden_states dtype
+                    # This must happen here to ensure dtype consistency before passing to decoder_layer
+                    current_v_first = v_first.to(dtype=hidden_states.dtype) if v_first is not None else None
                 
                 # Match training: RWKV7 expects 2D attention_mask [batch_size, seq_len]
                 # During generation, attention_mask might be None - create all-ones mask
@@ -915,8 +952,9 @@ class Qwen3WithLinearAttentionModel(Qwen3PreTrainedModel):
                 )
                 
                 # Store v_first from the first RWKV7 layer for subsequent layers
+                # Ensure v_first matches hidden_states dtype (important for fp16 training)
                 if layer_idx == first_rwkv7_idx and v_first_out is not None:
-                    v_first = v_first_out
+                    v_first = v_first_out.to(dtype=hidden_states.dtype)
             elif decoder_layer.attention_type == "gla":
                 hidden_states, _ = decoder_layer(
                     hidden_states,
