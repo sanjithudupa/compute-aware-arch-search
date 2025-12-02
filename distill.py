@@ -70,18 +70,19 @@ class DistillationTrainer(Trainer):
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         labels = inputs.pop("labels")
         
-        # Ensure model is on student device and in fp32 before forward pass
-        # This is a safety check in case Accelerate or Trainer moved it or changed dtype
-        model = model.to(self.student_device).to(torch.float32)
+        # Get the device the model is actually on (from Trainer's perspective)
+        # This is important because Trainer checks that loss is on the same device as model
+        # Don't move the model here - Trainer tracks the original device
+        model_device = next(model.parameters()).device
         
         # Create copies of inputs for teacher and student to avoid modifying the original
-        # Move inputs to student device and ensure correct dtypes
+        # Move inputs to model's device (which should be student_device) and ensure correct dtypes
         # input_ids must stay as Long (int64), attention_mask can be Long or Bool, only float tensors go to fp32
         student_inputs = {}
         for k, v in inputs.items():
             if isinstance(v, torch.Tensor):
-                # Move to device first
-                v = v.to(self.student_device)
+                # Move to model's device (should be student_device)
+                v = v.to(model_device)
                 # Only convert float tensors to fp32, keep integer tensors as-is
                 if k == "input_ids" or k.endswith("_ids") or (v.dtype in [torch.long, torch.int64, torch.int32, torch.bool]):
                     # Keep integer/bool tensors as-is (input_ids, position_ids, etc.)
@@ -94,7 +95,7 @@ class DistillationTrainer(Trainer):
                     student_inputs[k] = v
             else:
                 student_inputs[k] = v
-        labels_student = labels.to(self.student_device).to(torch.long) if isinstance(labels, torch.Tensor) else labels
+        labels_student = labels.to(model_device).to(torch.long) if isinstance(labels, torch.Tensor) else labels
         
         # Student forward pass on student device in fp32
         # Disable autocast to ensure everything stays in fp32
@@ -112,9 +113,17 @@ class DistillationTrainer(Trainer):
             teacher_outputs = self.teacher_model(**teacher_inputs)
             teacher_logits = teacher_outputs.logits
         
-        # Move teacher logits to student device and ensure fp32 for loss computation
-        # All loss computations should be in fp32 for numerical stability (like train.py does)
-        teacher_logits_fp32 = teacher_logits.to(self.student_device).to(torch.float32)
+        # Immediately move teacher logits to model device and free teacher GPU memory
+        # This is critical to avoid OOM - move logits before clearing cache
+        teacher_logits_fp32 = teacher_logits.to(model_device).to(torch.float32)
+        
+        # Clear teacher model's CUDA cache to free memory on teacher GPU
+        # This helps prevent OOM when teacher model is large
+        del teacher_outputs, teacher_logits
+        torch.cuda.empty_cache()  # Clear cache on all devices
+        # Specifically clear teacher device cache
+        with torch.cuda.device(self.teacher_device):
+            torch.cuda.empty_cache()
         student_logits_fp32 = student_logits.to(torch.float32)  # Already fp32, but ensure it
         labels_fp32 = labels_student.to(torch.long)  # Labels should be long, not float
         
@@ -132,6 +141,11 @@ class DistillationTrainer(Trainer):
         ) * (self.temperature ** 2)
         
         loss = self.alpha * ce_loss + (1 - self.alpha) * kl_loss
+        
+        # CRITICAL: Ensure loss is on the same device as the model
+        # Trainer checks that loss.device == model.device, so we must match it
+        if loss.device != model_device:
+            loss = loss.to(model_device)
         
         return (loss, student_outputs) if return_outputs else loss
 
@@ -208,8 +222,8 @@ if __name__ == "__main__":
     # Use fp32 for everything to avoid dtype mismatches with RWKV7's v_first
     training_args = TrainingArguments(
         output_dir=output_dir,
-        per_device_train_batch_size=4,
-        gradient_accumulation_steps=8,
+        per_device_train_batch_size=1,  # Reduced to 1 to save memory
+        gradient_accumulation_steps=16,  # Increased to maintain effective batch size
         learning_rate=5e-5,
         num_train_epochs=1,
         max_steps=1000,
@@ -220,6 +234,8 @@ if __name__ == "__main__":
         max_grad_norm=1.0,
         # No fp16/bf16 - use fp32 for everything to avoid dtype mismatches
         ddp_find_unused_parameters=False,  # Disable unused parameter finding for DDP
+        dataloader_pin_memory=False,  # Disable pin_memory to save GPU memory
+        dataloader_num_workers=0,  # Disable multiprocessing to save memory
         report_to=["wandb"],
         run_name=run_name,
     )

@@ -1,0 +1,46 @@
+/workspace/compute-aware-arch-search/distill.py:21: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                                               | 0/1000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py:929: RuntimeWarning: ChunkDeltaRuleFunction does not support float32 on some platforms. Please use bfloat16/float16.
+            If you want to use float32, please solve the issue by yourself.
+  return fn(*args, **kwargs)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py:929: RuntimeWarning: ChunkDeltaRuleFunction does not support float32 on some platforms. Please use bfloat16/float16.
+            If you want to use float32, please solve the issue by yourself.
+  return fn(*args, **kwargs)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py:929: RuntimeWarning: ChunkDeltaRuleFunction does not support float32 on some platforms. Please use bfloat16/float16.
+            If you want to use float32, please solve the issue by yourself.
+  return fn(*args, **kwargs)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py:929: RuntimeWarning: ChunkDeltaRuleFunction does not support float32 on some platforms. Please use bfloat16/float16.
+            If you want to use float32, please solve the issue by yourself.
+  return fn(*args, **kwargs)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py:929: RuntimeWarning: ChunkDeltaRuleFunction does not support float32 on some platforms. Please use bfloat16/float16.
+            If you want to use float32, please solve the issue by yourself.
+  return fn(*args, **kwargs)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py:929: RuntimeWarning: ChunkDeltaRuleFunction does not support float32 on some platforms. Please use bfloat16/float16.
+            If you want to use float32, please solve the issue by yourself.
+  return fn(*args, **kwargs)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py:929: RuntimeWarning: ChunkDeltaRuleFunction does not support float32 on some platforms. Please use bfloat16/float16.
+            If you want to use float32, please solve the issue by yourself.
+  return fn(*args, **kwargs)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py:929: RuntimeWarning: ChunkDeltaRuleFunction does not support float32 on some platforms. Please use bfloat16/float16.
+            If you want to use float32, please solve the issue by yourself.
+  return fn(*args, **kwargs)
+Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/distill.py", line 276, in <module>
+    trainer.train()
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill.py", line 137, in compute_loss
+    kl_loss = F.kl_div(
+              ^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/functional.py", line 3371, in kl_div
+    reduced = torch.kl_div(input, target, reduction_enum, log_target=log_target)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.16 GiB. GPU 0 has a total capacity of 47.53 GiB of which 792.25 MiB is free. Process 1724152 has 46.75 GiB memory in use. Of the allocated memory 43.98 GiB is allocated by PyTorch, and 1.88 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
