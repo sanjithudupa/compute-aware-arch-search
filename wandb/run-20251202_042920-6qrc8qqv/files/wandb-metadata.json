@@ -1,0 +1,47 @@
+{
+  "os": "Linux-5.15.0-139-generic-x86_64-with-glibc2.39",
+  "python": "CPython 3.12.3",
+  "startedAt": "2025-12-02T04:29:20.302128Z",
+  "program": "/workspace/compute-aware-arch-search/distill.py",
+  "codePath": "distill.py",
+  "codePathLocal": "distill.py",
+  "git": {
+    "remote": "git@github.com:sanjithudupa/compute-aware-arch-search.git",
+    "commit": "f6dd1cb45e40227f03ac1c963802a837f4015ff9"
+  },
+  "email": "Sanjith.udupa@gmail.com",
+  "root": "/workspace/compute-aware-arch-search",
+  "host": "92c1d62fb4cf",
+  "executable": "/workspace/compute-aware-arch-search/.venv/bin/python3",
+  "cpu_count": 64,
+  "cpu_count_logical": 128,
+  "gpu": "NVIDIA RTX A6000",
+  "gpu_count": 2,
+  "disk": {
+    "/": {
+      "total": "32212254720",
+      "used": "508329984"
+    }
+  },
+  "memory": {
+    "total": "540821860352"
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA RTX A6000",
+      "memoryTotal": "51527024640",
+      "cudaCores": 10752,
+      "architecture": "Ampere",
+      "uuid": "GPU-b7dcb057-f0dc-c263-2c0a-480cb3b735e1"
+    },
+    {
+      "name": "NVIDIA RTX A6000",
+      "memoryTotal": "51527024640",
+      "cudaCores": 10752,
+      "architecture": "Ampere",
+      "uuid": "GPU-278f9f8f-f22f-f884-e15d-6f4348253283"
+    }
+  ],
+  "cudaVersion": "12.4",
+  "writerId": "wbtq7as8dsa5idenahpb39imd2fquiic"
+}

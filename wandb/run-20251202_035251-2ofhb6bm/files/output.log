@@ -1,0 +1,17 @@
+/workspace/compute-aware-arch-search/distill.py:12: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/distill.py", line 191, in <module>
+    trainer = DistillationTrainer(
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill.py", line 12, in __init__
+    super().__init__(*args, **kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 612, in __init__
+    self._move_model_to_device(model, args.device)
+  File "/workspace/compute-aware-arch-search/distill.py", line 24, in _move_model_to_device
+    model = model.to(self.student_device)
+                     ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'DistillationTrainer' object has no attribute 'student_device'
