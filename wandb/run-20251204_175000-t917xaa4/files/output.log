@@ -1,0 +1,66 @@
+/workspace/compute-aware-arch-search/distill_videet.py:34: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                              | 0/1000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 1] ========== MEMORY DEBUG ==========
+[Step 1] Model device: cuda:0
+[Step 1] Input device: cuda:0
+[Step 1] Teacher model device: cuda:0
+[Step 1] GPU 0 memory: 11.76 GB (reserved: 11.88 GB)
+[Step 1] GPU 1 memory: 0.00 GB (reserved: 8.43 GB)
+  warnings.warn(
+[Step 1] Student logits device: cuda:0, shape: torch.Size([2, 463, 151936]), dtype: torch.float32
+[Step 1] Student model device: cuda:0
+[Step 1] GPU 0 memory before teacher forward: 13.18 GB
+[Step 1] GPU 0 memory after moving inputs: 13.18 GB
+[Step 1] GPU 0 memory after teacher forward: 13.46 GB
+[Step 1] Teacher logits shape: torch.Size([2, 463, 151936]), dtype: torch.float16
+[Step 1] Teacher logits device before move: cuda:0
+[Step 1] Target device (student_logits.device): cuda:0
+[Step 1] GPU 0 memory after moving logits to GPU 1: 14.03 GB
+[Step 1] Teacher logits device after move: cuda:0, shape: torch.Size([2, 463, 151936])
+[Step 1] GPU 0 memory after del: 13.75 GB
+[Step 1] GPU 0 memory after cache clear: 13.75 GB (reserved: 14.03 GB)
+[Step 1] Before log_softmax - GPU 0: 14.31 GB, GPU 1: 0.00 GB
+[Step 1] student_logits device: cuda:0, teacher_logits device: cuda:0
+
+[Step 11] ========== MEMORY DEBUG ==========
+[Step 11] Model device: cuda:0
+[Step 11] Input device: cuda:0
+[Step 11] Teacher model device: cuda:0
+[Step 11] GPU 0 memory: 20.09 GB (reserved: 32.16 GB)
+[Step 11] GPU 1 memory: 0.00 GB (reserved: 0.00 GB)
+[Step 11] Student logits device: cuda:0, shape: torch.Size([2, 382, 151936]), dtype: torch.float32
+[Step 11] Student model device: cuda:0
+[Step 11] GPU 0 memory before teacher forward: 21.37 GB
+[Step 11] GPU 0 memory after moving inputs: 21.37 GB
+[Step 11] GPU 0 memory after teacher forward: 21.60 GB
+[Step 11] Teacher logits shape: torch.Size([2, 382, 151936]), dtype: torch.float16
+[Step 11] Teacher logits device before move: cuda:0
+[Step 11] Target device (student_logits.device): cuda:0
+[Step 11] GPU 0 memory after moving logits to GPU 1: 22.06 GB
+[Step 11] Teacher logits device after move: cuda:0, shape: torch.Size([2, 382, 151936])
+[Step 11] GPU 0 memory after del: 21.83 GB
+[Step 11] GPU 0 memory after cache clear: 21.83 GB (reserved: 24.95 GB)
+[Step 11] Before log_softmax - GPU 0: 22.29 GB, GPU 1: 0.00 GB
+[Step 11] student_logits device: cuda:0, teacher_logits device: cuda:0
+  0%|                                                                                    | 1/1000 [00:22<6:16:47, 22.63s/it]Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 319, in <module>
+    trainer.train()
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 157, in compute_loss
+    student_log_probs = F.log_softmax(student_logits / self.temperature, dim=-1)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/functional.py", line 2245, in log_softmax
+    ret = input.log_softmax(dim)
+          ^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.16 GiB. GPU 0 has a total capacity of 44.43 GiB of which 785.81 MiB is free. Including non-PyTorch memory, this process has 43.66 GiB memory in use. Of the allocated memory 39.89 GiB is allocated by PyTorch, and 3.44 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

@@ -1,0 +1,50 @@
+/workspace/compute-aware-arch-search/distill_videet.py:23: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                              | 0/1000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|                                                                                  | 1/1000 [02:10<36:20:21, 130.95s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 187, in <module>
+    )
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 74, in compute_loss
+    student_log_probs = F.log_softmax(student_logits / self.temperature, dim=-1)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/functional.py", line 2245, in log_softmax
+    ret = input.log_softmax(dim)
+          ^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.16 GiB. GPU 0 has a total capacity of 44.43 GiB of which 263.81 MiB is free. Including non-PyTorch memory, this process has 44.17 GiB memory in use. Of the allocated memory 39.89 GiB is allocated by PyTorch, and 3.95 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

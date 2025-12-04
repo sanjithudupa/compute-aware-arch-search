@@ -1,0 +1,11 @@
+{"time":"2025-12-04T17:29:14.413723661Z","level":"INFO","msg":"stream: starting","core version":"0.23.0"}
+{"time":"2025-12-04T17:29:14.927270309Z","level":"INFO","msg":"stream: created new stream","id":"zi6bioiq"}
+{"time":"2025-12-04T17:29:14.9285055Z","level":"INFO","msg":"handler: started","stream_id":"zi6bioiq"}
+{"time":"2025-12-04T17:29:14.939089346Z","level":"INFO","msg":"stream: started","id":"zi6bioiq"}
+{"time":"2025-12-04T17:29:14.939214797Z","level":"INFO","msg":"writer: started","stream_id":"zi6bioiq"}
+{"time":"2025-12-04T17:29:14.939291685Z","level":"INFO","msg":"sender: started","stream_id":"zi6bioiq"}
+{"time":"2025-12-04T17:30:12.938374533Z","level":"INFO","msg":"stream: closing","id":"zi6bioiq"}
+{"time":"2025-12-04T17:30:13.432305347Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-12-04T17:30:13.718783934Z","level":"INFO","msg":"handler: closed","stream_id":"zi6bioiq"}
+{"time":"2025-12-04T17:30:13.722787663Z","level":"INFO","msg":"sender: closed","stream_id":"zi6bioiq"}
+{"time":"2025-12-04T17:30:13.723270448Z","level":"INFO","msg":"stream: closed","id":"zi6bioiq"}

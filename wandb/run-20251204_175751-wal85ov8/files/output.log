@@ -1,0 +1,18 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:34: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 345, in <module>
+    trainer = DistillationTrainer(
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 34, in __init__
+    super().__init__(*args, **kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 612, in __init__
+    self._move_model_to_device(model, args.device)
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 52, in _move_model_to_device
+    self.args.device = self.student_device
+    ^^^^^^^^^^^^^^^^
+AttributeError: property 'device' of 'TrainingArguments' object has no setter

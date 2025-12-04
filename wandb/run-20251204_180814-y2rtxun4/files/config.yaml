@@ -1,0 +1,63 @@
+_wandb:
+    value:
+        cli_version: 0.23.0
+        e:
+            8lslyrdyg46vxuocqcsesn6wd8kzrylj:
+                codePath: distill_videet.py
+                codePathLocal: distill_videet.py
+                cpu_count: 48
+                cpu_count_logical: 96
+                cudaVersion: "12.8"
+                disk:
+                    /:
+                        total: "32212254720"
+                        used: "655216640"
+                email: Sanjith.udupa@gmail.com
+                executable: /workspace/compute-aware-arch-search/.venv/bin/python3
+                git:
+                    commit: cb506ed0c5e2d5a08d77831bf35b24698cc48081
+                    remote: git@github.com:sanjithudupa/compute-aware-arch-search.git
+                gpu: NVIDIA RTX A6000
+                gpu_count: 2
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "48305799168"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-7b31ce77-044d-4bdd-e54d-1db7420e8d5b
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-0331b987-5481-d2c1-6403-5828124f0975
+                host: 7ec2949d8a24
+                memory:
+                    total: "540642926592"
+                os: Linux-6.8.0-65-generic-x86_64-with-glibc2.39
+                program: /workspace/compute-aware-arch-search/distill_videet.py
+                python: CPython 3.12.3
+                root: /workspace/compute-aware-arch-search
+                startedAt: "2025-12-04T18:08:14.398378Z"
+                writerId: 8lslyrdyg46vxuocqcsesn6wd8kzrylj
+        m: []
+        python_version: 3.12.3
+        t:
+            "1":
+                - 1
+                - 11
+                - 49
+                - 51
+                - 71
+            "2":
+                - 1
+                - 11
+                - 49
+                - 51
+                - 71
+            "3":
+                - 13
+            "4": 3.12.3
+            "5": 0.23.0
+            "6": 4.57.1
+            "12": 0.23.0
+            "13": linux-x86_64

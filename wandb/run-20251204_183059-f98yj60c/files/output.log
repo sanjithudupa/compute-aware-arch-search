@@ -1,0 +1,664 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:34: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+After Trainer init: Student model on cuda:1, expected cuda:1
+Final check - Student model device: cuda:1
+Final check - Trainer args.device: cuda:0 (read-only property)
+Final check - CUDA current device: 1
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                              | 0/1000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 1] ========== MEMORY DEBUG ==========
+[Step 1] Model device: cuda:1
+[Step 1] Input device: cuda:1
+[Step 1] Teacher model device: cuda:0
+[Step 1] GPU 0 memory: 3.44 GB (reserved: 3.45 GB)
+[Step 1] GPU 1 memory: 8.31 GB (reserved: 8.43 GB)
+  warnings.warn(
+[Step 1] Student logits device: cuda:1, shape: torch.Size([2, 463, 151936]), dtype: torch.float32
+[Step 1] Student model device: cuda:1
+[Step 1] GPU 0 memory before teacher forward: 3.44 GB
+[Step 1] GPU 0 memory after moving inputs: 3.44 GB
+[Step 1] GPU 0 memory after teacher forward: 3.73 GB
+[Step 1] Teacher logits shape: torch.Size([2, 463, 151936]), dtype: torch.float16
+[Step 1] Teacher logits device before move: cuda:0
+[Step 1] Target device (student_logits.device): cuda:1
+[Step 1] GPU 0 memory after moving logits to GPU 1: 3.73 GB
+[Step 1] Teacher logits device after move: cuda:1, shape: torch.Size([2, 463, 151936])
+[Step 1] GPU 0 memory after del: 3.45 GB
+[Step 1] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 1] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 10.87 GB
+[Step 1] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 1] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 11] ========== MEMORY DEBUG ==========
+[Step 11] Model device: cuda:1
+[Step 11] Input device: cuda:1
+[Step 11] Teacher model device: cuda:0
+[Step 11] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 11] GPU 1 memory: 16.65 GB (reserved: 28.16 GB)
+[Step 11] Student logits device: cuda:1, shape: torch.Size([2, 382, 151936]), dtype: torch.float32
+[Step 11] Student model device: cuda:1
+[Step 11] GPU 0 memory before teacher forward: 3.45 GB
+[Step 11] GPU 0 memory after moving inputs: 3.45 GB
+[Step 11] GPU 0 memory after teacher forward: 3.68 GB
+[Step 11] Teacher logits shape: torch.Size([2, 382, 151936]), dtype: torch.float16
+[Step 11] Teacher logits device before move: cuda:0
+[Step 11] Target device (student_logits.device): cuda:1
+[Step 11] GPU 0 memory after moving logits to GPU 1: 3.68 GB
+[Step 11] Teacher logits device after move: cuda:1, shape: torch.Size([2, 382, 151936])
+[Step 11] GPU 0 memory after del: 3.45 GB
+[Step 11] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 11] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 18.85 GB
+[Step 11] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 11] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  0%|                                                                                    | 1/1000 [00:26<7:14:29, 26.10s/it]
+
+[Step 21] ========== MEMORY DEBUG ==========
+[Step 21] Model device: cuda:1
+[Step 21] Input device: cuda:1
+[Step 21] Teacher model device: cuda:0
+[Step 21] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 21] GPU 1 memory: 33.27 GB (reserved: 48.69 GB)
+[Step 21] Student logits device: cuda:1, shape: torch.Size([2, 965, 151936]), dtype: torch.float32
+[Step 21] Student model device: cuda:1
+[Step 21] GPU 0 memory before teacher forward: 3.45 GB
+[Step 21] GPU 0 memory after moving inputs: 3.45 GB
+[Step 21] GPU 0 memory after teacher forward: 4.04 GB
+[Step 21] Teacher logits shape: torch.Size([2, 965, 151936]), dtype: torch.float16
+[Step 21] Teacher logits device before move: cuda:0
+[Step 21] Target device (student_logits.device): cuda:1
+[Step 21] GPU 0 memory after moving logits to GPU 1: 4.04 GB
+[Step 21] Teacher logits device after move: cuda:1, shape: torch.Size([2, 965, 151936])
+[Step 21] GPU 0 memory after del: 3.45 GB
+[Step 21] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 21] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 37.91 GB
+[Step 21] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 21] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 31] ========== MEMORY DEBUG ==========
+[Step 31] Model device: cuda:1
+[Step 31] Input device: cuda:1
+[Step 31] Teacher model device: cuda:0
+[Step 31] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 31] GPU 1 memory: 33.27 GB (reserved: 48.81 GB)
+[Step 31] Student logits device: cuda:1, shape: torch.Size([2, 693, 151936]), dtype: torch.float32
+[Step 31] Student model device: cuda:1
+[Step 31] GPU 0 memory before teacher forward: 3.45 GB
+[Step 31] GPU 0 memory after moving inputs: 3.45 GB
+[Step 31] GPU 0 memory after teacher forward: 3.87 GB
+[Step 31] Teacher logits shape: torch.Size([2, 693, 151936]), dtype: torch.float16
+[Step 31] Teacher logits device before move: cuda:0
+[Step 31] Target device (student_logits.device): cuda:1
+[Step 31] GPU 0 memory after moving logits to GPU 1: 3.87 GB
+[Step 31] Teacher logits device after move: cuda:1, shape: torch.Size([2, 693, 151936])
+[Step 31] GPU 0 memory after del: 3.45 GB
+[Step 31] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 31] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 36.77 GB
+[Step 31] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 31] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 41] ========== MEMORY DEBUG ==========
+[Step 41] Model device: cuda:1
+[Step 41] Input device: cuda:1
+[Step 41] Teacher model device: cuda:0
+[Step 41] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 41] GPU 1 memory: 33.27 GB (reserved: 47.78 GB)
+[Step 41] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 41] Student model device: cuda:1
+[Step 41] GPU 0 memory before teacher forward: 3.45 GB
+[Step 41] GPU 0 memory after moving inputs: 3.45 GB
+[Step 41] GPU 0 memory after teacher forward: 4.07 GB
+[Step 41] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 41] Teacher logits device before move: cuda:0
+[Step 41] Target device (student_logits.device): cuda:1
+[Step 41] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 41] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 41] GPU 0 memory after del: 3.45 GB
+[Step 41] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 41] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 41] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 41] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 51] ========== MEMORY DEBUG ==========
+[Step 51] Model device: cuda:1
+[Step 51] Input device: cuda:1
+[Step 51] Teacher model device: cuda:0
+[Step 51] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 51] GPU 1 memory: 33.29 GB (reserved: 47.43 GB)
+[Step 51] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 51] Student model device: cuda:1
+[Step 51] GPU 0 memory before teacher forward: 3.45 GB
+[Step 51] GPU 0 memory after moving inputs: 3.45 GB
+[Step 51] GPU 0 memory after teacher forward: 4.07 GB
+[Step 51] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 51] Teacher logits device before move: cuda:0
+[Step 51] Target device (student_logits.device): cuda:1
+[Step 51] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 51] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 51] GPU 0 memory after del: 3.45 GB
+[Step 51] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 51] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.16 GB
+[Step 51] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 51] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+
+[Step 61] ========== MEMORY DEBUG ==========
+[Step 61] Model device: cuda:1
+[Step 61] Input device: cuda:1
+[Step 61] Teacher model device: cuda:0
+[Step 61] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 61] GPU 1 memory: 33.29 GB (reserved: 48.07 GB)
+[Step 61] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 61] Student model device: cuda:1
+[Step 61] GPU 0 memory before teacher forward: 3.45 GB
+[Step 61] GPU 0 memory after moving inputs: 3.45 GB
+[Step 61] GPU 0 memory after teacher forward: 4.07 GB
+[Step 61] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 61] Teacher logits device before move: cuda:0
+[Step 61] Target device (student_logits.device): cuda:1
+[Step 61] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 61] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 61] GPU 0 memory after del: 3.45 GB
+[Step 61] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 61] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.16 GB
+[Step 61] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 61] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  0%|▎                                                                                   | 4/1000 [01:35<6:49:12, 24.65s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 71] ========== MEMORY DEBUG ==========
+[Step 71] Model device: cuda:1
+[Step 71] Input device: cuda:1
+[Step 71] Teacher model device: cuda:0
+[Step 71] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 71] GPU 1 memory: 33.27 GB (reserved: 46.49 GB)
+[Step 71] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 71] Student model device: cuda:1
+[Step 71] GPU 0 memory before teacher forward: 3.45 GB
+[Step 71] GPU 0 memory after moving inputs: 3.45 GB
+[Step 71] GPU 0 memory after teacher forward: 4.07 GB
+[Step 71] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 71] Teacher logits device before move: cuda:0
+[Step 71] Target device (student_logits.device): cuda:1
+[Step 71] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 71] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 71] GPU 0 memory after del: 3.45 GB
+[Step 71] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 71] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 71] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 71] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|▍                                                                                   | 5/1000 [01:57<6:35:19, 23.84s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 81] ========== MEMORY DEBUG ==========
+[Step 81] Model device: cuda:1
+[Step 81] Input device: cuda:1
+[Step 81] Teacher model device: cuda:0
+[Step 81] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 81] GPU 1 memory: 24.96 GB (reserved: 44.80 GB)
+  warnings.warn(
+[Step 81] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 81] Student model device: cuda:1
+[Step 81] GPU 0 memory before teacher forward: 3.45 GB
+[Step 81] GPU 0 memory after moving inputs: 3.45 GB
+[Step 81] GPU 0 memory after teacher forward: 4.07 GB
+[Step 81] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 81] Teacher logits device before move: cuda:0
+[Step 81] Target device (student_logits.device): cuda:1
+[Step 81] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 81] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 81] GPU 0 memory after del: 3.45 GB
+[Step 81] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 81] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 29.83 GB
+[Step 81] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 81] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 91] ========== MEMORY DEBUG ==========
+[Step 91] Model device: cuda:1
+[Step 91] Input device: cuda:1
+[Step 91] Teacher model device: cuda:0
+[Step 91] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 91] GPU 1 memory: 33.27 GB (reserved: 43.65 GB)
+[Step 91] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 91] Student model device: cuda:1
+[Step 91] GPU 0 memory before teacher forward: 3.45 GB
+[Step 91] GPU 0 memory after moving inputs: 3.45 GB
+[Step 91] GPU 0 memory after teacher forward: 4.07 GB
+[Step 91] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 91] Teacher logits device before move: cuda:0
+[Step 91] Target device (student_logits.device): cuda:1
+[Step 91] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 91] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 91] GPU 0 memory after del: 3.45 GB
+[Step 91] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 91] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 91] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 91] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  1%|▌                                                                                   | 6/1000 [02:18<6:16:15, 22.71s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 101] ========== MEMORY DEBUG ==========
+[Step 101] Model device: cuda:1
+[Step 101] Input device: cuda:1
+[Step 101] Teacher model device: cuda:0
+[Step 101] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 101] GPU 1 memory: 33.27 GB (reserved: 47.80 GB)
+[Step 101] Student logits device: cuda:1, shape: torch.Size([2, 271, 151936]), dtype: torch.float32
+[Step 101] Student model device: cuda:1
+[Step 101] GPU 0 memory before teacher forward: 3.45 GB
+[Step 101] GPU 0 memory after moving inputs: 3.45 GB
+[Step 101] GPU 0 memory after teacher forward: 3.62 GB
+[Step 101] Teacher logits shape: torch.Size([2, 271, 151936]), dtype: torch.float16
+[Step 101] Teacher logits device before move: cuda:0
+[Step 101] Target device (student_logits.device): cuda:1
+[Step 101] GPU 0 memory after moving logits to GPU 1: 3.62 GB
+[Step 101] Teacher logits device after move: cuda:1, shape: torch.Size([2, 271, 151936])
+[Step 101] GPU 0 memory after del: 3.45 GB
+[Step 101] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 101] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 35.02 GB
+[Step 101] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 101] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 111] ========== MEMORY DEBUG ==========
+[Step 111] Model device: cuda:1
+[Step 111] Input device: cuda:1
+[Step 111] Teacher model device: cuda:0
+[Step 111] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 111] GPU 1 memory: 33.27 GB (reserved: 45.78 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 111] Student logits device: cuda:1, shape: torch.Size([2, 925, 151936]), dtype: torch.float32
+[Step 111] Student model device: cuda:1
+[Step 111] GPU 0 memory before teacher forward: 3.45 GB
+[Step 111] GPU 0 memory after moving inputs: 3.45 GB
+[Step 111] GPU 0 memory after teacher forward: 4.01 GB
+[Step 111] Teacher logits shape: torch.Size([2, 925, 151936]), dtype: torch.float16
+[Step 111] Teacher logits device before move: cuda:0
+[Step 111] Target device (student_logits.device): cuda:1
+[Step 111] GPU 0 memory after moving logits to GPU 1: 4.01 GB
+[Step 111] Teacher logits device after move: cuda:1, shape: torch.Size([2, 925, 151936])
+[Step 111] GPU 0 memory after del: 3.45 GB
+[Step 111] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 111] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 37.73 GB
+[Step 111] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 111] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  1%|▌                                                                                   | 7/1000 [02:39<6:08:56, 22.29s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 121] ========== MEMORY DEBUG ==========
+[Step 121] Model device: cuda:1
+[Step 121] Input device: cuda:1
+[Step 121] Teacher model device: cuda:0
+[Step 121] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 121] GPU 1 memory: 33.27 GB (reserved: 48.08 GB)
+[Step 121] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 121] Student model device: cuda:1
+[Step 121] GPU 0 memory before teacher forward: 3.45 GB
+[Step 121] GPU 0 memory after moving inputs: 3.45 GB
+[Step 121] GPU 0 memory after teacher forward: 4.07 GB
+[Step 121] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 121] Teacher logits device before move: cuda:0
+[Step 121] Target device (student_logits.device): cuda:1
+[Step 121] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 121] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 121] GPU 0 memory after del: 3.45 GB
+[Step 121] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 121] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 121] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 121] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  1%|▋                                                                                   | 8/1000 [03:00<6:00:40, 21.81s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 131] ========== MEMORY DEBUG ==========
+[Step 131] Model device: cuda:1
+[Step 131] Input device: cuda:1
+[Step 131] Teacher model device: cuda:0
+[Step 131] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 131] GPU 1 memory: 33.27 GB (reserved: 48.21 GB)
+  warnings.warn(
+[Step 131] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 131] Student model device: cuda:1
+[Step 131] GPU 0 memory before teacher forward: 3.45 GB
+[Step 131] GPU 0 memory after moving inputs: 3.45 GB
+[Step 131] GPU 0 memory after teacher forward: 4.07 GB
+[Step 131] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 131] Teacher logits device before move: cuda:0
+[Step 131] Target device (student_logits.device): cuda:1
+[Step 131] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 131] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 131] GPU 0 memory after del: 3.45 GB
+[Step 131] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 131] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 131] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 131] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 141] ========== MEMORY DEBUG ==========
+[Step 141] Model device: cuda:1
+[Step 141] Input device: cuda:1
+[Step 141] Teacher model device: cuda:0
+[Step 141] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 141] GPU 1 memory: 33.27 GB (reserved: 38.94 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 141] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 141] Student model device: cuda:1
+[Step 141] GPU 0 memory before teacher forward: 3.45 GB
+[Step 141] GPU 0 memory after moving inputs: 3.45 GB
+[Step 141] GPU 0 memory after teacher forward: 4.07 GB
+[Step 141] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 141] Teacher logits device before move: cuda:0
+[Step 141] Target device (student_logits.device): cuda:1
+[Step 141] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 141] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 141] GPU 0 memory after del: 3.45 GB
+[Step 141] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 141] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 141] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 141] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  1%|▊                                                                                   | 9/1000 [03:21<5:56:53, 21.61s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 151] ========== MEMORY DEBUG ==========
+[Step 151] Model device: cuda:1
+[Step 151] Input device: cuda:1
+[Step 151] Teacher model device: cuda:0
+[Step 151] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 151] GPU 1 memory: 33.28 GB (reserved: 47.74 GB)
+[Step 151] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 151] Student model device: cuda:1
+[Step 151] GPU 0 memory before teacher forward: 3.45 GB
+[Step 151] GPU 0 memory after moving inputs: 3.45 GB
+[Step 151] GPU 0 memory after teacher forward: 4.07 GB
+[Step 151] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 151] Teacher logits device before move: cuda:0
+[Step 151] Target device (student_logits.device): cuda:1
+[Step 151] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 151] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 151] GPU 0 memory after del: 3.45 GB
+[Step 151] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 151] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 151] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 151] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+  1%|▊                                                                                  | 10/1000 [03:43<5:53:38, 21.43s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 48388342.4, 'grad_norm': nan, 'learning_rate': 4.5e-06, 'epoch': 0.01}
+
+[Step 161] ========== MEMORY DEBUG ==========
+[Step 161] Model device: cuda:1
+[Step 161] Input device: cuda:1
+[Step 161] Teacher model device: cuda:0
+[Step 161] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 161] GPU 1 memory: 24.96 GB (reserved: 45.85 GB)
+[Step 161] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 161] Student model device: cuda:1
+[Step 161] GPU 0 memory before teacher forward: 3.45 GB
+[Step 161] GPU 0 memory after moving inputs: 3.45 GB
+[Step 161] GPU 0 memory after teacher forward: 4.07 GB
+[Step 161] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 161] Teacher logits device before move: cuda:0
+[Step 161] Target device (student_logits.device): cuda:1
+[Step 161] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 161] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 161] GPU 0 memory after del: 3.45 GB
+[Step 161] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 161] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 29.83 GB
+[Step 161] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 161] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+
+[Step 171] ========== MEMORY DEBUG ==========
+[Step 171] Model device: cuda:1
+[Step 171] Input device: cuda:1
+[Step 171] Teacher model device: cuda:0
+[Step 171] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 171] GPU 1 memory: 33.27 GB (reserved: 44.75 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 171] Student logits device: cuda:1, shape: torch.Size([2, 810, 151936]), dtype: torch.float32
+[Step 171] Student model device: cuda:1
+[Step 171] GPU 0 memory before teacher forward: 3.45 GB
+[Step 171] GPU 0 memory after moving inputs: 3.45 GB
+[Step 171] GPU 0 memory after teacher forward: 3.94 GB
+[Step 171] Teacher logits shape: torch.Size([2, 810, 151936]), dtype: torch.float16
+[Step 171] Teacher logits device before move: cuda:0
+[Step 171] Target device (student_logits.device): cuda:1
+[Step 171] GPU 0 memory after moving logits to GPU 1: 3.94 GB
+[Step 171] Teacher logits device after move: cuda:1, shape: torch.Size([2, 810, 151936])
+[Step 171] GPU 0 memory after del: 3.45 GB
+[Step 171] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 171] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 37.26 GB
+[Step 171] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 171] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  1%|▉                                                                                  | 11/1000 [04:03<5:50:01, 21.23s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 181] ========== MEMORY DEBUG ==========
+[Step 181] Model device: cuda:1
+[Step 181] Input device: cuda:1
+[Step 181] Teacher model device: cuda:0
+[Step 181] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 181] GPU 1 memory: 33.28 GB (reserved: 49.08 GB)
+[Step 181] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 181] Student model device: cuda:1
+[Step 181] GPU 0 memory before teacher forward: 3.45 GB
+[Step 181] GPU 0 memory after moving inputs: 3.45 GB
+[Step 181] GPU 0 memory after teacher forward: 4.07 GB
+[Step 181] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 181] Teacher logits device before move: cuda:0
+[Step 181] Target device (student_logits.device): cuda:1
+[Step 181] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 181] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 181] GPU 0 memory after del: 3.45 GB
+[Step 181] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 181] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 181] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 181] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+
+[Step 191] ========== MEMORY DEBUG ==========
+[Step 191] Model device: cuda:1
+[Step 191] Input device: cuda:1
+[Step 191] Teacher model device: cuda:0
+[Step 191] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 191] GPU 1 memory: 33.28 GB (reserved: 42.32 GB)
+[Step 191] Student logits device: cuda:1, shape: torch.Size([2, 985, 151936]), dtype: torch.float32
+[Step 191] Student model device: cuda:1
+[Step 191] GPU 0 memory before teacher forward: 3.45 GB
+[Step 191] GPU 0 memory after moving inputs: 3.45 GB
+[Step 191] GPU 0 memory after teacher forward: 4.05 GB
+[Step 191] Teacher logits shape: torch.Size([2, 985, 151936]), dtype: torch.float16
+[Step 191] Teacher logits device before move: cuda:0
+[Step 191] Target device (student_logits.device): cuda:1
+[Step 191] GPU 0 memory after moving logits to GPU 1: 4.05 GB
+[Step 191] Teacher logits device after move: cuda:1, shape: torch.Size([2, 985, 151936])
+[Step 191] GPU 0 memory after del: 3.45 GB
+[Step 191] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 191] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 37.99 GB
+[Step 191] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 191] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  1%|▉                                                                                  | 12/1000 [04:24<5:46:14, 21.03s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 201] ========== MEMORY DEBUG ==========
+[Step 201] Model device: cuda:1
+[Step 201] Input device: cuda:1
+[Step 201] Teacher model device: cuda:0
+[Step 201] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 201] GPU 1 memory: 33.27 GB (reserved: 48.93 GB)
+[Step 201] Student logits device: cuda:1, shape: torch.Size([2, 598, 151936]), dtype: torch.float32
+[Step 201] Student model device: cuda:1
+[Step 201] GPU 0 memory before teacher forward: 3.45 GB
+[Step 201] GPU 0 memory after moving inputs: 3.45 GB
+[Step 201] GPU 0 memory after teacher forward: 3.81 GB
+[Step 201] Teacher logits shape: torch.Size([2, 598, 151936]), dtype: torch.float16
+[Step 201] Teacher logits device before move: cuda:0
+[Step 201] Target device (student_logits.device): cuda:1
+[Step 201] GPU 0 memory after moving logits to GPU 1: 3.81 GB
+[Step 201] Teacher logits device after move: cuda:1, shape: torch.Size([2, 598, 151936])
+[Step 201] GPU 0 memory after del: 3.45 GB
+[Step 201] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 201] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 36.38 GB
+[Step 201] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 201] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+  1%|█                                                                                  | 13/1000 [04:46<5:51:09, 21.35s/it]
+
+[Step 211] ========== MEMORY DEBUG ==========
+[Step 211] Model device: cuda:1
+[Step 211] Input device: cuda:1
+[Step 211] Teacher model device: cuda:0
+[Step 211] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 211] GPU 1 memory: 33.28 GB (reserved: 47.46 GB)
+[Step 211] Student logits device: cuda:1, shape: torch.Size([2, 484, 151936]), dtype: torch.float32
+[Step 211] Student model device: cuda:1
+[Step 211] GPU 0 memory before teacher forward: 3.45 GB
+[Step 211] GPU 0 memory after moving inputs: 3.45 GB
+[Step 211] GPU 0 memory after teacher forward: 3.74 GB
+[Step 211] Teacher logits shape: torch.Size([2, 484, 151936]), dtype: torch.float16
+[Step 211] Teacher logits device before move: cuda:0
+[Step 211] Target device (student_logits.device): cuda:1
+[Step 211] GPU 0 memory after moving logits to GPU 1: 3.74 GB
+[Step 211] Teacher logits device after move: cuda:1, shape: torch.Size([2, 484, 151936])
+[Step 211] GPU 0 memory after del: 3.45 GB
+[Step 211] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 211] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 35.91 GB
+[Step 211] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 211] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 221] ========== MEMORY DEBUG ==========
+[Step 221] Model device: cuda:1
+[Step 221] Input device: cuda:1
+[Step 221] Teacher model device: cuda:0
+[Step 221] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 221] GPU 1 memory: 33.28 GB (reserved: 47.98 GB)
+[Step 221] Student logits device: cuda:1, shape: torch.Size([2, 559, 151936]), dtype: torch.float32
+[Step 221] Student model device: cuda:1
+[Step 221] GPU 0 memory before teacher forward: 3.45 GB
+[Step 221] GPU 0 memory after moving inputs: 3.45 GB
+[Step 221] GPU 0 memory after teacher forward: 3.79 GB
+[Step 221] Teacher logits shape: torch.Size([2, 559, 151936]), dtype: torch.float16
+[Step 221] Teacher logits device before move: cuda:0
+[Step 221] Target device (student_logits.device): cuda:1
+[Step 221] GPU 0 memory after moving logits to GPU 1: 3.79 GB
+[Step 221] Teacher logits device after move: cuda:1, shape: torch.Size([2, 559, 151936])
+[Step 221] GPU 0 memory after del: 3.45 GB
+[Step 221] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 221] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 36.22 GB
+[Step 221] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 221] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+  2%|█▏                                                                                 | 15/1000 [05:23<5:29:05, 20.05s/it]
+
+[Step 231] ========== MEMORY DEBUG ==========
+[Step 231] Model device: cuda:1
+[Step 231] Input device: cuda:1
+[Step 231] Teacher model device: cuda:0
+[Step 231] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 231] GPU 1 memory: 33.28 GB (reserved: 44.15 GB)
+[Step 231] Student logits device: cuda:1, shape: torch.Size([2, 1020, 151936]), dtype: torch.float32
+[Step 231] Student model device: cuda:1
+[Step 231] GPU 0 memory before teacher forward: 3.45 GB
+[Step 231] GPU 0 memory after moving inputs: 3.45 GB
+[Step 231] GPU 0 memory after teacher forward: 4.07 GB
+[Step 231] Teacher logits shape: torch.Size([2, 1020, 151936]), dtype: torch.float16
+[Step 231] Teacher logits device before move: cuda:0
+[Step 231] Target device (student_logits.device): cuda:1
+[Step 231] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 231] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1020, 151936])
+[Step 231] GPU 0 memory after del: 3.45 GB
+[Step 231] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 231] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.14 GB
+[Step 231] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 231] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 241] ========== MEMORY DEBUG ==========
+[Step 241] Model device: cuda:1
+[Step 241] Input device: cuda:1
+[Step 241] Teacher model device: cuda:0
+[Step 241] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 241] GPU 1 memory: 24.96 GB (reserved: 48.09 GB)
+[Step 241] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 241] Student model device: cuda:1
+[Step 241] GPU 0 memory before teacher forward: 3.45 GB
+[Step 241] GPU 0 memory after moving inputs: 3.45 GB
+[Step 241] GPU 0 memory after teacher forward: 4.07 GB
+[Step 241] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 241] Teacher logits device before move: cuda:0
+[Step 241] Target device (student_logits.device): cuda:1
+[Step 241] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 241] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 241] GPU 0 memory after del: 3.45 GB
+[Step 241] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 241] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 29.83 GB
+[Step 241] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 241] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 251] ========== MEMORY DEBUG ==========
+[Step 251] Model device: cuda:1
+[Step 251] Input device: cuda:1
+[Step 251] Teacher model device: cuda:0
+[Step 251] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 251] GPU 1 memory: 33.27 GB (reserved: 48.00 GB)
+[Step 251] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 251] Student model device: cuda:1
+[Step 251] GPU 0 memory before teacher forward: 3.45 GB
+[Step 251] GPU 0 memory after moving inputs: 3.45 GB
+[Step 251] GPU 0 memory after teacher forward: 4.07 GB
+[Step 251] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 251] Teacher logits device before move: cuda:0
+[Step 251] Target device (student_logits.device): cuda:1
+[Step 251] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 251] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 251] GPU 0 memory after del: 3.45 GB
+[Step 251] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 251] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 251] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 251] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 261] ========== MEMORY DEBUG ==========
+[Step 261] Model device: cuda:1
+[Step 261] Input device: cuda:1
+[Step 261] Teacher model device: cuda:0
+[Step 261] GPU 0 memory: 3.45 GB (reserved: 3.47 GB)
+[Step 261] GPU 1 memory: 33.28 GB (reserved: 48.18 GB)
+[Step 261] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 261] Student model device: cuda:1
+[Step 261] GPU 0 memory before teacher forward: 3.45 GB
+[Step 261] GPU 0 memory after moving inputs: 3.45 GB
+[Step 261] GPU 0 memory after teacher forward: 4.07 GB
+[Step 261] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 261] Teacher logits device before move: cuda:0
+[Step 261] Target device (student_logits.device): cuda:1
+[Step 261] GPU 0 memory after moving logits to GPU 1: 4.07 GB
+[Step 261] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 261] GPU 0 memory after del: 3.45 GB
+[Step 261] GPU 0 memory after cache clear: 3.45 GB (reserved: 3.47 GB)
+[Step 261] Before log_softmax - GPU 0: 3.45 GB, GPU 1: 38.15 GB
+[Step 261] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 261] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 367, in <module>
+    trainer.train()
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4071, in training_step
+    self.accelerator.backward(loss, **kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2736, in backward
+    self.scaler.scale(loss).backward(**kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_tensor.py", line 647, in backward
+    torch.autograd.backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/graph.py", line 829, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

@@ -1,0 +1,129 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:34: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+After Trainer init: Student model on cuda:1, expected cuda:1
+Final check - Student model device: cuda:1
+Final check - Trainer args.device: cuda:0 (read-only property)
+Final check - CUDA current device: 1
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                              | 0/1000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 1] ========== MEMORY DEBUG ==========
+[Step 1] Model device: cuda:1
+[Step 1] Input device: cuda:1
+[Step 1] Teacher model device: cuda:0
+[Step 1] GPU 0 memory: 3.44 GB (reserved: 3.45 GB)
+[Step 1] GPU 1 memory: 8.44 GB (reserved: 8.55 GB)
+  warnings.warn(
+Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 367, in <module>
+    trainer.train()
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 96, in compute_loss
+    student_outputs = model(**student_inputs)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/accelerate/utils/operations.py", line 819, in forward
+    return model_forward(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/accelerate/utils/operations.py", line 807, in __call__
+    return convert_to_fp32(self.model_forward(*args, **kwargs))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/amp/autocast_mode.py", line 44, in decorate_autocast
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 918, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/qwen3_model/modeling_qwen3.py", line 534, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/qwen3_model/modeling_qwen3.py", line 942, in forward
+    hidden_states, v_first_out = decoder_layer(
+                                 ^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return self._gradient_checkpointing_func(partial(super().__call__, **kwargs), *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_compile.py", line 53, in inner
+    return disable_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 929, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py", line 488, in checkpoint
+    return CheckpointFunction.apply(function, preserve, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/function.py", line 576, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py", line 262, in forward
+    outputs = run_function(*args)
+              ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/qwen3_model/modeling_qwen3.py", line 769, in forward
+    attn_output, _, _, v_first_out = self.attention(
+                                     ^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return self._gradient_checkpointing_func(partial(super().__call__, **kwargs), *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_compile.py", line 53, in inner
+    return disable_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 929, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py", line 488, in checkpoint
+    return CheckpointFunction.apply(function, preserve, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/function.py", line 576, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py", line 262, in forward
+    outputs = run_function(*args)
+              ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/fla/models/rwkv7/modeling_rwkv7.py", line 190, in forward
+    hidden_states, attentions, past_key_values, v_first = self.attn(
+                                                          ^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/qwen3_model/modeling_qwen3.py", line 683, in patched_forward
+    result = original_forward(hidden_states, attention_mask, past_key_values,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/fla/layers/rwkv7.py", line 276, in forward
+    v = torch.lerp(v, v_first, self.v_lora(xv).sigmoid())
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: expected dtype c10::Half for `end` but got dtype float
