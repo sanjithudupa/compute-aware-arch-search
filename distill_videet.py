@@ -94,9 +94,12 @@ class DistillationTrainer(Trainer):
             print(f"[Step {self._step_count}] GPU 1 memory: {torch.cuda.memory_allocated(self.student_device) / 1e9:.2f} GB (reserved: {torch.cuda.memory_reserved(self.student_device) / 1e9:.2f} GB)")
         
         student_outputs = model(**student_inputs)
-        # Cast logits to fp32 for numerically stable loss computation
-        # This is safe even with mixed precision - autocast only affects forward pass
-        student_logits = student_outputs.logits.float()  # [B, T, V]
+        # Keep logits in float16 to save memory - we'll convert to float32 only when needed for loss
+        # For very long sequences (900+ tokens) with large vocab (151k), float32 logits can be 1+ GB
+        student_logits = student_outputs.logits  # [B, T, V] - keep in original dtype (float16 with autocast)
+        
+        # Clear student_outputs immediately to free memory
+        del student_outputs
         
         if self._step_count % 10 == 1:
             print(f"[Step {self._step_count}] Student logits device: {student_logits.device}, shape: {student_logits.shape}, dtype: {student_logits.dtype}")
@@ -133,11 +136,13 @@ class DistillationTrainer(Trainer):
                 print(f"[Step {self._step_count}] Teacher logits shape: {teacher_outputs.logits.shape}, dtype: {teacher_outputs.logits.dtype}")
             
             # Extract logits and move to student device IMMEDIATELY
+            # Keep in float16 to match student_logits and save memory
             if self._step_count % 10 == 1:
                 print(f"[Step {self._step_count}] Teacher logits device before move: {teacher_outputs.logits.device}")
                 print(f"[Step {self._step_count}] Target device (student_logits.device): {student_logits.device}")
             
-            teacher_logits = teacher_outputs.logits.to(student_logits.device).float()
+            # Move to student device and keep in float16 (teacher is already in float16)
+            teacher_logits = teacher_outputs.logits.to(student_logits.device)
             
             if self._step_count % 10 == 1:
                 print(f"[Step {self._step_count}] GPU 0 memory after moving logits to GPU 1: {torch.cuda.memory_allocated(self.teacher_device) / 1e9:.2f} GB")
@@ -164,29 +169,67 @@ class DistillationTrainer(Trainer):
                 print(f"[Step {self._step_count}] GPU 0 memory after cache clear: {torch.cuda.memory_allocated(self.teacher_device) / 1e9:.2f} GB (reserved: {torch.cuda.memory_reserved(self.teacher_device) / 1e9:.2f} GB)")
 
         # Cross-entropy loss with ground-truth labels
+        # Convert to float32 only for loss computation to save memory
         ce_loss = F.cross_entropy(
-            student_logits.view(-1, student_logits.size(-1)),
+            student_logits.float().view(-1, student_logits.size(-1)),
             labels.view(-1),
             ignore_index=-100,
         )
 
         # KL divergence distillation loss between student and teacher logits
-        # Compute in chunks to save memory if needed
-        # For batch_size=1, this should be fine, but chunking helps with large vocab
+        # Compute in chunks to save memory for very long sequences
+        # For sequences > 500 tokens, chunking is critical to avoid OOM
         if self._step_count % 10 == 1:
             print(f"[Step {self._step_count}] Before log_softmax - GPU 0: {torch.cuda.memory_allocated(self.teacher_device) / 1e9:.2f} GB, GPU 1: {torch.cuda.memory_allocated(self.student_device) / 1e9:.2f} GB")
             print(f"[Step {self._step_count}] student_logits device: {student_logits.device}, teacher_logits device: {teacher_logits.device}")
+            print(f"[Step {self._step_count}] Sequence length: {student_logits.shape[1]}, Batch size: {student_logits.shape[0]}")
         
-        student_log_probs = F.log_softmax(student_logits / self.temperature, dim=-1)
-        teacher_probs = F.softmax(teacher_logits / self.temperature, dim=-1)
-        kl_loss = F.kl_div(
-            student_log_probs,
-            teacher_probs,
-            reduction="batchmean",
-        ) * (self.temperature ** 2)
+        # Chunk KL divergence computation to avoid OOM with long sequences
+        # Process in chunks of 256 tokens at a time
+        chunk_size = 256
+        seq_len = student_logits.shape[1]
+        kl_losses = []
         
-        # Clear intermediate tensors to save memory
-        del student_log_probs, teacher_probs
+        for chunk_start in range(0, seq_len, chunk_size):
+            chunk_end = min(chunk_start + chunk_size, seq_len)
+            
+            # Extract chunk and convert to float32 only for this computation
+            student_chunk = student_logits[:, chunk_start:chunk_end, :].float()
+            teacher_chunk = teacher_logits[:, chunk_start:chunk_end, :].float()
+            
+            # Compute log_softmax and softmax for this chunk
+            student_log_probs_chunk = F.log_softmax(student_chunk / self.temperature, dim=-1)
+            teacher_probs_chunk = F.softmax(teacher_chunk / self.temperature, dim=-1)
+            
+            # Compute KL divergence for this chunk
+            kl_chunk = F.kl_div(
+                student_log_probs_chunk,
+                teacher_probs_chunk,
+                reduction="none",  # Get per-token loss
+            ) * (self.temperature ** 2)
+            
+            # Sum over vocab dimension, keep batch and sequence dimensions
+            kl_chunk = kl_chunk.sum(dim=-1)  # [B, T_chunk]
+            kl_losses.append(kl_chunk)
+            
+            # Clear chunk tensors immediately
+            del student_chunk, teacher_chunk, student_log_probs_chunk, teacher_probs_chunk, kl_chunk
+        
+        # Concatenate all chunks and compute mean
+        kl_loss = torch.cat(kl_losses, dim=1).mean()  # Mean over batch and sequence
+        
+        # Clear intermediate tensors immediately
+        del kl_losses
+        
+        # Clear logits if memory is getting tight (they're no longer needed after loss computation)
+        # We can recompute them if needed, but typically we don't need them after loss
+        if self._step_count % 10 == 1:
+            print(f"[Step {self._step_count}] After KL computation - GPU 1: {torch.cuda.memory_allocated(self.student_device) / 1e9:.2f} GB")
+        
+        # Optionally clear logits to free memory (they're not needed after loss computation)
+        # Uncomment if still running out of memory:
+        # del student_logits, teacher_logits
+        # torch.cuda.empty_cache()
 
         loss = self.alpha * ce_loss + (1.0 - self.alpha) * kl_loss
 
@@ -207,7 +250,7 @@ if __name__ == "__main__":
     CONFIG_NAME = "top10"
     
     config_path = f"hybrid_model_configs/{CONFIG_NAME}.json"
-    teacher_path = "Qwen3-1.7B"
+    teacher_path = "Qwen3-8B"
     
     # Set up two-GPU configuration: teacher on GPU 0, student on GPU 1
     if not torch.cuda.is_available():
@@ -318,7 +361,7 @@ if __name__ == "__main__":
         gradient_accumulation_steps=16,  # Increased to maintain effective batch size
         learning_rate=5e-5,
         num_train_epochs=1,
-        max_steps=1000,
+        max_steps=10000,
         logging_steps=10,
         save_steps=200,
         save_total_limit=3,

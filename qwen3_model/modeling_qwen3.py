@@ -652,16 +652,29 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                                    use_cache=False, output_attentions=False, v_first=None, cu_seqlens=None, **kwargs):
                     # CRITICAL FIX: Convert v_first IMMEDIATELY and FORCE dtype match
                     # RWKV7 uses v_first in torch.lerp(v, v_first, ...) where v is in hidden_states.dtype
+                    # During autocast (fp16 training), v will be float16 even if hidden_states is float32
                     # If v_first is float32 but v is fp16, torch.lerp will crash
                     # We MUST convert v_first BEFORE it's used, and ensure it's a new tensor (not in-place)
                     if v_first is not None:
-                        # Force conversion by creating a new tensor with explicit dtype
-                        target_dtype = hidden_states.dtype
-                        # CRITICAL: Must convert to match v's dtype (which is in hidden_states.dtype)
+                        # Determine target dtype: if autocast is enabled, use float16; otherwise match hidden_states
+                        if torch.is_autocast_enabled():
+                            # During mixed precision training, v will be float16 inside RWKV7
+                            target_dtype = torch.float16
+                        else:
+                            # During fp32 training, match hidden_states dtype
+                            target_dtype = hidden_states.dtype
+                        
+                        # CRITICAL: Must convert to match v's dtype (which will be float16 during autocast)
                         # Use .to() with explicit dtype and ensure it's actually converted
                         v_first = v_first.to(dtype=target_dtype)
                         # Double-check the conversion worked
                         assert v_first.dtype == target_dtype, f"v_first dtype conversion failed: expected {target_dtype}, got {v_first.dtype}"
+                    
+                    # Determine target dtype for return value (same as input conversion)
+                    if torch.is_autocast_enabled():
+                        return_dtype = torch.float16
+                    else:
+                        return_dtype = hidden_states.dtype
                     
                     # If this is the first RWKV7 layer (layer_idx=1 in 1-based) and v_first is None,
                     # temporarily set layer_idx to 0 so RWKV7 computes v_first internally
@@ -673,18 +686,18 @@ class Qwen3LinearAttentionDecoderLayer(GradientCheckpointingLayer):
                                                      use_cache, output_attentions, v_first, cu_seqlens, **kwargs)
                         finally:
                             self_attn.layer_idx = original_layer_idx
-                        # Ensure v_first in result matches hidden_states dtype
+                        # Ensure v_first in result matches the target dtype (float16 if autocast, else hidden_states.dtype)
                         if len(result) >= 4 and result[3] is not None:
-                            result = (*result[:3], result[3].to(dtype=hidden_states.dtype), *result[4:])
+                            result = (*result[:3], result[3].to(dtype=return_dtype), *result[4:])
                         return result
                     else:
                         # For non-first layers, v_first MUST be in correct dtype before lerp
                         # Pass the converted v_first to original_forward
                         result = original_forward(hidden_states, attention_mask, past_key_values,
                                                use_cache, output_attentions, v_first, cu_seqlens, **kwargs)
-                        # Ensure v_first in result matches hidden_states dtype
+                        # Ensure v_first in result matches the target dtype (float16 if autocast, else hidden_states.dtype)
                         if len(result) >= 4 and result[3] is not None:
-                            result = (*result[:3], result[3].to(dtype=hidden_states.dtype), *result[4:])
+                            result = (*result[:3], result[3].to(dtype=return_dtype), *result[4:])
                         return result
                 
                 import types

@@ -1,0 +1,1322 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:34: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+After Trainer init: Student model on cuda:1, expected cuda:1
+Final check - Student model device: cuda:1
+Final check - Trainer args.device: cuda:0 (read-only property)
+Final check - CUDA current device: 1
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                 | 0/1000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 1] ========== MEMORY DEBUG ==========
+[Step 1] Model device: cuda:1
+[Step 1] Input device: cuda:1
+[Step 1] Teacher model device: cuda:0
+[Step 1] GPU 0 memory: 16.38 GB (reserved: 16.54 GB)
+[Step 1] GPU 1 memory: 8.44 GB (reserved: 8.55 GB)
+  warnings.warn(
+[Step 1] Student logits device: cuda:1, shape: torch.Size([2, 463, 151936]), dtype: torch.float32
+[Step 1] Student model device: cuda:1
+[Step 1] GPU 0 memory before teacher forward: 16.38 GB
+[Step 1] GPU 0 memory after moving inputs: 16.38 GB
+[Step 1] GPU 0 memory after teacher forward: 16.67 GB
+[Step 1] Teacher logits shape: torch.Size([2, 463, 151936]), dtype: torch.float16
+[Step 1] Teacher logits device before move: cuda:0
+[Step 1] Target device (student_logits.device): cuda:1
+[Step 1] GPU 0 memory after moving logits to GPU 1: 16.67 GB
+[Step 1] Teacher logits device after move: cuda:1, shape: torch.Size([2, 463, 151936])
+[Step 1] GPU 0 memory after del: 16.39 GB
+[Step 1] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 1] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 10.71 GB
+[Step 1] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 1] Sequence length: 463, Batch size: 2
+[Step 1] After KL computation - GPU 1: 11.83 GB
+[Step 1] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 11] ========== MEMORY DEBUG ==========
+[Step 11] Model device: cuda:1
+[Step 11] Input device: cuda:1
+[Step 11] Teacher model device: cuda:0
+[Step 11] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 11] GPU 1 memory: 16.89 GB (reserved: 28.79 GB)
+[Step 11] Student logits device: cuda:1, shape: torch.Size([2, 382, 151936]), dtype: torch.float32
+[Step 11] Student model device: cuda:1
+[Step 11] GPU 0 memory before teacher forward: 16.39 GB
+[Step 11] GPU 0 memory after moving inputs: 16.39 GB
+[Step 11] GPU 0 memory after teacher forward: 16.62 GB
+[Step 11] Teacher logits shape: torch.Size([2, 382, 151936]), dtype: torch.float16
+[Step 11] Teacher logits device before move: cuda:0
+[Step 11] Target device (student_logits.device): cuda:1
+[Step 11] GPU 0 memory after moving logits to GPU 1: 16.62 GB
+[Step 11] Teacher logits device after move: cuda:1, shape: torch.Size([2, 382, 151936])
+[Step 11] GPU 0 memory after del: 16.39 GB
+[Step 11] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 11] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 18.87 GB
+[Step 11] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 11] Sequence length: 382, Batch size: 2
+[Step 11] After KL computation - GPU 1: 19.80 GB
+[Step 11] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  0%|                                                       | 1/1000 [00:22<6:14:00, 22.46s/it]
+
+[Step 21] ========== MEMORY DEBUG ==========
+[Step 21] Model device: cuda:1
+[Step 21] Input device: cuda:1
+[Step 21] Teacher model device: cuda:0
+[Step 21] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 21] GPU 1 memory: 33.76 GB (reserved: 47.64 GB)
+[Step 21] Student logits device: cuda:1, shape: torch.Size([2, 965, 151936]), dtype: torch.float32
+[Step 21] Student model device: cuda:1
+[Step 21] GPU 0 memory before teacher forward: 16.39 GB
+[Step 21] GPU 0 memory after moving inputs: 16.39 GB
+[Step 21] GPU 0 memory after teacher forward: 16.98 GB
+[Step 21] Teacher logits shape: torch.Size([2, 965, 151936]), dtype: torch.float16
+[Step 21] Teacher logits device before move: cuda:0
+[Step 21] Target device (student_logits.device): cuda:1
+[Step 21] GPU 0 memory after moving logits to GPU 1: 16.98 GB
+[Step 21] Teacher logits device after move: cuda:1, shape: torch.Size([2, 965, 151936])
+[Step 21] GPU 0 memory after del: 16.39 GB
+[Step 21] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 21] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 37.81 GB
+[Step 21] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 21] Sequence length: 965, Batch size: 2
+[Step 21] After KL computation - GPU 1: 40.15 GB
+[Step 21] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 31] ========== MEMORY DEBUG ==========
+[Step 31] Model device: cuda:1
+[Step 31] Input device: cuda:1
+[Step 31] Teacher model device: cuda:0
+[Step 31] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 31] GPU 1 memory: 33.76 GB (reserved: 47.71 GB)
+[Step 31] Student logits device: cuda:1, shape: torch.Size([2, 693, 151936]), dtype: torch.float32
+[Step 31] Student model device: cuda:1
+[Step 31] GPU 0 memory before teacher forward: 16.39 GB
+[Step 31] GPU 0 memory after moving inputs: 16.39 GB
+[Step 31] GPU 0 memory after teacher forward: 16.81 GB
+[Step 31] Teacher logits shape: torch.Size([2, 693, 151936]), dtype: torch.float16
+[Step 31] Teacher logits device before move: cuda:0
+[Step 31] Target device (student_logits.device): cuda:1
+[Step 31] GPU 0 memory after moving logits to GPU 1: 16.81 GB
+[Step 31] Teacher logits device after move: cuda:1, shape: torch.Size([2, 693, 151936])
+[Step 31] GPU 0 memory after del: 16.39 GB
+[Step 31] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 31] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 36.84 GB
+[Step 31] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 31] Sequence length: 693, Batch size: 2
+[Step 31] After KL computation - GPU 1: 38.52 GB
+[Step 31] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+
+[Step 41] ========== MEMORY DEBUG ==========
+[Step 41] Model device: cuda:1
+[Step 41] Input device: cuda:1
+[Step 41] Teacher model device: cuda:0
+[Step 41] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 41] GPU 1 memory: 33.76 GB (reserved: 47.19 GB)
+[Step 41] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 41] Student model device: cuda:1
+[Step 41] GPU 0 memory before teacher forward: 16.39 GB
+[Step 41] GPU 0 memory after moving inputs: 16.39 GB
+[Step 41] GPU 0 memory after teacher forward: 17.01 GB
+[Step 41] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 41] Teacher logits device before move: cuda:0
+[Step 41] Target device (student_logits.device): cuda:1
+[Step 41] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 41] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 41] GPU 0 memory after del: 16.39 GB
+[Step 41] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 41] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 41] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 41] Sequence length: 1024, Batch size: 2
+[Step 41] After KL computation - GPU 1: 40.50 GB
+[Step 41] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|▏                                                     | 3/1000 [01:38<10:16:29, 37.10s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 51] ========== MEMORY DEBUG ==========
+[Step 51] Model device: cuda:1
+[Step 51] Input device: cuda:1
+[Step 51] Teacher model device: cuda:0
+[Step 51] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 51] GPU 1 memory: 33.78 GB (reserved: 46.68 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 51] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 51] Student model device: cuda:1
+[Step 51] GPU 0 memory before teacher forward: 16.39 GB
+[Step 51] GPU 0 memory after moving inputs: 16.39 GB
+[Step 51] GPU 0 memory after teacher forward: 17.01 GB
+[Step 51] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 51] Teacher logits device before move: cuda:0
+[Step 51] Target device (student_logits.device): cuda:1
+[Step 51] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 51] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 51] GPU 0 memory after del: 16.39 GB
+[Step 51] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 51] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.03 GB
+[Step 51] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 51] Sequence length: 1024, Batch size: 2
+[Step 51] After KL computation - GPU 1: 40.52 GB
+[Step 51] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 61] ========== MEMORY DEBUG ==========
+[Step 61] Model device: cuda:1
+[Step 61] Input device: cuda:1
+[Step 61] Teacher model device: cuda:0
+[Step 61] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 61] GPU 1 memory: 33.78 GB (reserved: 47.73 GB)
+[Step 61] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 61] Student model device: cuda:1
+[Step 61] GPU 0 memory before teacher forward: 16.39 GB
+[Step 61] GPU 0 memory after moving inputs: 16.39 GB
+[Step 61] GPU 0 memory after teacher forward: 17.01 GB
+[Step 61] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 61] Teacher logits device before move: cuda:0
+[Step 61] Target device (student_logits.device): cuda:1
+[Step 61] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 61] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 61] GPU 0 memory after del: 16.39 GB
+[Step 61] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 61] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.03 GB
+[Step 61] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 61] Sequence length: 1024, Batch size: 2
+[Step 61] After KL computation - GPU 1: 40.52 GB
+[Step 61] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  0%|▏                                                     | 4/1000 [02:54<14:31:22, 52.49s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 71] ========== MEMORY DEBUG ==========
+[Step 71] Model device: cuda:1
+[Step 71] Input device: cuda:1
+[Step 71] Teacher model device: cuda:0
+[Step 71] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 71] GPU 1 memory: 33.76 GB (reserved: 46.51 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 71] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 71] Student model device: cuda:1
+[Step 71] GPU 0 memory before teacher forward: 16.39 GB
+[Step 71] GPU 0 memory after moving inputs: 16.39 GB
+[Step 71] GPU 0 memory after teacher forward: 17.01 GB
+[Step 71] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 71] Teacher logits device before move: cuda:0
+[Step 71] Target device (student_logits.device): cuda:1
+[Step 71] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 71] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 71] GPU 0 memory after del: 16.39 GB
+[Step 71] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 71] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 71] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 71] Sequence length: 1024, Batch size: 2
+[Step 71] After KL computation - GPU 1: 40.50 GB
+[Step 71] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|▎                                                     | 5/1000 [03:55<15:19:46, 55.46s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 81] ========== MEMORY DEBUG ==========
+[Step 81] Model device: cuda:1
+[Step 81] Input device: cuda:1
+[Step 81] Teacher model device: cuda:0
+[Step 81] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 81] GPU 1 memory: 25.33 GB (reserved: 43.80 GB)
+  warnings.warn(
+[Step 81] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 81] Student model device: cuda:1
+[Step 81] GPU 0 memory before teacher forward: 16.39 GB
+[Step 81] GPU 0 memory after moving inputs: 16.39 GB
+[Step 81] GPU 0 memory after teacher forward: 17.01 GB
+[Step 81] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 81] Teacher logits device before move: cuda:0
+[Step 81] Target device (student_logits.device): cuda:1
+[Step 81] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 81] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 81] GPU 0 memory after del: 16.39 GB
+[Step 81] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 81] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 29.58 GB
+[Step 81] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 81] Sequence length: 1024, Batch size: 2
+[Step 81] After KL computation - GPU 1: 32.07 GB
+[Step 81] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 91] ========== MEMORY DEBUG ==========
+[Step 91] Model device: cuda:1
+[Step 91] Input device: cuda:1
+[Step 91] Teacher model device: cuda:0
+[Step 91] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 91] GPU 1 memory: 33.76 GB (reserved: 43.87 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 91] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 91] Student model device: cuda:1
+[Step 91] GPU 0 memory before teacher forward: 16.39 GB
+[Step 91] GPU 0 memory after moving inputs: 16.39 GB
+[Step 91] GPU 0 memory after teacher forward: 17.01 GB
+[Step 91] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 91] Teacher logits device before move: cuda:0
+[Step 91] Target device (student_logits.device): cuda:1
+[Step 91] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 91] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 91] GPU 0 memory after del: 16.39 GB
+[Step 91] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 91] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 91] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 91] Sequence length: 1024, Batch size: 2
+[Step 91] After KL computation - GPU 1: 40.50 GB
+[Step 91] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  1%|▎                                                     | 6/1000 [04:19<12:24:12, 44.92s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 101] ========== MEMORY DEBUG ==========
+[Step 101] Model device: cuda:1
+[Step 101] Input device: cuda:1
+[Step 101] Teacher model device: cuda:0
+[Step 101] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 101] GPU 1 memory: 33.76 GB (reserved: 47.52 GB)
+[Step 101] Student logits device: cuda:1, shape: torch.Size([2, 271, 151936]), dtype: torch.float32
+[Step 101] Student model device: cuda:1
+[Step 101] GPU 0 memory before teacher forward: 16.39 GB
+[Step 101] GPU 0 memory after moving inputs: 16.39 GB
+[Step 101] GPU 0 memory after teacher forward: 16.56 GB
+[Step 101] Teacher logits shape: torch.Size([2, 271, 151936]), dtype: torch.float16
+[Step 101] Teacher logits device before move: cuda:0
+[Step 101] Target device (student_logits.device): cuda:1
+[Step 101] GPU 0 memory after moving logits to GPU 1: 16.56 GB
+[Step 101] Teacher logits device after move: cuda:1, shape: torch.Size([2, 271, 151936])
+[Step 101] GPU 0 memory after del: 16.39 GB
+[Step 101] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 101] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 35.35 GB
+[Step 101] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 101] Sequence length: 271, Batch size: 2
+[Step 101] After KL computation - GPU 1: 36.01 GB
+[Step 101] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 111] ========== MEMORY DEBUG ==========
+[Step 111] Model device: cuda:1
+[Step 111] Input device: cuda:1
+[Step 111] Teacher model device: cuda:0
+[Step 111] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 111] GPU 1 memory: 33.76 GB (reserved: 44.91 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 111] Student logits device: cuda:1, shape: torch.Size([2, 925, 151936]), dtype: torch.float32
+[Step 111] Student model device: cuda:1
+[Step 111] GPU 0 memory before teacher forward: 16.39 GB
+[Step 111] GPU 0 memory after moving inputs: 16.39 GB
+[Step 111] GPU 0 memory after teacher forward: 16.95 GB
+[Step 111] Teacher logits shape: torch.Size([2, 925, 151936]), dtype: torch.float16
+[Step 111] Teacher logits device before move: cuda:0
+[Step 111] Target device (student_logits.device): cuda:1
+[Step 111] GPU 0 memory after moving logits to GPU 1: 16.95 GB
+[Step 111] Teacher logits device after move: cuda:1, shape: torch.Size([2, 925, 151936])
+[Step 111] GPU 0 memory after del: 16.39 GB
+[Step 111] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 111] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 37.66 GB
+[Step 111] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 111] Sequence length: 925, Batch size: 2
+[Step 111] After KL computation - GPU 1: 39.91 GB
+[Step 111] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  1%|▍                                                     | 7/1000 [05:53<16:46:29, 60.82s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 121] ========== MEMORY DEBUG ==========
+[Step 121] Model device: cuda:1
+[Step 121] Input device: cuda:1
+[Step 121] Teacher model device: cuda:0
+[Step 121] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 121] GPU 1 memory: 33.76 GB (reserved: 47.46 GB)
+[Step 121] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 121] Student model device: cuda:1
+[Step 121] GPU 0 memory before teacher forward: 16.39 GB
+[Step 121] GPU 0 memory after moving inputs: 16.39 GB
+[Step 121] GPU 0 memory after teacher forward: 17.01 GB
+[Step 121] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 121] Teacher logits device before move: cuda:0
+[Step 121] Target device (student_logits.device): cuda:1
+[Step 121] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 121] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 121] GPU 0 memory after del: 16.39 GB
+[Step 121] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 121] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 121] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 121] Sequence length: 1024, Batch size: 2
+[Step 121] After KL computation - GPU 1: 40.50 GB
+[Step 121] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  1%|▍                                                     | 8/1000 [06:16<13:26:13, 48.76s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 131] ========== MEMORY DEBUG ==========
+[Step 131] Model device: cuda:1
+[Step 131] Input device: cuda:1
+[Step 131] Teacher model device: cuda:0
+[Step 131] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 131] GPU 1 memory: 33.76 GB (reserved: 47.52 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 131] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 131] Student model device: cuda:1
+[Step 131] GPU 0 memory before teacher forward: 16.39 GB
+[Step 131] GPU 0 memory after moving inputs: 16.39 GB
+[Step 131] GPU 0 memory after teacher forward: 17.01 GB
+[Step 131] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 131] Teacher logits device before move: cuda:0
+[Step 131] Target device (student_logits.device): cuda:1
+[Step 131] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 131] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 131] GPU 0 memory after del: 16.39 GB
+[Step 131] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 131] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 131] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 131] Sequence length: 1024, Batch size: 2
+[Step 131] After KL computation - GPU 1: 40.50 GB
+[Step 131] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 141] ========== MEMORY DEBUG ==========
+[Step 141] Model device: cuda:1
+[Step 141] Input device: cuda:1
+[Step 141] Teacher model device: cuda:0
+[Step 141] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 141] GPU 1 memory: 33.76 GB (reserved: 39.00 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 141] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 141] Student model device: cuda:1
+[Step 141] GPU 0 memory before teacher forward: 16.39 GB
+[Step 141] GPU 0 memory after moving inputs: 16.39 GB
+[Step 141] GPU 0 memory after teacher forward: 17.01 GB
+[Step 141] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 141] Teacher logits device before move: cuda:0
+[Step 141] Target device (student_logits.device): cuda:1
+[Step 141] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 141] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 141] GPU 0 memory after del: 16.39 GB
+[Step 141] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 141] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 141] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 141] Sequence length: 1024, Batch size: 2
+[Step 141] After KL computation - GPU 1: 40.50 GB
+[Step 141] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  1%|▍                                                     | 9/1000 [06:39<11:15:58, 40.93s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 151] ========== MEMORY DEBUG ==========
+[Step 151] Model device: cuda:1
+[Step 151] Input device: cuda:1
+[Step 151] Teacher model device: cuda:0
+[Step 151] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 151] GPU 1 memory: 33.76 GB (reserved: 47.55 GB)
+[Step 151] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 151] Student model device: cuda:1
+[Step 151] GPU 0 memory before teacher forward: 16.39 GB
+[Step 151] GPU 0 memory after moving inputs: 16.39 GB
+[Step 151] GPU 0 memory after teacher forward: 17.01 GB
+[Step 151] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 151] Teacher logits device before move: cuda:0
+[Step 151] Target device (student_logits.device): cuda:1
+[Step 151] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 151] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 151] GPU 0 memory after del: 16.39 GB
+[Step 151] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 151] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.02 GB
+[Step 151] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 151] Sequence length: 1024, Batch size: 2
+[Step 151] After KL computation - GPU 1: 40.51 GB
+[Step 151] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  1%|▌                                                     | 10/1000 [07:04<9:52:08, 35.89s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 1077258.3, 'grad_norm': nan, 'learning_rate': 4.5e-06, 'epoch': 0.01}
+
+[Step 161] ========== MEMORY DEBUG ==========
+[Step 161] Model device: cuda:1
+[Step 161] Input device: cuda:1
+[Step 161] Teacher model device: cuda:0
+[Step 161] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 161] GPU 1 memory: 25.33 GB (reserved: 45.35 GB)
+  warnings.warn(
+[Step 161] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 161] Student model device: cuda:1
+[Step 161] GPU 0 memory before teacher forward: 16.39 GB
+[Step 161] GPU 0 memory after moving inputs: 16.39 GB
+[Step 161] GPU 0 memory after teacher forward: 17.01 GB
+[Step 161] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 161] Teacher logits device before move: cuda:0
+[Step 161] Target device (student_logits.device): cuda:1
+[Step 161] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 161] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 161] GPU 0 memory after del: 16.39 GB
+[Step 161] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 161] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 29.58 GB
+[Step 161] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 161] Sequence length: 1024, Batch size: 2
+[Step 161] After KL computation - GPU 1: 32.07 GB
+[Step 161] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 171] ========== MEMORY DEBUG ==========
+[Step 171] Model device: cuda:1
+[Step 171] Input device: cuda:1
+[Step 171] Teacher model device: cuda:0
+[Step 171] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 171] GPU 1 memory: 33.76 GB (reserved: 44.98 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 171] Student logits device: cuda:1, shape: torch.Size([2, 810, 151936]), dtype: torch.float32
+[Step 171] Student model device: cuda:1
+[Step 171] GPU 0 memory before teacher forward: 16.39 GB
+[Step 171] GPU 0 memory after moving inputs: 16.39 GB
+[Step 171] GPU 0 memory after teacher forward: 16.88 GB
+[Step 171] Teacher logits shape: torch.Size([2, 810, 151936]), dtype: torch.float16
+[Step 171] Teacher logits device before move: cuda:0
+[Step 171] Target device (student_logits.device): cuda:1
+[Step 171] GPU 0 memory after moving logits to GPU 1: 16.88 GB
+[Step 171] Teacher logits device after move: cuda:1, shape: torch.Size([2, 810, 151936])
+[Step 171] GPU 0 memory after del: 16.39 GB
+[Step 171] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 171] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 37.25 GB
+[Step 171] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 171] Sequence length: 810, Batch size: 2
+[Step 171] After KL computation - GPU 1: 39.22 GB
+[Step 171] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  1%|▌                                                     | 11/1000 [07:31<9:05:59, 33.12s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 181] ========== MEMORY DEBUG ==========
+[Step 181] Model device: cuda:1
+[Step 181] Input device: cuda:1
+[Step 181] Teacher model device: cuda:0
+[Step 181] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 181] GPU 1 memory: 33.76 GB (reserved: 47.74 GB)
+[Step 181] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 181] Student model device: cuda:1
+[Step 181] GPU 0 memory before teacher forward: 16.39 GB
+[Step 181] GPU 0 memory after moving inputs: 16.39 GB
+[Step 181] GPU 0 memory after teacher forward: 17.01 GB
+[Step 181] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 181] Teacher logits device before move: cuda:0
+[Step 181] Target device (student_logits.device): cuda:1
+[Step 181] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 181] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 181] GPU 0 memory after del: 16.39 GB
+[Step 181] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 181] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 181] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 181] Sequence length: 1024, Batch size: 2
+[Step 181] After KL computation - GPU 1: 40.50 GB
+[Step 181] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 191] ========== MEMORY DEBUG ==========
+[Step 191] Model device: cuda:1
+[Step 191] Input device: cuda:1
+[Step 191] Teacher model device: cuda:0
+[Step 191] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 191] GPU 1 memory: 33.76 GB (reserved: 42.83 GB)
+[Step 191] Student logits device: cuda:1, shape: torch.Size([2, 985, 151936]), dtype: torch.float32
+[Step 191] Student model device: cuda:1
+[Step 191] GPU 0 memory before teacher forward: 16.39 GB
+[Step 191] GPU 0 memory after moving inputs: 16.39 GB
+[Step 191] GPU 0 memory after teacher forward: 16.99 GB
+[Step 191] Teacher logits shape: torch.Size([2, 985, 151936]), dtype: torch.float16
+[Step 191] Teacher logits device before move: cuda:0
+[Step 191] Target device (student_logits.device): cuda:1
+[Step 191] GPU 0 memory after moving logits to GPU 1: 16.99 GB
+[Step 191] Teacher logits device after move: cuda:1, shape: torch.Size([2, 985, 151936])
+[Step 191] GPU 0 memory after del: 16.39 GB
+[Step 191] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 191] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 37.88 GB
+[Step 191] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 191] Sequence length: 985, Batch size: 2
+[Step 191] After KL computation - GPU 1: 40.27 GB
+[Step 191] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  1%|▋                                                     | 12/1000 [07:56<8:27:10, 30.80s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 201] ========== MEMORY DEBUG ==========
+[Step 201] Model device: cuda:1
+[Step 201] Input device: cuda:1
+[Step 201] Teacher model device: cuda:0
+[Step 201] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 201] GPU 1 memory: 33.76 GB (reserved: 47.68 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 201] Student logits device: cuda:1, shape: torch.Size([2, 598, 151936]), dtype: torch.float32
+[Step 201] Student model device: cuda:1
+[Step 201] GPU 0 memory before teacher forward: 16.39 GB
+[Step 201] GPU 0 memory after moving inputs: 16.39 GB
+[Step 201] GPU 0 memory after teacher forward: 16.76 GB
+[Step 201] Teacher logits shape: torch.Size([2, 598, 151936]), dtype: torch.float16
+[Step 201] Teacher logits device before move: cuda:0
+[Step 201] Target device (student_logits.device): cuda:1
+[Step 201] GPU 0 memory after moving logits to GPU 1: 16.76 GB
+[Step 201] Teacher logits device after move: cuda:1, shape: torch.Size([2, 598, 151936])
+[Step 201] GPU 0 memory after del: 16.39 GB
+[Step 201] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 201] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 36.50 GB
+[Step 201] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 201] Sequence length: 598, Batch size: 2
+[Step 201] After KL computation - GPU 1: 37.96 GB
+[Step 201] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  1%|▋                                                     | 13/1000 [08:23<8:05:45, 29.53s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 211] ========== MEMORY DEBUG ==========
+[Step 211] Model device: cuda:1
+[Step 211] Input device: cuda:1
+[Step 211] Teacher model device: cuda:0
+[Step 211] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 211] GPU 1 memory: 33.76 GB (reserved: 46.99 GB)
+[Step 211] Student logits device: cuda:1, shape: torch.Size([2, 484, 151936]), dtype: torch.float32
+[Step 211] Student model device: cuda:1
+[Step 211] GPU 0 memory before teacher forward: 16.39 GB
+[Step 211] GPU 0 memory after moving inputs: 16.39 GB
+[Step 211] GPU 0 memory after teacher forward: 16.69 GB
+[Step 211] Teacher logits shape: torch.Size([2, 484, 151936]), dtype: torch.float16
+[Step 211] Teacher logits device before move: cuda:0
+[Step 211] Target device (student_logits.device): cuda:1
+[Step 211] GPU 0 memory after moving logits to GPU 1: 16.69 GB
+[Step 211] Teacher logits device after move: cuda:1, shape: torch.Size([2, 484, 151936])
+[Step 211] GPU 0 memory after del: 16.39 GB
+[Step 211] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 211] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 36.11 GB
+[Step 211] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 211] Sequence length: 484, Batch size: 2
+[Step 211] After KL computation - GPU 1: 37.28 GB
+[Step 211] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 221] ========== MEMORY DEBUG ==========
+[Step 221] Model device: cuda:1
+[Step 221] Input device: cuda:1
+[Step 221] Teacher model device: cuda:0
+[Step 221] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 221] GPU 1 memory: 33.76 GB (reserved: 47.93 GB)
+[Step 221] Student logits device: cuda:1, shape: torch.Size([2, 559, 151936]), dtype: torch.float32
+[Step 221] Student model device: cuda:1
+[Step 221] GPU 0 memory before teacher forward: 16.39 GB
+[Step 221] GPU 0 memory after moving inputs: 16.39 GB
+[Step 221] GPU 0 memory after teacher forward: 16.73 GB
+[Step 221] Teacher logits shape: torch.Size([2, 559, 151936]), dtype: torch.float16
+[Step 221] Teacher logits device before move: cuda:0
+[Step 221] Target device (student_logits.device): cuda:1
+[Step 221] GPU 0 memory after moving logits to GPU 1: 16.73 GB
+[Step 221] Teacher logits device after move: cuda:1, shape: torch.Size([2, 559, 151936])
+[Step 221] GPU 0 memory after del: 16.39 GB
+[Step 221] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 221] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 36.37 GB
+[Step 221] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 221] Sequence length: 559, Batch size: 2
+[Step 221] After KL computation - GPU 1: 37.73 GB
+[Step 221] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  1%|▊                                                     | 14/1000 [08:48<7:43:13, 28.19s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 231] ========== MEMORY DEBUG ==========
+[Step 231] Model device: cuda:1
+[Step 231] Input device: cuda:1
+[Step 231] Teacher model device: cuda:0
+[Step 231] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 231] GPU 1 memory: 33.77 GB (reserved: 44.67 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 231] Student logits device: cuda:1, shape: torch.Size([2, 1020, 151936]), dtype: torch.float32
+[Step 231] Student model device: cuda:1
+[Step 231] GPU 0 memory before teacher forward: 16.39 GB
+[Step 231] GPU 0 memory after moving inputs: 16.39 GB
+[Step 231] GPU 0 memory after teacher forward: 17.01 GB
+[Step 231] Teacher logits shape: torch.Size([2, 1020, 151936]), dtype: torch.float16
+[Step 231] Teacher logits device before move: cuda:0
+[Step 231] Target device (student_logits.device): cuda:1
+[Step 231] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 231] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1020, 151936])
+[Step 231] GPU 0 memory after del: 16.39 GB
+[Step 231] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 231] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.00 GB
+[Step 231] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 231] Sequence length: 1020, Batch size: 2
+[Step 231] After KL computation - GPU 1: 40.48 GB
+[Step 231] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  2%|▊                                                     | 15/1000 [09:14<7:31:50, 27.52s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 241] ========== MEMORY DEBUG ==========
+[Step 241] Model device: cuda:1
+[Step 241] Input device: cuda:1
+[Step 241] Teacher model device: cuda:0
+[Step 241] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 241] GPU 1 memory: 25.33 GB (reserved: 47.95 GB)
+[Step 241] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 241] Student model device: cuda:1
+[Step 241] GPU 0 memory before teacher forward: 16.39 GB
+[Step 241] GPU 0 memory after moving inputs: 16.39 GB
+[Step 241] GPU 0 memory after teacher forward: 17.01 GB
+[Step 241] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 241] Teacher logits device before move: cuda:0
+[Step 241] Target device (student_logits.device): cuda:1
+[Step 241] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 241] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 241] GPU 0 memory after del: 16.39 GB
+[Step 241] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 241] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 29.58 GB
+[Step 241] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 241] Sequence length: 1024, Batch size: 2
+[Step 241] After KL computation - GPU 1: 32.06 GB
+[Step 241] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 251] ========== MEMORY DEBUG ==========
+[Step 251] Model device: cuda:1
+[Step 251] Input device: cuda:1
+[Step 251] Teacher model device: cuda:0
+[Step 251] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 251] GPU 1 memory: 33.76 GB (reserved: 47.36 GB)
+[Step 251] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 251] Student model device: cuda:1
+[Step 251] GPU 0 memory before teacher forward: 16.39 GB
+[Step 251] GPU 0 memory after moving inputs: 16.39 GB
+[Step 251] GPU 0 memory after teacher forward: 17.01 GB
+[Step 251] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 251] Teacher logits device before move: cuda:0
+[Step 251] Target device (student_logits.device): cuda:1
+[Step 251] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 251] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 251] GPU 0 memory after del: 16.39 GB
+[Step 251] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 251] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 251] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 251] Sequence length: 1024, Batch size: 2
+[Step 251] After KL computation - GPU 1: 40.50 GB
+[Step 251] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  2%|▊                                                     | 16/1000 [09:38<7:12:14, 26.36s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 261] ========== MEMORY DEBUG ==========
+[Step 261] Model device: cuda:1
+[Step 261] Input device: cuda:1
+[Step 261] Teacher model device: cuda:0
+[Step 261] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 261] GPU 1 memory: 33.76 GB (reserved: 47.98 GB)
+[Step 261] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 261] Student model device: cuda:1
+[Step 261] GPU 0 memory before teacher forward: 16.39 GB
+[Step 261] GPU 0 memory after moving inputs: 16.39 GB
+[Step 261] GPU 0 memory after teacher forward: 17.01 GB
+[Step 261] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 261] Teacher logits device before move: cuda:0
+[Step 261] Target device (student_logits.device): cuda:1
+[Step 261] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 261] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 261] GPU 0 memory after del: 16.39 GB
+[Step 261] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 261] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 261] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 261] Sequence length: 1024, Batch size: 2
+[Step 261] After KL computation - GPU 1: 40.50 GB
+[Step 261] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 271] ========== MEMORY DEBUG ==========
+[Step 271] Model device: cuda:1
+[Step 271] Input device: cuda:1
+[Step 271] Teacher model device: cuda:0
+[Step 271] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 271] GPU 1 memory: 33.76 GB (reserved: 47.85 GB)
+[Step 271] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 271] Student model device: cuda:1
+[Step 271] GPU 0 memory before teacher forward: 16.39 GB
+[Step 271] GPU 0 memory after moving inputs: 16.39 GB
+[Step 271] GPU 0 memory after teacher forward: 17.01 GB
+[Step 271] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 271] Teacher logits device before move: cuda:0
+[Step 271] Target device (student_logits.device): cuda:1
+[Step 271] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 271] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 271] GPU 0 memory after del: 16.39 GB
+[Step 271] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 271] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.02 GB
+[Step 271] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 271] Sequence length: 1024, Batch size: 2
+[Step 271] After KL computation - GPU 1: 40.50 GB
+[Step 271] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  2%|▉                                                     | 17/1000 [10:02<7:01:21, 25.72s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 281] ========== MEMORY DEBUG ==========
+[Step 281] Model device: cuda:1
+[Step 281] Input device: cuda:1
+[Step 281] Teacher model device: cuda:0
+[Step 281] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 281] GPU 1 memory: 33.76 GB (reserved: 47.58 GB)
+[Step 281] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 281] Student model device: cuda:1
+[Step 281] GPU 0 memory before teacher forward: 16.39 GB
+[Step 281] GPU 0 memory after moving inputs: 16.39 GB
+[Step 281] GPU 0 memory after teacher forward: 17.01 GB
+[Step 281] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 281] Teacher logits device before move: cuda:0
+[Step 281] Target device (student_logits.device): cuda:1
+[Step 281] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 281] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 281] GPU 0 memory after del: 16.39 GB
+[Step 281] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 281] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 281] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 281] Sequence length: 1024, Batch size: 2
+[Step 281] After KL computation - GPU 1: 40.50 GB
+[Step 281] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  2%|▉                                                     | 18/1000 [10:26<6:55:07, 25.36s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 291] ========== MEMORY DEBUG ==========
+[Step 291] Model device: cuda:1
+[Step 291] Input device: cuda:1
+[Step 291] Teacher model device: cuda:0
+[Step 291] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 291] GPU 1 memory: 33.76 GB (reserved: 41.52 GB)
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+[Step 291] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 291] Student model device: cuda:1
+[Step 291] GPU 0 memory before teacher forward: 16.39 GB
+[Step 291] GPU 0 memory after moving inputs: 16.39 GB
+[Step 291] GPU 0 memory after teacher forward: 17.01 GB
+[Step 291] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 291] Teacher logits device before move: cuda:0
+[Step 291] Target device (student_logits.device): cuda:1
+[Step 291] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 291] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 291] GPU 0 memory after del: 16.39 GB
+[Step 291] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 291] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.01 GB
+[Step 291] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 291] Sequence length: 1024, Batch size: 2
+[Step 291] After KL computation - GPU 1: 40.50 GB
+[Step 291] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 301] ========== MEMORY DEBUG ==========
+[Step 301] Model device: cuda:1
+[Step 301] Input device: cuda:1
+[Step 301] Teacher model device: cuda:0
+[Step 301] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 301] GPU 1 memory: 33.76 GB (reserved: 47.79 GB)
+[Step 301] Student logits device: cuda:1, shape: torch.Size([2, 929, 151936]), dtype: torch.float32
+[Step 301] Student model device: cuda:1
+[Step 301] GPU 0 memory before teacher forward: 16.39 GB
+[Step 301] GPU 0 memory after moving inputs: 16.39 GB
+[Step 301] GPU 0 memory after teacher forward: 16.96 GB
+[Step 301] Teacher logits shape: torch.Size([2, 929, 151936]), dtype: torch.float16
+[Step 301] Teacher logits device before move: cuda:0
+[Step 301] Target device (student_logits.device): cuda:1
+[Step 301] GPU 0 memory after moving logits to GPU 1: 16.96 GB
+[Step 301] Teacher logits device after move: cuda:1, shape: torch.Size([2, 929, 151936])
+[Step 301] GPU 0 memory after del: 16.39 GB
+[Step 301] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 301] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 37.68 GB
+[Step 301] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 301] Sequence length: 929, Batch size: 2
+[Step 301] After KL computation - GPU 1: 39.93 GB
+[Step 301] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  2%|█                                                     | 19/1000 [10:54<7:04:13, 25.95s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 311] ========== MEMORY DEBUG ==========
+[Step 311] Model device: cuda:1
+[Step 311] Input device: cuda:1
+[Step 311] Teacher model device: cuda:0
+[Step 311] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 311] GPU 1 memory: 33.77 GB (reserved: 47.91 GB)
+[Step 311] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 311] Student model device: cuda:1
+[Step 311] GPU 0 memory before teacher forward: 16.39 GB
+[Step 311] GPU 0 memory after moving inputs: 16.39 GB
+[Step 311] GPU 0 memory after teacher forward: 17.01 GB
+[Step 311] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 311] Teacher logits device before move: cuda:0
+[Step 311] Target device (student_logits.device): cuda:1
+[Step 311] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 311] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 311] GPU 0 memory after del: 16.39 GB
+[Step 311] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 311] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.02 GB
+[Step 311] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 311] Sequence length: 1024, Batch size: 2
+[Step 311] After KL computation - GPU 1: 40.51 GB
+[Step 311] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  2%|█                                                     | 20/1000 [11:19<7:02:30, 25.87s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 0.0, 'grad_norm': nan, 'learning_rate': 9.5e-06, 'epoch': 0.02}
+
+[Step 321] ========== MEMORY DEBUG ==========
+[Step 321] Model device: cuda:1
+[Step 321] Input device: cuda:1
+[Step 321] Teacher model device: cuda:0
+[Step 321] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 321] GPU 1 memory: 25.33 GB (reserved: 47.87 GB)
+[Step 321] Student logits device: cuda:1, shape: torch.Size([2, 468, 151936]), dtype: torch.float32
+[Step 321] Student model device: cuda:1
+[Step 321] GPU 0 memory before teacher forward: 16.39 GB
+[Step 321] GPU 0 memory after moving inputs: 16.39 GB
+[Step 321] GPU 0 memory after teacher forward: 16.68 GB
+[Step 321] Teacher logits shape: torch.Size([2, 468, 151936]), dtype: torch.float16
+[Step 321] Teacher logits device before move: cuda:0
+[Step 321] Target device (student_logits.device): cuda:1
+[Step 321] GPU 0 memory after moving logits to GPU 1: 16.68 GB
+[Step 321] Teacher logits device after move: cuda:1, shape: torch.Size([2, 468, 151936])
+[Step 321] GPU 0 memory after del: 16.39 GB
+[Step 321] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 321] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 27.61 GB
+[Step 321] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 321] Sequence length: 468, Batch size: 2
+[Step 321] After KL computation - GPU 1: 28.74 GB
+[Step 321] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 331] ========== MEMORY DEBUG ==========
+[Step 331] Model device: cuda:1
+[Step 331] Input device: cuda:1
+[Step 331] Teacher model device: cuda:0
+[Step 331] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 331] GPU 1 memory: 33.77 GB (reserved: 47.59 GB)
+[Step 331] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 331] Student model device: cuda:1
+[Step 331] GPU 0 memory before teacher forward: 16.39 GB
+[Step 331] GPU 0 memory after moving inputs: 16.39 GB
+[Step 331] GPU 0 memory after teacher forward: 17.01 GB
+[Step 331] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 331] Teacher logits device before move: cuda:0
+[Step 331] Target device (student_logits.device): cuda:1
+[Step 331] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 331] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 331] GPU 0 memory after del: 16.39 GB
+[Step 331] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 331] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.02 GB
+[Step 331] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 331] Sequence length: 1024, Batch size: 2
+[Step 331] After KL computation - GPU 1: 40.51 GB
+[Step 331] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  2%|█▏                                                    | 21/1000 [11:45<7:00:55, 25.80s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 341] ========== MEMORY DEBUG ==========
+[Step 341] Model device: cuda:1
+[Step 341] Input device: cuda:1
+[Step 341] Teacher model device: cuda:0
+[Step 341] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 341] GPU 1 memory: 33.76 GB (reserved: 47.65 GB)
+[Step 341] Student logits device: cuda:1, shape: torch.Size([2, 719, 151936]), dtype: torch.float32
+[Step 341] Student model device: cuda:1
+[Step 341] GPU 0 memory before teacher forward: 16.39 GB
+[Step 341] GPU 0 memory after moving inputs: 16.39 GB
+[Step 341] GPU 0 memory after teacher forward: 16.83 GB
+[Step 341] Teacher logits shape: torch.Size([2, 719, 151936]), dtype: torch.float16
+[Step 341] Teacher logits device before move: cuda:0
+[Step 341] Target device (student_logits.device): cuda:1
+[Step 341] GPU 0 memory after moving logits to GPU 1: 16.83 GB
+[Step 341] Teacher logits device after move: cuda:1, shape: torch.Size([2, 719, 151936])
+[Step 341] GPU 0 memory after del: 16.39 GB
+[Step 341] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 341] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 36.93 GB
+[Step 341] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 341] Sequence length: 719, Batch size: 2
+[Step 341] After KL computation - GPU 1: 38.68 GB
+[Step 341] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 351] ========== MEMORY DEBUG ==========
+[Step 351] Model device: cuda:1
+[Step 351] Input device: cuda:1
+[Step 351] Teacher model device: cuda:0
+[Step 351] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 351] GPU 1 memory: 33.76 GB (reserved: 47.85 GB)
+[Step 351] Student logits device: cuda:1, shape: torch.Size([2, 258, 151936]), dtype: torch.float32
+[Step 351] Student model device: cuda:1
+[Step 351] GPU 0 memory before teacher forward: 16.39 GB
+[Step 351] GPU 0 memory after moving inputs: 16.39 GB
+[Step 351] GPU 0 memory after teacher forward: 16.55 GB
+[Step 351] Teacher logits shape: torch.Size([2, 258, 151936]), dtype: torch.float16
+[Step 351] Teacher logits device before move: cuda:0
+[Step 351] Target device (student_logits.device): cuda:1
+[Step 351] GPU 0 memory after moving logits to GPU 1: 16.55 GB
+[Step 351] Teacher logits device after move: cuda:1, shape: torch.Size([2, 258, 151936])
+[Step 351] GPU 0 memory after del: 16.39 GB
+[Step 351] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 351] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 35.30 GB
+[Step 351] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 351] Sequence length: 258, Batch size: 2
+[Step 351] After KL computation - GPU 1: 35.93 GB
+[Step 351] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  2%|█▏                                                    | 22/1000 [12:09<6:51:05, 25.22s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 361] ========== MEMORY DEBUG ==========
+[Step 361] Model device: cuda:1
+[Step 361] Input device: cuda:1
+[Step 361] Teacher model device: cuda:0
+[Step 361] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 361] GPU 1 memory: 33.76 GB (reserved: 47.58 GB)
+[Step 361] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 361] Student model device: cuda:1
+[Step 361] GPU 0 memory before teacher forward: 16.39 GB
+[Step 361] GPU 0 memory after moving inputs: 16.39 GB
+[Step 361] GPU 0 memory after teacher forward: 17.01 GB
+[Step 361] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 361] Teacher logits device before move: cuda:0
+[Step 361] Target device (student_logits.device): cuda:1
+[Step 361] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 361] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 361] GPU 0 memory after del: 16.39 GB
+[Step 361] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 361] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.02 GB
+[Step 361] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 361] Sequence length: 1024, Batch size: 2
+[Step 361] After KL computation - GPU 1: 40.51 GB
+[Step 361] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  2%|█▏                                                    | 23/1000 [12:33<6:45:36, 24.91s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 371] ========== MEMORY DEBUG ==========
+[Step 371] Model device: cuda:1
+[Step 371] Input device: cuda:1
+[Step 371] Teacher model device: cuda:0
+[Step 371] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 371] GPU 1 memory: 33.76 GB (reserved: 47.31 GB)
+[Step 371] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 371] Student model device: cuda:1
+[Step 371] GPU 0 memory before teacher forward: 16.39 GB
+[Step 371] GPU 0 memory after moving inputs: 16.39 GB
+[Step 371] GPU 0 memory after teacher forward: 17.01 GB
+[Step 371] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 371] Teacher logits device before move: cuda:0
+[Step 371] Target device (student_logits.device): cuda:1
+[Step 371] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 371] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 371] GPU 0 memory after del: 16.39 GB
+[Step 371] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 371] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.02 GB
+[Step 371] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 371] Sequence length: 1024, Batch size: 2
+[Step 371] After KL computation - GPU 1: 40.51 GB
+[Step 371] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+[Step 381] ========== MEMORY DEBUG ==========
+[Step 381] Model device: cuda:1
+[Step 381] Input device: cuda:1
+[Step 381] Teacher model device: cuda:0
+[Step 381] GPU 0 memory: 16.39 GB (reserved: 16.56 GB)
+[Step 381] GPU 1 memory: 33.76 GB (reserved: 47.84 GB)
+[Step 381] Student logits device: cuda:1, shape: torch.Size([2, 1024, 151936]), dtype: torch.float32
+[Step 381] Student model device: cuda:1
+[Step 381] GPU 0 memory before teacher forward: 16.39 GB
+[Step 381] GPU 0 memory after moving inputs: 16.39 GB
+[Step 381] GPU 0 memory after teacher forward: 17.01 GB
+[Step 381] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16
+[Step 381] Teacher logits device before move: cuda:0
+[Step 381] Target device (student_logits.device): cuda:1
+[Step 381] GPU 0 memory after moving logits to GPU 1: 17.01 GB
+[Step 381] Teacher logits device after move: cuda:1, shape: torch.Size([2, 1024, 151936])
+[Step 381] GPU 0 memory after del: 16.39 GB
+[Step 381] GPU 0 memory after cache clear: 16.39 GB (reserved: 16.56 GB)
+[Step 381] Before log_softmax - GPU 0: 16.39 GB, GPU 1: 38.02 GB
+[Step 381] student_logits device: cuda:1, teacher_logits device: cuda:1
+[Step 381] Sequence length: 1024, Batch size: 2
+[Step 381] After KL computation - GPU 1: 40.51 GB
+[Step 381] Loss device: cuda:0, args.device: cuda:0, model device: cuda:1
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  2%|█▎                                                    | 24/1000 [12:57<6:40:11, 24.60s/it]Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 410, in <module>
+    trainer.train()
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 127, in compute_loss
+    teacher_outputs = self.teacher_model(
+                      ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 918, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 480, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 1064, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 410, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 94, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 260, in forward
+    hidden_states, _ = self.self_attn(
+                       ^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 216, in forward
+    attn_output, attn_weights = attention_interface(
+                                ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/integrations/sdpa_attention.py", line 96, in sdpa_attention_forward
+    attn_output = torch.nn.functional.scaled_dot_product_attention(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

@@ -3,7 +3,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 DEVICE = "cuda" # :(
 
-MODEL_NAME = "Qwen/Qwen3-1.7B"
+MODEL_NAME = "Qwen/Qwen3-8B"
 SAVE_DIR = MODEL_NAME.split('/')[-1]  # Save to "Qwen3-1.7B" in root directory
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
