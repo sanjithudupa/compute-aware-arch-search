@@ -92,3 +92,65 @@ The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and g
 {'loss': 10.9652, 'grad_norm': 26.830408096313477, 'learning_rate': 2.1e-05, 'ce_loss': 0.18151113390922546, 'kl_loss': 2.1459453105926514, 'epoch': 0.0}
 {'loss': 13.5601, 'grad_norm': 30.3577823638916, 'learning_rate': 2.15e-05, 'ce_loss': 0.25972071290016174, 'kl_loss': 1.6901772022247314, 'epoch': 0.0}
 {'loss': 12.6745, 'grad_norm': 21.094926834106445, 'learning_rate': 2.2000000000000003e-05, 'ce_loss': 0.3135724365711212, 'kl_loss': 3.1090891361236572, 'epoch': 0.0}
+{'loss': 13.3435, 'grad_norm': 29.400075912475586, 'learning_rate': 2.25e-05, 'ce_loss': 0.19087596237659454, 'kl_loss': 2.9376487731933594, 'epoch': 0.0}
+{'loss': 12.8358, 'grad_norm': 46.85197067260742, 'learning_rate': 2.3000000000000003e-05, 'ce_loss': 0.14306600391864777, 'kl_loss': 3.1645493507385254, 'epoch': 0.0}
+{'loss': 9.6905, 'grad_norm': 24.935138702392578, 'learning_rate': 2.35e-05, 'ce_loss': 0.08520162105560303, 'kl_loss': 2.0681869983673096, 'epoch': 0.0}
+{'loss': 12.77, 'grad_norm': 22.413583755493164, 'learning_rate': 2.4e-05, 'ce_loss': 0.1475219428539276, 'kl_loss': 1.9212433099746704, 'epoch': 0.0}
+{'loss': 10.9014, 'grad_norm': 23.82372283935547, 'learning_rate': 2.45e-05, 'ce_loss': 0.22953325510025024, 'kl_loss': 1.7331064939498901, 'epoch': 0.01}
+{'loss': 9.1973, 'grad_norm': 19.138063430786133, 'learning_rate': 2.5e-05, 'ce_loss': 0.21290138363838196, 'kl_loss': 1.7021875381469727, 'epoch': 0.01}
+{'loss': 11.0548, 'grad_norm': 58.52655029296875, 'learning_rate': 2.5500000000000003e-05, 'ce_loss': 0.12607069313526154, 'kl_loss': 1.6562390327453613, 'epoch': 0.01}
+{'loss': 10.6053, 'grad_norm': 32.608253479003906, 'learning_rate': 2.6000000000000002e-05, 'ce_loss': 0.09250755608081818, 'kl_loss': 1.989511251449585, 'epoch': 0.01}
+{'loss': 11.6756, 'grad_norm': 24.90477752685547, 'learning_rate': 2.6500000000000004e-05, 'ce_loss': 0.10222011804580688, 'kl_loss': 2.0846974849700928, 'epoch': 0.01}
+{'loss': 10.3029, 'grad_norm': 11.785388946533203, 'learning_rate': 2.7000000000000002e-05, 'ce_loss': 0.19254988431930542, 'kl_loss': 1.9967918395996094, 'epoch': 0.01}
+{'loss': 12.4092, 'grad_norm': 23.495391845703125, 'learning_rate': 2.7500000000000004e-05, 'ce_loss': 0.24565419554710388, 'kl_loss': 2.2431139945983887, 'epoch': 0.01}
+{'loss': 11.5091, 'grad_norm': 23.637672424316406, 'learning_rate': 2.8000000000000003e-05, 'ce_loss': 0.48048725724220276, 'kl_loss': 2.852550745010376, 'epoch': 0.01}
+{'loss': 9.4098, 'grad_norm': 26.92341423034668, 'learning_rate': 2.8499999999999998e-05, 'ce_loss': 0.16129618883132935, 'kl_loss': 1.8504223823547363, 'epoch': 0.01}
+{'loss': 9.5936, 'grad_norm': 16.979459762573242, 'learning_rate': 2.9e-05, 'ce_loss': 0.07569512724876404, 'kl_loss': 1.9113982915878296, 'epoch': 0.01}
+{'loss': 8.6559, 'grad_norm': 25.81641387939453, 'learning_rate': 2.95e-05, 'ce_loss': 0.07818257808685303, 'kl_loss': 2.0587587356567383, 'epoch': 0.01}
+{'loss': 10.1628, 'grad_norm': 17.693132400512695, 'learning_rate': 3e-05, 'ce_loss': 0.10457074642181396, 'kl_loss': 2.2782092094421387, 'epoch': 0.01}
+{'loss': 9.7347, 'grad_norm': 14.894853591918945, 'learning_rate': 3.05e-05, 'ce_loss': 0.17497655749320984, 'kl_loss': 1.77806556224823, 'epoch': 0.01}
+{'loss': 9.5519, 'grad_norm': 18.209564208984375, 'learning_rate': 3.1e-05, 'ce_loss': 0.25057685375213623, 'kl_loss': 2.3652584552764893, 'epoch': 0.01}
+{'loss': 8.7759, 'grad_norm': 8.66021728515625, 'learning_rate': 3.15e-05, 'ce_loss': 0.09567679464817047, 'kl_loss': 1.8567391633987427, 'epoch': 0.01}
+{'loss': 8.5513, 'grad_norm': 12.562214851379395, 'learning_rate': 3.2000000000000005e-05, 'ce_loss': 0.10895102471113205, 'kl_loss': 1.6610864400863647, 'epoch': 0.01}
+{'loss': 11.0939, 'grad_norm': 18.36336898803711, 'learning_rate': 3.2500000000000004e-05, 'ce_loss': 0.29898592829704285, 'kl_loss': 4.565020561218262, 'epoch': 0.01}
+{'loss': 11.1425, 'grad_norm': 14.512467384338379, 'learning_rate': 3.3e-05, 'ce_loss': 0.09609844535589218, 'kl_loss': 2.010993719100952, 'epoch': 0.01}
+{'loss': 11.3182, 'grad_norm': 29.282560348510742, 'learning_rate': 3.35e-05, 'ce_loss': 0.1363627016544342, 'kl_loss': 1.7695223093032837, 'epoch': 0.01}
+{'loss': 8.11, 'grad_norm': 25.568828582763672, 'learning_rate': 3.4000000000000007e-05, 'ce_loss': 0.17384901642799377, 'kl_loss': 1.9232593774795532, 'epoch': 0.01}
+{'loss': 9.0795, 'grad_norm': 18.056304931640625, 'learning_rate': 3.45e-05, 'ce_loss': 0.19804559648036957, 'kl_loss': 1.839618444442749, 'epoch': 0.01}
+{'loss': 8.8686, 'grad_norm': 18.42995262145996, 'learning_rate': 3.5e-05, 'ce_loss': 0.17682521045207977, 'kl_loss': 2.504591941833496, 'epoch': 0.01}
+{'loss': 10.5186, 'grad_norm': 18.969398498535156, 'learning_rate': 3.55e-05, 'ce_loss': 0.1648264229297638, 'kl_loss': 2.1844091415405273, 'epoch': 0.01}
+{'loss': 9.1901, 'grad_norm': 15.528762817382812, 'learning_rate': 3.6e-05, 'ce_loss': 0.1301606297492981, 'kl_loss': 2.2777957916259766, 'epoch': 0.01}
+{'loss': 9.404, 'grad_norm': 15.710198402404785, 'learning_rate': 3.65e-05, 'ce_loss': 0.13109688460826874, 'kl_loss': 2.0420377254486084, 'epoch': 0.01}
+{'loss': 10.1471, 'grad_norm': 14.178431510925293, 'learning_rate': 3.7e-05, 'ce_loss': 0.08385779708623886, 'kl_loss': 1.5123913288116455, 'epoch': 0.01}
+{'loss': 9.7887, 'grad_norm': 18.738000869750977, 'learning_rate': 3.7500000000000003e-05, 'ce_loss': 0.12613025307655334, 'kl_loss': 1.6084792613983154, 'epoch': 0.01}
+{'loss': 8.2985, 'grad_norm': 17.84309959411621, 'learning_rate': 3.8e-05, 'ce_loss': 0.13378340005874634, 'kl_loss': 1.9090025424957275, 'epoch': 0.01}
+{'loss': 8.8043, 'grad_norm': 26.100177764892578, 'learning_rate': 3.85e-05, 'ce_loss': 0.12268084287643433, 'kl_loss': 1.9118003845214844, 'epoch': 0.01}
+{'loss': 9.8174, 'grad_norm': 12.40815544128418, 'learning_rate': 3.9000000000000006e-05, 'ce_loss': 0.11203864216804504, 'kl_loss': 1.7487126588821411, 'epoch': 0.01}
+{'loss': 7.8255, 'grad_norm': 9.698920249938965, 'learning_rate': 3.9500000000000005e-05, 'ce_loss': 0.18773889541625977, 'kl_loss': 2.1567842960357666, 'epoch': 0.01}
+{'loss': 8.7583, 'grad_norm': 10.508001327514648, 'learning_rate': 4e-05, 'ce_loss': 0.15654698014259338, 'kl_loss': 3.4630041122436523, 'epoch': 0.01}
+{'loss': 7.8571, 'grad_norm': 8.657410621643066, 'learning_rate': 4.05e-05, 'ce_loss': 0.19430069625377655, 'kl_loss': 2.405654191970825, 'epoch': 0.01}
+{'loss': 8.0795, 'grad_norm': 11.131762504577637, 'learning_rate': 4.1e-05, 'ce_loss': 0.09050516784191132, 'kl_loss': 1.7259950637817383, 'epoch': 0.01}
+{'loss': 7.9818, 'grad_norm': 8.065834999084473, 'learning_rate': 4.15e-05, 'ce_loss': 0.1201384887099266, 'kl_loss': 3.11395263671875, 'epoch': 0.01}
+{'loss': 8.7689, 'grad_norm': 12.445406913757324, 'learning_rate': 4.2e-05, 'ce_loss': 0.1385202407836914, 'kl_loss': 2.7746846675872803, 'epoch': 0.01}
+{'loss': 9.361, 'grad_norm': 10.032845497131348, 'learning_rate': 4.25e-05, 'ce_loss': 0.12537693977355957, 'kl_loss': 2.429482936859131, 'epoch': 0.01}
+{'loss': 7.9091, 'grad_norm': 9.187873840332031, 'learning_rate': 4.3e-05, 'ce_loss': 0.09145169705152512, 'kl_loss': 1.7429989576339722, 'epoch': 0.01}
+{'loss': 8.7444, 'grad_norm': 15.096280097961426, 'learning_rate': 4.35e-05, 'ce_loss': 0.2180575430393219, 'kl_loss': 2.138101100921631, 'epoch': 0.01}
+{'loss': 7.817, 'grad_norm': 11.681205749511719, 'learning_rate': 4.4000000000000006e-05, 'ce_loss': 0.1672775000333786, 'kl_loss': 1.568518042564392, 'epoch': 0.01}
+{'loss': 7.8571, 'grad_norm': 8.819090843200684, 'learning_rate': 4.4500000000000004e-05, 'ce_loss': 0.19253413379192352, 'kl_loss': 2.4728808403015137, 'epoch': 0.01}
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 503, in <module>
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 282, in compute_loss
+    alpha=0.5,
+         ^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/grad_mode.py", line 270, in __new__
+    def __new__(cls, mode=True):
+
+KeyboardInterrupt

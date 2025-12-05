@@ -111,7 +111,6 @@ class DistillationTrainer(Trainer):
             ignore_index=-100,
         )
         
-        # KL divergence with proper masking
         mask = (labels != -100).unsqueeze(-1)  # [B, T, 1]
         student_log_probs = F.log_softmax(student_logits / self.temperature, dim=-1)
         teacher_probs = F.softmax(teacher_logits / self.temperature, dim=-1)
@@ -122,7 +121,6 @@ class DistillationTrainer(Trainer):
             reduction="none",
         ).sum(dim=-1)  # [B, T]
         
-        # Apply mask and compute mean
         kl_loss = (kl_loss * mask.squeeze(-1)).sum() / mask.sum()
         kl_loss = kl_loss * (self.temperature ** 2)
         
@@ -245,13 +243,13 @@ if __name__ == "__main__":
         output_dir=output_dir,
         per_device_train_batch_size=1,  # Reduced to 1 to save memory
         gradient_accumulation_steps=8,  # Increased to maintain effective batch size
-        learning_rate=5e-5,
+        learning_rate=9e-6,
         num_train_epochs=1,
-        max_steps=10000,
+        max_steps=5000,
         logging_steps=1,
         save_steps=2000,
         save_total_limit=2,
-        warmup_steps=100,
+        warmup_steps=200,
         max_grad_norm=1.0,
         lr_scheduler_type="cosine",  # Use cosine annealing LR schedule
         ddp_find_unused_parameters=False,  # Disable unused parameter finding for DDP

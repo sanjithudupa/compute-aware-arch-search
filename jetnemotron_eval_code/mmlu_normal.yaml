@@ -1,0 +1,44 @@
+evaluator: lm_harness
+wandb_panel_name: mmlu_normal
+local_dir_name: mmlu_normal
+tasks: 
+  - name: mmlu
+    display_name: mmlu@acc,none
+    metric: acc,none
+subtasks:
+  - name: mmlu_stem
+    display_name: mmlu_stem@acc,none
+    metric: acc,none
+  - name: mmlu_humanities
+    display_name: mmlu_humanities@acc,none
+    metric: acc,none
+  - name: mmlu_social_sciences
+    display_name: mmlu_social_sciences@acc,none
+    metric: acc,none
+  - name: mmlu_other
+    display_name: mmlu_other@acc,none
+    metric: acc,none
+eval_kwargs:
+    use_diffusion: true
+    diffusion_steps: 256
+    logits_temp: 0.95
+    mask_token_id: 151665
+    # Number of tokens to generate for diffusion (overrides --offline_eval.max_new_tokens)
+    # If not set, uses the value from --offline_eval.max_new_tokens (default: 2048)
+    diffusion_tokens: 512  # or use max_new_tokens as alias
+    # V4-specific parameters (Dream-style denoising
+    alg: maskgit_plus  # Options: 'origin', 'maskgit_plus', 'topk_margin', 'entropy'
+    eps: 1e-3  # Minimum timestep value
+    # alg_temp: null  # Temperature for stochastic token selection (null = deterministic)
+    # Reduce batch size for diffusion (more memory intensive than autoregressive)
+    diffusion_batch_size: 4  # Process 1 sample at a time for diffusion to avoid OOM
+    # Optional parameters (uncomment to use):
+    # top_k: 50
+    # top_p: 0.9
+    repetition_penalty: 1.05  # Enable to prevent repetition loops
+    # Custom output directory for saving results (optional)
+    # If not set, uses default: work_dir/local_dir_name/checkpoint_name/
+    # Can be absolute or relative path. For multi-step eval, use {step} placeholder.
+    output_dir: "results/eval/jetlm1.5-2B_stage1/mmlu_pro/trial3"  # Uncomment to use custom directory
+    # debug_generate: false
+
