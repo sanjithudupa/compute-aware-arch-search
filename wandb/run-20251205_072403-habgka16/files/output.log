@@ -1,0 +1,39 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:41: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                         | 0/10000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|▏                                                                                                            | 12/10000 [01:11<15:17:26,  5.51s/it]Traceback (most recent call last):
+{'loss': 84.0796, 'grad_norm': 9646.8349609375, 'learning_rate': 0.0, 'ce_loss': 12.648624420166016, 'kl_loss': 8.199453353881836, 'epoch': 0.0}
+{'loss': 97.3592, 'grad_norm': 21680.67578125, 'learning_rate': 4.5e-08, 'ce_loss': 14.027909278869629, 'kl_loss': 19.11827850341797, 'epoch': 0.0}
+{'loss': 81.3545, 'grad_norm': 10289.466796875, 'learning_rate': 9e-08, 'ce_loss': 12.241494178771973, 'kl_loss': 8.222373962402344, 'epoch': 0.0}
+{'loss': 84.8483, 'grad_norm': 4930.4677734375, 'learning_rate': 1.35e-07, 'ce_loss': 13.344917297363281, 'kl_loss': 9.425506591796875, 'epoch': 0.0}
+{'loss': 84.522, 'grad_norm': 5840.00537109375, 'learning_rate': 1.8e-07, 'ce_loss': 12.767004013061523, 'kl_loss': 6.976441383361816, 'epoch': 0.0}
+{'loss': 84.4564, 'grad_norm': 7826.3984375, 'learning_rate': 2.2500000000000002e-07, 'ce_loss': 11.149025917053223, 'kl_loss': 7.765664100646973, 'epoch': 0.0}
+{'loss': 86.7829, 'grad_norm': 15871.033203125, 'learning_rate': 2.7e-07, 'ce_loss': 12.56087589263916, 'kl_loss': 7.039889812469482, 'epoch': 0.0}
+{'loss': 83.7796, 'grad_norm': 7895.10302734375, 'learning_rate': 3.1500000000000005e-07, 'ce_loss': 11.994388580322266, 'kl_loss': 10.091960906982422, 'epoch': 0.0}
+{'loss': 83.0375, 'grad_norm': 12738.3369140625, 'learning_rate': 3.6e-07, 'ce_loss': 13.882343292236328, 'kl_loss': 9.088872909545898, 'epoch': 0.0}
+{'loss': 80.7449, 'grad_norm': 18264.43359375, 'learning_rate': 4.05e-07, 'ce_loss': 11.310592651367188, 'kl_loss': 7.880715370178223, 'epoch': 0.0}
+{'loss': 83.972, 'grad_norm': 10175.498046875, 'learning_rate': 4.5000000000000003e-07, 'ce_loss': 12.850090026855469, 'kl_loss': 9.78280258178711, 'epoch': 0.0}
+{'loss': 80.9262, 'grad_norm': 3963.2529296875, 'learning_rate': 4.95e-07, 'ce_loss': 10.884312629699707, 'kl_loss': 6.7591094970703125, 'epoch': 0.0}
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 291, in <module>
+    trainer.train()
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4071, in training_step
+    self.accelerator.backward(loss, **kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2740, in backward
+    loss.backward(**kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_tensor.py", line 647, in backward
+    torch.autograd.backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/graph.py", line 829, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

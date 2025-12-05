@@ -1,0 +1,42 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:43: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                               | 0/10000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|▏                                                                                                                  | 16/10000 [01:32<15:16:37,  5.51s/it]
+WARNING: Loss mismatch! Trainer loss=84.0796, expected=10.4240, diff=73.6556
+{'loss': 84.0796, 'grad_norm': 9632.15234375, 'learning_rate': 0.0, 'ce_loss': 12.648624420166016, 'kl_loss': 8.199453353881836, 'expected_loss': 10.424038887023926, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=97.3592, expected=16.5731, diff=80.7861
+{'loss': 97.3592, 'grad_norm': 21678.44921875, 'learning_rate': 2.5000000000000004e-07, 'ce_loss': 14.027909278869629, 'kl_loss': 19.11827850341797, 'expected_loss': 16.5730938911438, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=81.4422, expected=10.3011, diff=71.1411
+{'loss': 81.4422, 'grad_norm': 7422.61181640625, 'learning_rate': 5.000000000000001e-07, 'ce_loss': 12.320505142211914, 'kl_loss': 8.281693458557129, 'expected_loss': 10.301099300384521, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=84.6240, expected=11.4313, diff=73.1927
+{'loss': 84.624, 'grad_norm': 27437.451171875, 'learning_rate': 7.5e-07, 'ce_loss': 13.403350830078125, 'kl_loss': 9.459247589111328, 'expected_loss': 11.431299209594727, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=84.4197, expected=9.9152, diff=74.5045
+{'loss': 84.4197, 'grad_norm': 3744.741455078125, 'learning_rate': 1.0000000000000002e-06, 'ce_loss': 12.840253829956055, 'kl_loss': 6.990200996398926, 'expected_loss': 9.91522741317749, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=84.0778, expected=9.4625, diff=74.6153
+{'loss': 84.0778, 'grad_norm': 5938.6552734375, 'learning_rate': 1.25e-06, 'ce_loss': 11.142672538757324, 'kl_loss': 7.782235145568848, 'expected_loss': 9.462453842163086, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=86.2833, expected=9.7302, diff=76.5531
+{'loss': 86.2833, 'grad_norm': 9537.103515625, 'learning_rate': 1.5e-06, 'ce_loss': 12.592459678649902, 'kl_loss': 6.86787748336792, 'expected_loss': 9.730168581008911, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=81.9824, expected=10.8236, diff=71.1588
+{'loss': 81.9824, 'grad_norm': 20924.431640625, 'learning_rate': 1.7500000000000002e-06, 'ce_loss': 11.724406242370605, 'kl_loss': 9.922740936279297, 'expected_loss': 10.823573589324951, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=81.0754, expected=11.2780, diff=69.7974
+{'loss': 81.0754, 'grad_norm': 6532.90576171875, 'learning_rate': 2.0000000000000003e-06, 'ce_loss': 13.638728141784668, 'kl_loss': 8.917304039001465, 'expected_loss': 11.278016090393066, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=76.7827, expected=9.2080, diff=67.5747
+{'loss': 76.7827, 'grad_norm': 3363.75146484375, 'learning_rate': 2.25e-06, 'ce_loss': 10.88051986694336, 'kl_loss': 7.535440921783447, 'expected_loss': 9.207980394363403, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=78.3351, expected=10.6330, diff=67.7021
+{'loss': 78.3351, 'grad_norm': 5712.7177734375, 'learning_rate': 2.5e-06, 'ce_loss': 12.03374195098877, 'kl_loss': 9.232178688049316, 'expected_loss': 10.632960319519043, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=74.3287, expected=8.1780, diff=66.1507
+{'loss': 74.3287, 'grad_norm': 6505.68798828125, 'learning_rate': 2.7500000000000004e-06, 'ce_loss': 10.150383949279785, 'kl_loss': 6.205705642700195, 'expected_loss': 8.17804479598999, 'skipped_batches': 0, 'epoch': 0.0}
+Step 100: ce_loss=10.8347, kl_loss=13.8003, alpha=0.5, computed_loss=12.3175
+WARNING: Loss mismatch! Trainer loss=78.1470, expected=11.1781, diff=66.9689
+{'loss': 78.147, 'grad_norm': 4063.538818359375, 'learning_rate': 3e-06, 'ce_loss': 13.689821243286133, 'kl_loss': 8.666291236877441, 'expected_loss': 11.178056240081787, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=70.9211, expected=8.2389, diff=62.6822
+{'loss': 70.9211, 'grad_norm': 3904.55224609375, 'learning_rate': 3.2500000000000002e-06, 'ce_loss': 10.235719680786133, 'kl_loss': 6.242074012756348, 'expected_loss': 8.23889684677124, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=70.4585, expected=7.5386, diff=62.9199
+{'loss': 70.4585, 'grad_norm': 3405.978271484375, 'learning_rate': 3.5000000000000004e-06, 'ce_loss': 7.997250080108643, 'kl_loss': 7.079967975616455, 'expected_loss': 7.538609027862549, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=71.7691, expected=8.9496, diff=62.8195
+{'loss': 71.7691, 'grad_norm': 10562.845703125, 'learning_rate': 3.75e-06, 'ce_loss': 9.256972312927246, 'kl_loss': 8.64222526550293, 'expected_loss': 8.949598789215088, 'skipped_batches': 0, 'epoch': 0.0}
+WARNING: Loss mismatch! Trainer loss=66.8928, expected=7.7140, diff=59.1788
+{'loss': 66.8928, 'grad_norm': 2028.5157470703125, 'learning_rate': 4.000000000000001e-06, 'ce_loss': 9.017316818237305, 'kl_loss': 6.4106292724609375, 'expected_loss': 7.713973045349121, 'skipped_batches': 0, 'epoch': 0.0}

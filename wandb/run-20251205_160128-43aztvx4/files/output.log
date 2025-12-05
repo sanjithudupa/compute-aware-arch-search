@@ -1,0 +1,14 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_kl_trick.py:43: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                               | 0/10000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+======================================================================
+ERROR occurred during training: TypeError
+Error message: 'Tensor' object is not callable
+======================================================================
+
+Saving model checkpoint before exiting...
+Model saved to recovery checkpoint: distilled_checkpoints/top10_gla/distill_top10_gla_20251205_160127/recovery_checkpoint

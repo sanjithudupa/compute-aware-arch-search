@@ -1,0 +1,90 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:43: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                               | 0/10000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|                                                                                                                    | 4/10000 [00:22<13:34:59,  4.89s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 42.3278, 'grad_norm': 7279.86767578125, 'learning_rate': 0.0, 'ce_loss': 11.521467208862305, 'kl_loss': 9.031706809997559, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 41.5414, 'grad_norm': 7518.84423828125, 'learning_rate': 2.5000000000000004e-07, 'ce_loss': 12.484611511230469, 'kl_loss': 8.422964096069336, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 49.1623, 'grad_norm': 8915.8662109375, 'learning_rate': 5.000000000000001e-07, 'ce_loss': 10.422402381896973, 'kl_loss': 12.830352783203125, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 47.8006, 'grad_norm': 13535.9013671875, 'learning_rate': 7.5e-07, 'ce_loss': 13.991504669189453, 'kl_loss': 19.095205307006836, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|                                                                                                                    | 5/10000 [00:38<25:17:37,  9.11s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 39.2831, 'grad_norm': 10659.486328125, 'learning_rate': 1.0000000000000002e-06, 'ce_loss': 10.67165756225586, 'kl_loss': 6.533287048339844, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|                                                                                                                    | 7/10000 [00:54<22:25:58,  8.08s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 41.5993, 'grad_norm': 4936.0791015625, 'learning_rate': 1.25e-06, 'ce_loss': 12.29263973236084, 'kl_loss': 8.254087448120117, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 40.1721, 'grad_norm': 31763.73828125, 'learning_rate': 1.5e-06, 'ce_loss': 11.717447280883789, 'kl_loss': 7.730601787567139, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|                                                                                                                    | 8/10000 [01:06<25:49:28,  9.30s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 41.9524, 'grad_norm': 3124.743896484375, 'learning_rate': 1.7500000000000002e-06, 'ce_loss': 13.121733665466309, 'kl_loss': 9.83919620513916, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+  0%|                                                                                                                   | 10/10000 [01:16<19:22:52,  6.98s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 40.1765, 'grad_norm': 3214.285888671875, 'learning_rate': 2.0000000000000003e-06, 'ce_loss': 10.449979782104492, 'kl_loss': 7.148726940155029, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 38.9308, 'grad_norm': 3181.77783203125, 'learning_rate': 2.25e-06, 'ce_loss': 11.576513290405273, 'kl_loss': 6.28016996383667, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|▏                                                                                                                  | 11/10000 [01:21<18:10:13,  6.55s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 38.1208, 'grad_norm': 3418.9228515625, 'learning_rate': 2.5e-06, 'ce_loss': 11.527517318725586, 'kl_loss': 6.754249095916748, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+  0%|▏                                                                                                                  | 12/10000 [01:27<17:29:51,  6.31s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 37.6564, 'grad_norm': 2882.399169921875, 'learning_rate': 2.7500000000000004e-06, 'ce_loss': 10.0799560546875, 'kl_loss': 6.784732818603516, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+  0%|▏                                                                                                                  | 13/10000 [01:32<16:09:44,  5.83s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 38.2992, 'grad_norm': 1877.4085693359375, 'learning_rate': 3e-06, 'ce_loss': 10.381914138793945, 'kl_loss': 5.969577312469482, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|▏                                                                                                                  | 17/10000 [01:51<14:21:31,  5.18s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 35.1205, 'grad_norm': 1829.134033203125, 'learning_rate': 3.2500000000000002e-06, 'ce_loss': 10.885053634643555, 'kl_loss': 5.516641616821289, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 33.4146, 'grad_norm': 1085.1446533203125, 'learning_rate': 3.5000000000000004e-06, 'ce_loss': 9.590672492980957, 'kl_loss': 5.908384799957275, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 33.1435, 'grad_norm': 1534.2421875, 'learning_rate': 3.75e-06, 'ce_loss': 9.545783996582031, 'kl_loss': 9.08376693725586, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 32.2282, 'grad_norm': 1324.8756103515625, 'learning_rate': 4.000000000000001e-06, 'ce_loss': 9.731030464172363, 'kl_loss': 5.926684379577637, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|▏                                                                                                                  | 19/10000 [02:01<13:54:19,  5.02s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 30.1559, 'grad_norm': 1397.84375, 'learning_rate': 4.250000000000001e-06, 'ce_loss': 10.037771224975586, 'kl_loss': 6.45529317855835, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 29.2235, 'grad_norm': 1025.229736328125, 'learning_rate': 4.5e-06, 'ce_loss': 8.917245864868164, 'kl_loss': 5.63956356048584, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+  0%|▏                                                                                                                  | 20/10000 [02:06<13:46:10,  4.97s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 25.8591, 'grad_norm': 1007.6500244140625, 'learning_rate': 4.75e-06, 'ce_loss': 8.194180488586426, 'kl_loss': 5.08315896987915, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+  0%|▎                                                                                                                  | 28/10000 [02:43<11:57:06,  4.31s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 27.65, 'grad_norm': 1160.816650390625, 'learning_rate': 5e-06, 'ce_loss': 8.230829238891602, 'kl_loss': 4.812751770019531, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 30.0938, 'grad_norm': 1306.24267578125, 'learning_rate': 5.25e-06, 'ce_loss': 8.566949844360352, 'kl_loss': 7.1656293869018555, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 25.0625, 'grad_norm': 845.1534423828125, 'learning_rate': 5.500000000000001e-06, 'ce_loss': 8.07987117767334, 'kl_loss': 5.331446170806885, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 24.5, 'grad_norm': 682.8446655273438, 'learning_rate': 5.750000000000001e-06, 'ce_loss': 7.783115863800049, 'kl_loss': 3.952907085418701, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 25.8596, 'grad_norm': 578.582275390625, 'learning_rate': 6e-06, 'ce_loss': 7.4673871994018555, 'kl_loss': 10.261072158813477, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 23.2614, 'grad_norm': 3045.447021484375, 'learning_rate': 6.25e-06, 'ce_loss': 7.925461292266846, 'kl_loss': 4.591019153594971, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 25.1785, 'grad_norm': 766.0040893554688, 'learning_rate': 6.5000000000000004e-06, 'ce_loss': 7.32517671585083, 'kl_loss': 4.829689979553223, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 22.3291, 'grad_norm': 400.6752014160156, 'learning_rate': 6.750000000000001e-06, 'ce_loss': 7.001428604125977, 'kl_loss': 3.7990455627441406, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+  0%|▎                                                                                                                  | 32/10000 [03:02<12:54:02,  4.66s/it]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+{'loss': 26.7123, 'grad_norm': 856.1776123046875, 'learning_rate': 7.000000000000001e-06, 'ce_loss': 7.120132923126221, 'kl_loss': 3.7914175987243652, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 23.4126, 'grad_norm': 366.7822570800781, 'learning_rate': 7.25e-06, 'ce_loss': 6.4367356300354, 'kl_loss': 5.490732192993164, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 22.3746, 'grad_norm': 685.990966796875, 'learning_rate': 7.5e-06, 'ce_loss': 6.980665683746338, 'kl_loss': 4.912559509277344, 'skipped_batches': 0, 'epoch': 0.0}
+{'loss': 25.7877, 'grad_norm': 703.38525390625, 'learning_rate': 7.75e-06, 'ce_loss': 6.026198387145996, 'kl_loss': 7.006920337677002, 'skipped_batches': 0, 'epoch': 0.0}
+  warnings.warn(
+  0%|▍                                                                                                                  | 33/10000 [03:08<13:55:30,  5.03s/it]
+{'loss': 26.6992, 'grad_norm': 909.210693359375, 'learning_rate': 8.000000000000001e-06, 'ce_loss': 6.721262454986572, 'kl_loss': 20.328594207763672, 'skipped_batches': 0, 'epoch': 0.0}
+
+======================================================================
+ERROR occurred during training: OutOfMemoryError
+Error message: CUDA out of memory. Tried to allocate 1.16 GiB. GPU 1 has a total capacity of 47.53 GiB of which 838.25 MiB is free. Process 3004875 has 46.70 GiB memory in use. Of the allocated memory 41.18 GiB is allocated by PyTorch, and 5.20 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+======================================================================
+
+Saving model checkpoint before exiting...
+Model saved to recovery checkpoint: distilled_checkpoints/top10_gla/distill_top10_gla_20251205_152830/recovery_checkpoint

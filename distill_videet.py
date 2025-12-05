@@ -26,6 +26,8 @@ class DistillationTrainer(Trainer):
         self._current_kl_loss = None
         # Track step count for debugging
         self._step_count = 0
+        # Track skipped batches due to NaN
+        self._skipped_batches = 0
 
         # CRITICAL: Ensure teacher has NO gradient tracking, checkpointing, or wasteful features
         self.teacher_model.eval()  # Eval mode
@@ -80,6 +82,7 @@ class DistillationTrainer(Trainer):
         return prepared
 
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        self._step_count += 1
         labels = inputs["labels"]
         student_inputs = {k: v for k, v in inputs.items() if k != "labels"}
         
@@ -87,10 +90,23 @@ class DistillationTrainer(Trainer):
         student_outputs = model(**student_inputs)
         student_logits = student_outputs.logits
         
-        # Check for NaN in student logits
+        # Check for NaN in student logits - skip this batch if NaN detected
         if torch.isnan(student_logits).any():
-            print(f"ERROR: NaN detected in student logits!")
-            raise ValueError("NaN in student logits")
+            self._skipped_batches += 1
+            print(f"WARNING: NaN detected in student logits at step {self._step_count}. Skipping batch (total skipped: {self._skipped_batches})")
+            
+            # Return zero loss to skip this batch (produces zero gradients)
+            zero_loss = torch.tensor(0.0, device=self.student_device, requires_grad=True)
+            if zero_loss.device != self.args.device:
+                zero_loss = zero_loss.to(self.args.device)
+            
+            # Store component losses as zero for logging
+            self._current_ce_loss = 0.0
+            self._current_kl_loss = 0.0
+            
+            if return_outputs:
+                return zero_loss, student_outputs
+            return zero_loss
         
         # Teacher forward
         with torch.inference_mode():
@@ -149,6 +165,10 @@ class DistillationTrainer(Trainer):
         if hasattr(self, '_current_kl_loss') and self._current_kl_loss is not None:
             logs['kl_loss'] = self._current_kl_loss
         
+        # Add skipped batch count to logs
+        if hasattr(self, '_skipped_batches'):
+            logs['skipped_batches'] = self._skipped_batches
+        
         # Ensure total loss is in logs (should already be there, but double-check)
         if 'loss' not in logs:
             # This shouldn't happen, but add a warning if it does
@@ -200,7 +220,7 @@ if __name__ == "__main__":
     for name, buffer in student_model.named_buffers():
         if buffer.device != student_device:
             buffer.data = buffer.data.to(student_device)
-    
+    print(student_model)
     student_model.train()
     for p in student_model.parameters():
         p.requires_grad_(True)
@@ -243,12 +263,12 @@ if __name__ == "__main__":
         output_dir=output_dir,
         per_device_train_batch_size=1,  # Reduced to 1 to save memory
         gradient_accumulation_steps=8,  # Increased to maintain effective batch size
-        learning_rate=9e-6,
+        learning_rate=5e-5,
         num_train_epochs=1,
-        max_steps=5000,
+        max_steps=10000,
         logging_steps=1,
-        save_steps=2000,
-        save_total_limit=2,
+        save_steps=3000,
+        save_total_limit=6,
         warmup_steps=200,
         max_grad_norm=1.0,
         lr_scheduler_type="cosine",  # Use cosine annealing LR schedule
@@ -288,12 +308,34 @@ if __name__ == "__main__":
         tokenizer=tokenizer,
     )
     
-    trainer.train()
+    try:
+        trainer.train()
+        
+        final_save_dir = os.path.join(output_dir, "final_model")
+        student_model.save_pretrained(final_save_dir)
+        tokenizer.save_pretrained(final_save_dir)
+        print(f"Saved final model to {final_save_dir}")
+        
+    except (ValueError, RuntimeError, Exception) as e:
+        print(f"\n{'='*70}")
+        print(f"ERROR occurred during training: {type(e).__name__}")
+        print(f"Error message: {str(e)}")
+        print(f"{'='*70}\n")
+        
+        print("Saving model checkpoint before exiting...")
+        recovery_save_dir = os.path.join(output_dir, "recovery_checkpoint")
+        os.makedirs(recovery_save_dir, exist_ok=True)
+        
+        try:
+            student_model.save_pretrained(recovery_save_dir)
+            tokenizer.save_pretrained(recovery_save_dir)
+            print(f"Model saved to recovery checkpoint: {recovery_save_dir}")
+        except Exception as save_error:
+            print(f"ERROR: Failed to save recovery checkpoint: {save_error}")
+        
+        # Re-raise the original error
+        raise
     
-    final_save_dir = os.path.join(output_dir, "final_model")
-    student_model.save_pretrained(final_save_dir)
-    tokenizer.save_pretrained(final_save_dir)
-    print(f"Saved final model to {final_save_dir}")
-    
-    wandb.finish()
+    finally:
+        wandb.finish()
 

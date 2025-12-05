@@ -1,0 +1,13 @@
+{"time":"2025-12-05T15:40:30.034353416Z","level":"INFO","msg":"stream: starting","core version":"0.23.0"}
+{"time":"2025-12-05T15:40:30.265907213Z","level":"INFO","msg":"stream: created new stream","id":"psx78sdb"}
+{"time":"2025-12-05T15:40:30.266058002Z","level":"INFO","msg":"handler: started","stream_id":"psx78sdb"}
+{"time":"2025-12-05T15:40:30.266315251Z","level":"INFO","msg":"stream: started","id":"psx78sdb"}
+{"time":"2025-12-05T15:40:30.26640109Z","level":"INFO","msg":"writer: started","stream_id":"psx78sdb"}
+{"time":"2025-12-05T15:40:30.26643337Z","level":"INFO","msg":"sender: started","stream_id":"psx78sdb"}
+{"time":"2025-12-05T15:57:25.673015777Z","level":"INFO","msg":"stream: closing","id":"psx78sdb"}
+{"time":"2025-12-05T15:57:25.673255406Z","level":"ERROR","msg":"sender: sendSummary called after exit"}
+{"time":"2025-12-05T15:57:25.673877733Z","level":"WARN","msg":"sender: received Exit record more than once, ignoring"}
+{"time":"2025-12-05T15:57:25.898364487Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-12-05T15:57:26.039455641Z","level":"INFO","msg":"handler: closed","stream_id":"psx78sdb"}
+{"time":"2025-12-05T15:57:26.039616Z","level":"INFO","msg":"sender: closed","stream_id":"psx78sdb"}
+{"time":"2025-12-05T15:57:26.03963296Z","level":"INFO","msg":"stream: closed","id":"psx78sdb"}
