@@ -364,7 +364,7 @@ if __name__ == "__main__":
         max_steps=10000,
         logging_steps=10,
         save_steps=200,
-        save_total_limit=3,
+        save_total_limit=2,
         warmup_steps=100,
         max_grad_norm=1.0,
         ddp_find_unused_parameters=False,  # Disable unused parameter finding for DDP
