@@ -3,17 +3,23 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 DEVICE = "cuda" # :(
 
-MODEL_NAME = "Qwen/Qwen3-8B"
-SAVE_DIR = MODEL_NAME.split('/')[-1]  # Save to "Qwen3-1.7B" in root directory
+MODEL_NAMES = [
+    "Qwen/Qwen3-8B",
+    "Qwen/Qwen3-1.7B",
+]
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_NAME,
-    torch_dtype=torch.float32,
-    device_map=DEVICE
-)
+for model_name in MODEL_NAMES:
+    save_dir = model_name.split('/')[-1]  # Save to "Qwen3-8B" or "Qwen3-1.7B" in root directory
 
-tokenizer.save_pretrained(SAVE_DIR)
-model.save_pretrained(SAVE_DIR)
+    print(f"Downloading {model_name} ...")
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        torch_dtype=torch.float32,
+        device_map=DEVICE
+    )
 
-print(f"Downloaded {MODEL_NAME} to {SAVE_DIR}")
+    tokenizer.save_pretrained(save_dir)
+    model.save_pretrained(save_dir)
+
+    print(f"Downloaded {model_name} to {save_dir}")
