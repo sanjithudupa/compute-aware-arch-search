@@ -1,0 +1,74 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:39: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+After Trainer init: Student model on cuda:1, expected cuda:1
+Student model gradient check: 322/322 parameter tensors have gradients enabled
+Student model size: 2,077,973,376/2,077,973,376 scalar parameters (2077.97M/2077.97M) have gradients enabled
+Final check - Student model device: cuda:1
+Final check - Trainer args.device: cuda:0 (read-only property)
+Final check - CUDA current device: 1
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                                                          | 0/10000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+
+[Step 1] ========== DEBUG INFO ==========
+[Step 1] Labels shape: torch.Size([8, 837]), dtype: torch.int64
+[Step 1] Labels min: -100, max: 97586, has_nan: False
+[Step 1] input_ids shape: torch.Size([8, 837]), dtype: torch.int64, device: cuda:1
+[Step 1] attention_mask shape: torch.Size([8, 837]), dtype: torch.int64, device: cuda:1
+[Step 1] Checking model parameters for NaN/Inf...
+  warnings.warn(
+[Step 1] Student logits shape: torch.Size([8, 837, 151936]), dtype: torch.float32, device: cuda:1
+[Step 1] Student logits has NaN! Checking where it first appears...
+[Step 1] Embeddings (first 10 tokens) has_nan: False
+[Step 1] Student logits min: nan, max: nan
+[Step 1] Student logits has_nan: True, has_inf: False
+[Step 1] Teacher logits shape: torch.Size([8, 837, 151936]), dtype: torch.float16, device: cuda:1
+[Step 1] Teacher logits min: -29.3438, max: 56.9688
+[Step 1] Teacher logits has_nan: False, has_inf: False
+[Step 1] CE loss: nan, has_nan: True, has_inf: False
+[Step 1] Mask shape: torch.Size([8, 837, 1]), valid tokens: 3175/6696
+[Step 1] Student log_probs shape: torch.Size([8, 837, 151936]), min: nan, max: nan
+[Step 1] Student log_probs has_nan: True, has_inf: False
+[Step 1] Teacher probs shape: torch.Size([8, 837, 151936]), min: 0.0000, max: 0.9810
+[Step 1] Teacher probs has_nan: False, has_inf: False
+[Step 1] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 1] KL loss (before mask) shape: torch.Size([8, 837]), min: nan, max: nan
+[Step 1] KL loss (before mask) has_nan: True, has_inf: False
+[Step 1] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 1] Temperature: 4.0, alpha: 0.5
+[Step 1] Final loss: nan, has_nan: True, has_inf: False
+[Step 1] ====================================
+
+
+[Step 2] ========== DEBUG INFO ==========
+[Step 2] Labels shape: torch.Size([8, 1024]), dtype: torch.int64
+[Step 2] Labels min: -100, max: 98527, has_nan: False
+[Step 2] input_ids shape: torch.Size([8, 1024]), dtype: torch.int64, device: cuda:1
+[Step 2] attention_mask shape: torch.Size([8, 1024]), dtype: torch.int64, device: cuda:1
+[Step 2] Student logits shape: torch.Size([8, 1024, 151936]), dtype: torch.float32, device: cuda:1
+[Step 2] Student logits has NaN! Checking where it first appears...
+[Step 2] Embeddings (first 10 tokens) has_nan: False
+[Step 2] Student logits min: nan, max: nan
+[Step 2] Student logits has_nan: True, has_inf: False
+[Step 2] Teacher logits shape: torch.Size([8, 1024, 151936]), dtype: torch.float16, device: cuda:1
+[Step 2] Teacher logits min: -31.6250, max: 46.1250
+[Step 2] Teacher logits has_nan: False, has_inf: False
+[Step 2] CE loss: nan, has_nan: True, has_inf: False
+[Step 2] Mask shape: torch.Size([8, 1024, 1]), valid tokens: 6114/8192
+[Step 2] Student log_probs shape: torch.Size([8, 1024, 151936]), min: nan, max: nan
+Traceback (most recent call last):
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 463, in <module>
+    trainer.train()
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 177, in compute_loss
+    print(f"[Step {self._step_count}] Student log_probs has_nan: {torch.isnan(student_log_probs).any().item()}, has_inf: {torch.isinf(student_log_probs).any().item()}")
+                                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 4.64 GiB. GPU 1 has a total capacity of 47.53 GiB of which 4.61 GiB is free. Process 2095257 has 42.91 GiB memory in use. Of the allocated memory 36.55 GiB is allocated by PyTorch, and 6.03 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

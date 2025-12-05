@@ -25,6 +25,7 @@
   "tie_word_embeddings": false,
   "initializer_range": 0.02,
   "fuse_norm": true,
+  "clamp_min": -5.0,
   "fuse_cross_entropy": true,
   "vocab_size": 151936
 }

@@ -1,0 +1,100 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:227: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+After Trainer init: Student model on cuda:1, expected cuda:1
+Student model gradient check: 322/322 parameter tensors have gradients enabled
+Student model size: 2,077,973,376/2,077,973,376 scalar parameters (2077.97M/2077.97M) have gradients enabled
+Final check - Student model device: cuda:1
+Final check - Trainer args.device: cuda:0 (read-only property)
+Final check - CUDA current device: 1
+
+Checking GLA layers for clamp_min fix...
+
+======================================================================
+GLA NaN DIAGNOSTIC
+======================================================================
+
+[1] Embeddings: shape=torch.Size([1, 128, 2048]), min=-0.2109, max=0.1543, has_nan=False
+
+[Layer 0] Type: full_attention
+  Input: min=-0.2109, max=0.1543
+  After LayerNorm: min=-5.3940, max=3.3825
+  (Skipping full attention layer forward)
+
+[Layer 1] Type: full_attention
+  Input: min=-0.2109, max=0.1543
+  After LayerNorm: min=-3.0498, max=2.4141
+  (Skipping full attention layer forward)
+
+[Layer 2] Type: gla
+  Input: min=-0.2109, max=0.1543
+  After LayerNorm: min=-1.9687, max=2.3479
+
+  === GLA DETAILED DEBUG ===
+  After GLA attn_norm: min=-9.4512, max=7.0884
+  Q: min=-8.2834, max=8.7306, has_nan=False
+  K: min=-9.1936, max=10.7787, has_nan=False
+  V: min=-15.7085, max=15.2208, has_nan=False
+
+  gk_proj OUTPUT (raw): min=-5.9480, max=6.1368
+  After logsigmoid: min=-5.9506, max=-0.0022
+  After /normalizer(16): min=-0.3719, max=-0.0001
+  clamp_min setting: -5.0
+  After clamp: min=-0.3719, max=-0.0001
+  exp(gk): min=6.894158e-01, max=9.998651e-01, has_inf=False, has_nan=False
+
+  Running actual GLA forward...
+  GLA output: min=-16.6895, max=15.6153, has_nan=False
+  === END GLA DEBUG ===
+
+======================================================================
+END DIAGNOSTIC
+======================================================================
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                         | 0/10000 [00:00<?, ?it/s]Traceback (most recent call last):
+
+
+[Step 1] ========== DEBUG INFO ==========
+[Step 1] Labels shape: torch.Size([2, 463]), dtype: torch.int64
+[Step 1] Labels min: -100, max: 95954, has_nan: False
+[Step 1] input_ids shape: torch.Size([2, 463]), dtype: torch.int64, device: cuda:1
+[Step 1] attention_mask shape: torch.Size([2, 463]), dtype: torch.int64, device: cuda:1
+[Step 1] Checking model parameters for NaN/Inf...
+[Step 1] Student logits shape: torch.Size([2, 463, 151936]), dtype: torch.float32, device: cuda:1
+[Step 1] Student logits min: -24.2103, max: 33.9432
+[Step 1] Student logits has_nan: False, has_inf: False
+[Step 1] Teacher logits shape: torch.Size([2, 463, 151936]), dtype: torch.float16, device: cuda:1
+[Step 1] Teacher logits min: -26.1406, max: 44.8438
+[Step 1] Teacher logits has_nan: False, has_inf: False
+[Step 1] CE loss: 8.868940, has_nan: False, has_inf: False
+[Step 1] Mask shape: torch.Size([2, 463, 1]), valid tokens: 565/926
+[Step 1] Student log_probs shape: torch.Size([2, 463, 151936]), min: -18.1116, max: -3.9753
+[Step 1] Student log_probs has_nan: False, has_inf: False
+[Step 1] Teacher probs shape: torch.Size([2, 463, 151936]), min: 0.0000, max: 0.7153
+[Step 1] Teacher probs has_nan: False, has_inf: False
+[Step 1] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 1] KL loss (before mask) shape: torch.Size([2, 463]), min: 0.1038, max: 6.6917
+[Step 1] KL loss (before mask) has_nan: False, has_inf: False
+[Step 1] KL loss (after mask): 4.272226, has_nan: False, has_inf: False
+[Step 1] Temperature: 4.0, alpha: 0.5
+[Step 1] Final loss: 6.570583, has_nan: False, has_inf: False
+[Step 1] ====================================
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 829, in <module>
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4071, in training_step
+    self.accelerator.backward(loss, **kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2740, in backward
+    loss.backward(**kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_tensor.py", line 647, in backward
+    torch.autograd.backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/graph.py", line 829, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

@@ -1,0 +1,11 @@
+{"time":"2025-12-05T06:29:10.244873979Z","level":"INFO","msg":"stream: starting","core version":"0.23.0"}
+{"time":"2025-12-05T06:29:10.470638435Z","level":"INFO","msg":"stream: created new stream","id":"azmcpaqo"}
+{"time":"2025-12-05T06:29:10.470823684Z","level":"INFO","msg":"handler: started","stream_id":"azmcpaqo"}
+{"time":"2025-12-05T06:29:10.471041813Z","level":"INFO","msg":"stream: started","id":"azmcpaqo"}
+{"time":"2025-12-05T06:29:10.471056233Z","level":"INFO","msg":"writer: started","stream_id":"azmcpaqo"}
+{"time":"2025-12-05T06:29:10.471098933Z","level":"INFO","msg":"sender: started","stream_id":"azmcpaqo"}
+{"time":"2025-12-05T06:30:57.927110163Z","level":"INFO","msg":"stream: closing","id":"azmcpaqo"}
+{"time":"2025-12-05T06:30:58.183695605Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-12-05T06:30:58.5294971Z","level":"INFO","msg":"handler: closed","stream_id":"azmcpaqo"}
+{"time":"2025-12-05T06:30:58.529693189Z","level":"INFO","msg":"sender: closed","stream_id":"azmcpaqo"}
+{"time":"2025-12-05T06:30:58.529713719Z","level":"INFO","msg":"stream: closed","id":"azmcpaqo"}

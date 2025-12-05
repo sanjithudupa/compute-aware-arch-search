@@ -1,0 +1,63 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:227: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+
+======================================================================
+GLA NaN DIAGNOSTIC
+======================================================================
+
+[1] Embeddings: shape=torch.Size([1, 128, 2048]), min=-0.2109, max=0.1543, has_nan=False
+
+[Layer 0] Type: full_attention
+  Input: min=-0.2109, max=0.1543
+  After LayerNorm: min=-5.3940, max=3.3825
+  (Skipping full attention layer forward)
+
+[Layer 1] Type: full_attention
+  Input: min=-0.2109, max=0.1543
+  After LayerNorm: min=-3.0498, max=2.4141
+  (Skipping full attention layer forward)
+
+[Layer 2] Type: gla
+  Input: min=-0.2109, max=0.1543
+  After LayerNorm: min=-1.9687, max=2.3479
+
+  === GLA DETAILED DEBUG ===
+  After GLA attn_norm: min=-9.4512, max=7.0884
+  Q: min=-8.2834, max=8.7306, has_nan=False
+  K: min=-9.1936, max=10.7787, has_nan=False
+  V: min=-15.7085, max=15.2208, has_nan=False
+
+  gk_proj OUTPUT (raw): min=-5.9480, max=6.1368
+  After logsigmoid: min=-5.9506, max=-0.0022
+  After /normalizer(16): min=-0.3719, max=-0.0001
+  clamp_min setting: -5.0
+  After clamp: min=-0.3719, max=-0.0001
+  exp(gk): min=6.894158e-01, max=9.998651e-01, has_inf=False, has_nan=False
+
+  Running actual GLA forward...
+  GLA output: min=-16.6895, max=15.6153, has_nan=False
+  === END GLA DEBUG ===
+
+======================================================================
+END DIAGNOSTIC
+======================================================================
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                            | 1/10000 [05:13<871:06:52, 313.63s/it]Traceback (most recent call last):
+
+{'loss': 131.3605, 'grad_norm': 6618.82275390625, 'learning_rate': 0.0, 'ce_loss': 11.591989517211914, 'kl_loss': 14.126060485839844, 'epoch': 0.0}
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 502, in <module>
+    trainer.train()
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 302, in compute_loss
+    student_log_probs = F.log_softmax(student_logits / self.temperature, dim=-1)
+                                      ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.16 GiB. GPU 1 has a total capacity of 47.53 GiB of which 538.25 MiB is free. Process 2178713 has 47.00 GiB memory in use. Of the allocated memory 44.76 GiB is allocated by PyTorch, and 989.63 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

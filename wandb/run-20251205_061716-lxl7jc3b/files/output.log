@@ -1,0 +1,433 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:39: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+After Trainer init: Student model on cuda:1, expected cuda:1
+Student model gradient check: 322/322 parameter tensors have gradients enabled
+Student model size: 2,077,973,376/2,077,973,376 scalar parameters (2077.97M/2077.97M) have gradients enabled
+Final check - Student model device: cuda:1
+Final check - Trainer args.device: cuda:0 (read-only property)
+Final check - CUDA current device: 1
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                         | 0/10000 [00:00<?, ?it/s]
+
+[Step 1] ========== DEBUG INFO ==========
+[Step 1] Labels shape: torch.Size([2, 463]), dtype: torch.int64
+[Step 1] Labels min: -100, max: 95954, has_nan: False
+[Step 1] input_ids shape: torch.Size([2, 463]), dtype: torch.int64, device: cuda:1
+[Step 1] attention_mask shape: torch.Size([2, 463]), dtype: torch.int64, device: cuda:1
+[Step 1] Checking model parameters for NaN/Inf...
+[Step 1] Student logits shape: torch.Size([2, 463, 151936]), dtype: torch.float32, device: cuda:1
+[Step 1] Student logits has NaN! Checking where it first appears...
+[Step 1] Embeddings (first 10 tokens) has_nan: False
+[Step 1] Student logits min: nan, max: nan
+[Step 1] Student logits has_nan: True, has_inf: False
+[Step 1] Teacher logits shape: torch.Size([2, 463, 151936]), dtype: torch.float16, device: cuda:1
+[Step 1] Teacher logits min: -26.1406, max: 44.8438
+[Step 1] Teacher logits has_nan: False, has_inf: False
+[Step 1] CE loss: nan, has_nan: True, has_inf: False
+[Step 1] Mask shape: torch.Size([2, 463, 1]), valid tokens: 565/926
+[Step 1] Student log_probs shape: torch.Size([2, 463, 151936]), min: nan, max: nan
+[Step 1] Student log_probs has_nan: True, has_inf: False
+[Step 1] Teacher probs shape: torch.Size([2, 463, 151936]), min: 0.0000, max: 0.7153
+[Step 1] Teacher probs has_nan: False, has_inf: False
+[Step 1] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 1] KL loss (before mask) shape: torch.Size([2, 463]), min: nan, max: nan
+[Step 1] KL loss (before mask) has_nan: True, has_inf: False
+[Step 1] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 1] Temperature: 4.0, alpha: 0.5
+[Step 1] Final loss: nan, has_nan: True, has_inf: False
+[Step 1] ====================================
+
+
+[Step 2] ========== DEBUG INFO ==========
+[Step 2] Labels shape: torch.Size([2, 837]), dtype: torch.int64
+[Step 2] Labels min: -100, max: 94580, has_nan: False
+[Step 2] input_ids shape: torch.Size([2, 837]), dtype: torch.int64, device: cuda:1
+[Step 2] attention_mask shape: torch.Size([2, 837]), dtype: torch.int64, device: cuda:1
+[Step 2] Student logits shape: torch.Size([2, 837, 151936]), dtype: torch.float32, device: cuda:1
+[Step 2] Student logits has NaN! Checking where it first appears...
+[Step 2] Embeddings (first 10 tokens) has_nan: False
+[Step 2] Student logits min: nan, max: nan
+[Step 2] Student logits has_nan: True, has_inf: False
+[Step 2] Teacher logits shape: torch.Size([2, 837, 151936]), dtype: torch.float16, device: cuda:1
+[Step 2] Teacher logits min: -26.8594, max: 49.2812
+[Step 2] Teacher logits has_nan: False, has_inf: False
+[Step 2] CE loss: nan, has_nan: True, has_inf: False
+[Step 2] Mask shape: torch.Size([2, 837, 1]), valid tokens: 1008/1674
+[Step 2] Student log_probs shape: torch.Size([2, 837, 151936]), min: nan, max: nan
+[Step 2] Student log_probs has_nan: True, has_inf: False
+[Step 2] Teacher probs shape: torch.Size([2, 837, 151936]), min: 0.0000, max: 0.6714
+[Step 2] Teacher probs has_nan: False, has_inf: False
+[Step 2] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 2] KL loss (before mask) shape: torch.Size([2, 837]), min: nan, max: nan
+[Step 2] KL loss (before mask) has_nan: True, has_inf: False
+[Step 2] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 2] Temperature: 4.0, alpha: 0.5
+[Step 2] Final loss: nan, has_nan: True, has_inf: False
+[Step 2] ====================================
+
+
+[Step 3] ========== DEBUG INFO ==========
+[Step 3] Labels shape: torch.Size([2, 282]), dtype: torch.int64
+[Step 3] Labels min: -100, max: 93526, has_nan: False
+[Step 3] input_ids shape: torch.Size([2, 282]), dtype: torch.int64, device: cuda:1
+[Step 3] attention_mask shape: torch.Size([2, 282]), dtype: torch.int64, device: cuda:1
+[Step 3] Student logits shape: torch.Size([2, 282, 151936]), dtype: torch.float32, device: cuda:1
+[Step 3] Student logits has NaN! Checking where it first appears...
+[Step 3] Embeddings (first 10 tokens) has_nan: False
+[Step 3] Student logits min: nan, max: nan
+[Step 3] Student logits has_nan: True, has_inf: False
+[Step 3] Teacher logits shape: torch.Size([2, 282, 151936]), dtype: torch.float16, device: cuda:1
+[Step 3] Teacher logits min: -27.7969, max: 39.3750
+[Step 3] Teacher logits has_nan: False, has_inf: False
+[Step 3] CE loss: nan, has_nan: True, has_inf: False
+[Step 3] Mask shape: torch.Size([2, 282, 1]), valid tokens: 406/564
+[Step 3] Student log_probs shape: torch.Size([2, 282, 151936]), min: nan, max: nan
+[Step 3] Student log_probs has_nan: True, has_inf: False
+[Step 3] Teacher probs shape: torch.Size([2, 282, 151936]), min: 0.0000, max: 0.1647
+[Step 3] Teacher probs has_nan: False, has_inf: False
+[Step 3] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 3] KL loss (before mask) shape: torch.Size([2, 282]), min: nan, max: nan
+[Step 3] KL loss (before mask) has_nan: True, has_inf: False
+[Step 3] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 3] Temperature: 4.0, alpha: 0.5
+[Step 3] Final loss: nan, has_nan: True, has_inf: False
+[Step 3] ====================================
+
+
+[Step 4] ========== DEBUG INFO ==========
+[Step 4] Labels shape: torch.Size([2, 756]), dtype: torch.int64
+[Step 4] Labels min: -100, max: 97586, has_nan: False
+[Step 4] input_ids shape: torch.Size([2, 756]), dtype: torch.int64, device: cuda:1
+[Step 4] attention_mask shape: torch.Size([2, 756]), dtype: torch.int64, device: cuda:1
+[Step 4] Student logits shape: torch.Size([2, 756, 151936]), dtype: torch.float32, device: cuda:1
+[Step 4] Student logits has NaN! Checking where it first appears...
+[Step 4] Embeddings (first 10 tokens) has_nan: False
+[Step 4] Student logits min: nan, max: nan
+[Step 4] Student logits has_nan: True, has_inf: False
+[Step 4] Teacher logits shape: torch.Size([2, 756, 151936]), dtype: torch.float16, device: cuda:1
+[Step 4] Teacher logits min: -29.3750, max: 57.0000
+[Step 4] Teacher logits has_nan: False, has_inf: False
+[Step 4] CE loss: nan, has_nan: True, has_inf: False
+[Step 4] Mask shape: torch.Size([2, 756, 1]), valid tokens: 1196/1512
+[Step 4] Student log_probs shape: torch.Size([2, 756, 151936]), min: nan, max: nan
+[Step 4] Student log_probs has_nan: True, has_inf: False
+[Step 4] Teacher probs shape: torch.Size([2, 756, 151936]), min: 0.0000, max: 0.9810
+[Step 4] Teacher probs has_nan: False, has_inf: False
+[Step 4] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 4] KL loss (before mask) shape: torch.Size([2, 756]), min: nan, max: nan
+[Step 4] KL loss (before mask) has_nan: True, has_inf: False
+[Step 4] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 4] Temperature: 4.0, alpha: 0.5
+[Step 4] Final loss: nan, has_nan: True, has_inf: False
+[Step 4] ====================================
+
+
+[Step 5] ========== DEBUG INFO ==========
+[Step 5] Labels shape: torch.Size([2, 1024]), dtype: torch.int64
+[Step 5] Labels min: -100, max: 97809, has_nan: False
+[Step 5] input_ids shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 5] attention_mask shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 5] Student logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float32, device: cuda:1
+[Step 5] Student logits has NaN! Checking where it first appears...
+[Step 5] Embeddings (first 10 tokens) has_nan: False
+[Step 5] Student logits min: nan, max: nan
+[Step 5] Student logits has_nan: True, has_inf: False
+[Step 5] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16, device: cuda:1
+[Step 5] Teacher logits min: -31.6250, max: 45.1875
+[Step 5] Teacher logits has_nan: False, has_inf: False
+[Step 5] CE loss: nan, has_nan: True, has_inf: False
+[Step 5] Mask shape: torch.Size([2, 1024, 1]), valid tokens: 1970/2048
+[Step 5] Student log_probs shape: torch.Size([2, 1024, 151936]), min: nan, max: nan
+[Step 5] Student log_probs has_nan: True, has_inf: False
+[Step 5] Teacher probs shape: torch.Size([2, 1024, 151936]), min: 0.0000, max: 0.6265
+[Step 5] Teacher probs has_nan: False, has_inf: False
+[Step 5] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 5] KL loss (before mask) shape: torch.Size([2, 1024]), min: nan, max: nan
+[Step 5] KL loss (before mask) has_nan: True, has_inf: False
+[Step 5] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 5] Temperature: 4.0, alpha: 0.5
+[Step 5] Final loss: nan, has_nan: True, has_inf: False
+[Step 5] ====================================
+
+
+[Step 6] ========== DEBUG INFO ==========
+[Step 6] Labels shape: torch.Size([2, 695]), dtype: torch.int64
+[Step 6] Labels min: -100, max: 97225, has_nan: False
+[Step 6] input_ids shape: torch.Size([2, 695]), dtype: torch.int64, device: cuda:1
+[Step 6] attention_mask shape: torch.Size([2, 695]), dtype: torch.int64, device: cuda:1
+[Step 6] Student logits shape: torch.Size([2, 695, 151936]), dtype: torch.float32, device: cuda:1
+[Step 6] Student logits has NaN! Checking where it first appears...
+[Step 6] Embeddings (first 10 tokens) has_nan: False
+[Step 6] Student logits min: nan, max: nan
+[Step 6] Student logits has_nan: True, has_inf: False
+[Step 6] Teacher logits shape: torch.Size([2, 695, 151936]), dtype: torch.float16, device: cuda:1
+[Step 6] Teacher logits min: -31.2344, max: 42.5625
+[Step 6] Teacher logits has_nan: False, has_inf: False
+[Step 6] CE loss: nan, has_nan: True, has_inf: False
+[Step 6] Mask shape: torch.Size([2, 695, 1]), valid tokens: 831/1390
+[Step 6] Student log_probs shape: torch.Size([2, 695, 151936]), min: nan, max: nan
+[Step 6] Student log_probs has_nan: True, has_inf: False
+[Step 6] Teacher probs shape: torch.Size([2, 695, 151936]), min: 0.0000, max: 0.5171
+[Step 6] Teacher probs has_nan: False, has_inf: False
+[Step 6] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 6] KL loss (before mask) shape: torch.Size([2, 695]), min: nan, max: nan
+[Step 6] KL loss (before mask) has_nan: True, has_inf: False
+[Step 6] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 6] Temperature: 4.0, alpha: 0.5
+[Step 6] Final loss: nan, has_nan: True, has_inf: False
+[Step 6] ====================================
+
+
+[Step 7] ========== DEBUG INFO ==========
+[Step 7] Labels shape: torch.Size([2, 1024]), dtype: torch.int64
+[Step 7] Labels min: -100, max: 98527, has_nan: False
+[Step 7] input_ids shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 7] attention_mask shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 7] Student logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float32, device: cuda:1
+[Step 7] Student logits has NaN! Checking where it first appears...
+[Step 7] Embeddings (first 10 tokens) has_nan: False
+[Step 7] Student logits min: nan, max: nan
+[Step 7] Student logits has_nan: True, has_inf: False
+[Step 7] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16, device: cuda:1
+[Step 7] Teacher logits min: -29.4531, max: 46.1250
+[Step 7] Teacher logits has_nan: False, has_inf: False
+[Step 7] CE loss: nan, has_nan: True, has_inf: False
+[Step 7] Mask shape: torch.Size([2, 1024, 1]), valid tokens: 1265/2048
+[Step 7] Student log_probs shape: torch.Size([2, 1024, 151936]), min: nan, max: nan
+[Step 7] Student log_probs has_nan: True, has_inf: False
+[Step 7] Teacher probs shape: torch.Size([2, 1024, 151936]), min: 0.0000, max: 0.5444
+[Step 7] Teacher probs has_nan: False, has_inf: False
+[Step 7] Teacher probs sum check (should be ~1.0): min_sum: 0.9995, max_sum: 1.0000
+[Step 7] KL loss (before mask) shape: torch.Size([2, 1024]), min: nan, max: nan
+[Step 7] KL loss (before mask) has_nan: True, has_inf: False
+[Step 7] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 7] Temperature: 4.0, alpha: 0.5
+[Step 7] Final loss: nan, has_nan: True, has_inf: False
+[Step 7] ====================================
+
+
+[Step 8] ========== DEBUG INFO ==========
+[Step 8] Labels shape: torch.Size([2, 1024]), dtype: torch.int64
+[Step 8] Labels min: 1, max: 97759, has_nan: False
+[Step 8] input_ids shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 8] attention_mask shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 8] Student logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float32, device: cuda:1
+[Step 8] Student logits has NaN! Checking where it first appears...
+[Step 8] Embeddings (first 10 tokens) has_nan: False
+[Step 8] Student logits min: nan, max: nan
+[Step 8] Student logits has_nan: True, has_inf: False
+[Step 8] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16, device: cuda:1
+[Step 8] Teacher logits min: -31.0469, max: 44.4062
+[Step 8] Teacher logits has_nan: False, has_inf: False
+[Step 8] CE loss: nan, has_nan: True, has_inf: False
+[Step 8] Mask shape: torch.Size([2, 1024, 1]), valid tokens: 2048/2048
+[Step 8] Student log_probs shape: torch.Size([2, 1024, 151936]), min: nan, max: nan
+[Step 8] Student log_probs has_nan: True, has_inf: False
+[Step 8] Teacher probs shape: torch.Size([2, 1024, 151936]), min: 0.0000, max: 0.4641
+[Step 8] Teacher probs has_nan: False, has_inf: False
+[Step 8] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 8] KL loss (before mask) shape: torch.Size([2, 1024]), min: nan, max: nan
+[Step 8] KL loss (before mask) has_nan: True, has_inf: False
+[Step 8] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 8] Temperature: 4.0, alpha: 0.5
+[Step 8] Final loss: nan, has_nan: True, has_inf: False
+[Step 8] ====================================
+
+
+[Step 9] ========== DEBUG INFO ==========
+[Step 9] Labels shape: torch.Size([2, 412]), dtype: torch.int64
+[Step 9] Labels min: -100, max: 98199, has_nan: False
+[Step 9] input_ids shape: torch.Size([2, 412]), dtype: torch.int64, device: cuda:1
+[Step 9] attention_mask shape: torch.Size([2, 412]), dtype: torch.int64, device: cuda:1
+[Step 9] Student logits shape: torch.Size([2, 412, 151936]), dtype: torch.float32, device: cuda:1
+[Step 9] Student logits has NaN! Checking where it first appears...
+[Step 9] Embeddings (first 10 tokens) has_nan: False
+[Step 9] Student logits min: nan, max: nan
+[Step 9] Student logits has_nan: True, has_inf: False
+[Step 9] Teacher logits shape: torch.Size([2, 412, 151936]), dtype: torch.float16, device: cuda:1
+[Step 9] Teacher logits min: -31.2344, max: 52.4688
+[Step 9] Teacher logits has_nan: False, has_inf: False
+[Step 9] CE loss: nan, has_nan: True, has_inf: False
+[Step 9] Mask shape: torch.Size([2, 412, 1]), valid tokens: 710/824
+[Step 9] Student log_probs shape: torch.Size([2, 412, 151936]), min: nan, max: nan
+[Step 9] Student log_probs has_nan: True, has_inf: False
+[Step 9] Teacher probs shape: torch.Size([2, 412, 151936]), min: 0.0000, max: 0.8804
+[Step 9] Teacher probs has_nan: False, has_inf: False
+[Step 9] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 9] KL loss (before mask) shape: torch.Size([2, 412]), min: nan, max: nan
+[Step 9] KL loss (before mask) has_nan: True, has_inf: False
+[Step 9] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 9] Temperature: 4.0, alpha: 0.5
+[Step 9] Final loss: nan, has_nan: True, has_inf: False
+[Step 9] ====================================
+
+
+[Step 10] ========== DEBUG INFO ==========
+[Step 10] Labels shape: torch.Size([2, 645]), dtype: torch.int64
+[Step 10] Labels min: -100, max: 97597, has_nan: False
+[Step 10] input_ids shape: torch.Size([2, 645]), dtype: torch.int64, device: cuda:1
+[Step 10] attention_mask shape: torch.Size([2, 645]), dtype: torch.int64, device: cuda:1
+[Step 10] Student logits shape: torch.Size([2, 645, 151936]), dtype: torch.float32, device: cuda:1
+[Step 10] Student logits has NaN! Checking where it first appears...
+[Step 10] Embeddings (first 10 tokens) has_nan: False
+[Step 10] Student logits min: nan, max: nan
+[Step 10] Student logits has_nan: True, has_inf: False
+[Step 10] Teacher logits shape: torch.Size([2, 645, 151936]), dtype: torch.float16, device: cuda:1
+[Step 10] Teacher logits min: -38.3438, max: 44.0938
+[Step 10] Teacher logits has_nan: False, has_inf: False
+[Step 10] CE loss: nan, has_nan: True, has_inf: False
+[Step 10] Mask shape: torch.Size([2, 645, 1]), valid tokens: 959/1290
+[Step 10] Student log_probs shape: torch.Size([2, 645, 151936]), min: nan, max: nan
+[Step 10] Student log_probs has_nan: True, has_inf: False
+[Step 10] Teacher probs shape: torch.Size([2, 645, 151936]), min: 0.0000, max: 0.5757
+[Step 10] Teacher probs has_nan: False, has_inf: False
+[Step 10] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 10] KL loss (before mask) shape: torch.Size([2, 645]), min: nan, max: nan
+[Step 10] KL loss (before mask) has_nan: True, has_inf: False
+[Step 10] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 10] Temperature: 4.0, alpha: 0.5
+[Step 10] Final loss: nan, has_nan: True, has_inf: False
+[Step 10] ====================================
+
+
+[Step 11] ========== DEBUG INFO ==========
+[Step 11] Labels shape: torch.Size([2, 382]), dtype: torch.int64
+[Step 11] Labels min: -100, max: 138832, has_nan: False
+[Step 11] input_ids shape: torch.Size([2, 382]), dtype: torch.int64, device: cuda:1
+[Step 11] attention_mask shape: torch.Size([2, 382]), dtype: torch.int64, device: cuda:1
+[Step 11] Student logits shape: torch.Size([2, 382, 151936]), dtype: torch.float32, device: cuda:1
+[Step 11] Student logits has NaN! Checking where it first appears...
+[Step 11] Embeddings (first 10 tokens) has_nan: False
+[Step 11] Student logits min: nan, max: nan
+[Step 11] Student logits has_nan: True, has_inf: False
+[Step 11] Teacher logits shape: torch.Size([2, 382, 151936]), dtype: torch.float16, device: cuda:1
+[Step 11] Teacher logits min: -29.9219, max: 63.7500
+[Step 11] Teacher logits has_nan: False, has_inf: False
+[Step 11] CE loss: nan, has_nan: True, has_inf: False
+[Step 11] Mask shape: torch.Size([2, 382, 1]), valid tokens: 762/764
+[Step 11] Student log_probs shape: torch.Size([2, 382, 151936]), min: nan, max: nan
+[Step 11] Student log_probs has_nan: True, has_inf: False
+[Step 11] Teacher probs shape: torch.Size([2, 382, 151936]), min: 0.0000, max: 0.9858
+[Step 11] Teacher probs has_nan: False, has_inf: False
+[Step 11] Teacher probs sum check (should be ~1.0): min_sum: 0.9990, max_sum: 1.0000
+[Step 11] KL loss (before mask) shape: torch.Size([2, 382]), min: nan, max: nan
+[Step 11] KL loss (before mask) has_nan: True, has_inf: False
+[Step 11] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 11] Temperature: 4.0, alpha: 0.5
+[Step 11] Final loss: nan, has_nan: True, has_inf: False
+[Step 11] ====================================
+
+
+[Step 12] ========== DEBUG INFO ==========
+[Step 12] Labels shape: torch.Size([2, 1024]), dtype: torch.int64
+[Step 12] Labels min: -100, max: 96398, has_nan: False
+[Step 12] input_ids shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 12] attention_mask shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 12] Student logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float32, device: cuda:1
+[Step 12] Student logits has NaN! Checking where it first appears...
+[Step 12] Embeddings (first 10 tokens) has_nan: False
+[Step 12] Student logits min: nan, max: nan
+[Step 12] Student logits has_nan: True, has_inf: False
+[Step 12] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16, device: cuda:1
+[Step 12] Teacher logits min: -32.6250, max: 53.9375
+[Step 12] Teacher logits has_nan: False, has_inf: False
+[Step 12] CE loss: nan, has_nan: True, has_inf: False
+[Step 12] Mask shape: torch.Size([2, 1024, 1]), valid tokens: 1577/2048
+[Step 12] Student log_probs shape: torch.Size([2, 1024, 151936]), min: nan, max: nan
+[Step 12] Student log_probs has_nan: True, has_inf: False
+[Step 12] Teacher probs shape: torch.Size([2, 1024, 151936]), min: 0.0000, max: 0.9609
+[Step 12] Teacher probs has_nan: False, has_inf: False
+[Step 12] Teacher probs sum check (should be ~1.0): min_sum: 0.9995, max_sum: 1.0000
+[Step 12] KL loss (before mask) shape: torch.Size([2, 1024]), min: nan, max: nan
+[Step 12] KL loss (before mask) has_nan: True, has_inf: False
+[Step 12] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 12] Temperature: 4.0, alpha: 0.5
+[Step 12] Final loss: nan, has_nan: True, has_inf: False
+[Step 12] ====================================
+
+
+[Step 13] ========== DEBUG INFO ==========
+[Step 13] Labels shape: torch.Size([2, 1024]), dtype: torch.int64
+[Step 13] Labels min: 1, max: 97362, has_nan: False
+[Step 13] input_ids shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 13] attention_mask shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 13] Student logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float32, device: cuda:1
+[Step 13] Student logits has NaN! Checking where it first appears...
+[Step 13] Embeddings (first 10 tokens) has_nan: False
+[Step 13] Student logits min: nan, max: nan
+[Step 13] Student logits has_nan: True, has_inf: False
+[Step 13] Teacher logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float16, device: cuda:1
+[Step 13] Teacher logits min: -30.7188, max: 48.6250
+[Step 13] Teacher logits has_nan: False, has_inf: False
+[Step 13] CE loss: nan, has_nan: True, has_inf: False
+[Step 13] Mask shape: torch.Size([2, 1024, 1]), valid tokens: 2048/2048
+[Step 13] Student log_probs shape: torch.Size([2, 1024, 151936]), min: nan, max: nan
+[Step 13] Student log_probs has_nan: True, has_inf: False
+[Step 13] Teacher probs shape: torch.Size([2, 1024, 151936]), min: 0.0000, max: 0.6860
+[Step 13] Teacher probs has_nan: False, has_inf: False
+[Step 13] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 13] KL loss (before mask) shape: torch.Size([2, 1024]), min: nan, max: nan
+[Step 13] KL loss (before mask) has_nan: True, has_inf: False
+[Step 13] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 13] Temperature: 4.0, alpha: 0.5
+[Step 13] Final loss: nan, has_nan: True, has_inf: False
+[Step 13] ====================================
+
+
+[Step 14] ========== DEBUG INFO ==========
+[Step 14] Labels shape: torch.Size([2, 780]), dtype: torch.int64
+[Step 14] Labels min: -100, max: 97056, has_nan: False
+[Step 14] input_ids shape: torch.Size([2, 780]), dtype: torch.int64, device: cuda:1
+[Step 14] attention_mask shape: torch.Size([2, 780]), dtype: torch.int64, device: cuda:1
+[Step 14] Student logits shape: torch.Size([2, 780, 151936]), dtype: torch.float32, device: cuda:1
+[Step 14] Student logits has NaN! Checking where it first appears...
+[Step 14] Embeddings (first 10 tokens) has_nan: False
+[Step 14] Student logits min: nan, max: nan
+[Step 14] Student logits has_nan: True, has_inf: False
+[Step 14] Teacher logits shape: torch.Size([2, 780, 151936]), dtype: torch.float16, device: cuda:1
+[Step 14] Teacher logits min: -28.3906, max: 45.8125
+[Step 14] Teacher logits has_nan: False, has_inf: False
+[Step 14] CE loss: nan, has_nan: True, has_inf: False
+[Step 14] Mask shape: torch.Size([2, 780, 1]), valid tokens: 928/1560
+[Step 14] Student log_probs shape: torch.Size([2, 780, 151936]), min: nan, max: nan
+[Step 14] Student log_probs has_nan: True, has_inf: False
+[Step 14] Teacher probs shape: torch.Size([2, 780, 151936]), min: 0.0000, max: 0.5298
+[Step 14] Teacher probs has_nan: False, has_inf: False
+[Step 14] Teacher probs sum check (should be ~1.0): min_sum: 1.0000, max_sum: 1.0000
+[Step 14] KL loss (before mask) shape: torch.Size([2, 780]), min: nan, max: nan
+[Step 14] KL loss (before mask) has_nan: True, has_inf: False
+[Step 14] KL loss (after mask): nan, has_nan: True, has_inf: False
+[Step 14] Temperature: 4.0, alpha: 0.5
+[Step 14] Final loss: nan, has_nan: True, has_inf: False
+[Step 14] ====================================
+
+
+[Step 15] ========== DEBUG INFO ==========
+[Step 15] Labels shape: torch.Size([2, 1024]), dtype: torch.int64
+[Step 15] Labels min: -100, max: 99124, has_nan: False
+[Step 15] input_ids shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 15] attention_mask shape: torch.Size([2, 1024]), dtype: torch.int64, device: cuda:1
+[Step 15] Student logits shape: torch.Size([2, 1024, 151936]), dtype: torch.float32, device: cuda:1
+[Step 15] Student logits has NaN! Checking where it first appears...
+[Step 15] Embeddings (first 10 tokens) has_nan: False
+[Step 15] Student logits min: nan, max: nan
+[Step 15] Student logits has_nan: True, has_inf: False
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 590, in <module>
+    import traceback
+    ^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 150, in compute_loss
+    print(f"  After clamp: min={gk_clamped.min():.4f}, max={gk_clamped.max():.4f}")
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/cuda/memory.py", line 224, in empty_cache
+    torch._C._cuda_emptyCache()
+KeyboardInterrupt
