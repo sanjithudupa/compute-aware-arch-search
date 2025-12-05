@@ -1,0 +1,97 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:227: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+
+======================================================================
+GLA NaN DIAGNOSTIC
+======================================================================
+
+[1] Embeddings: shape=torch.Size([1, 128, 2048]), min=-0.2109, max=0.1543, has_nan=False
+
+[Layer 0] Type: full_attention
+  Input: min=-0.2109, max=0.1543
+  After LayerNorm: min=-5.3940, max=3.3825
+  (Skipping full attention layer forward)
+
+[Layer 1] Type: full_attention
+  Input: min=-0.2109, max=0.1543
+  After LayerNorm: min=-3.0498, max=2.4141
+  (Skipping full attention layer forward)
+
+[Layer 2] Type: gla
+  Input: min=-0.2109, max=0.1543
+  After LayerNorm: min=-1.9687, max=2.3479
+
+  === GLA DETAILED DEBUG ===
+  After GLA attn_norm: min=-9.4512, max=7.0884
+  Q: min=-8.2834, max=8.7306, has_nan=False
+  K: min=-9.1936, max=10.7787, has_nan=False
+  V: min=-15.7085, max=15.2208, has_nan=False
+
+  gk_proj OUTPUT (raw): min=-5.9480, max=6.1368
+  After logsigmoid: min=-5.9506, max=-0.0022
+  After /normalizer(16): min=-0.3719, max=-0.0001
+  clamp_min setting: -5.0
+  After clamp: min=-0.3719, max=-0.0001
+  exp(gk): min=6.894158e-01, max=9.998651e-01, has_inf=False, has_nan=False
+
+  Running actual GLA forward...
+  GLA output: min=-16.6895, max=15.6153, has_nan=False
+  === END GLA DEBUG ===
+
+======================================================================
+END DIAGNOSTIC
+======================================================================
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|                                                                                                                         | 0/10000 [00:00<?, ?it/s]/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+  0%|▎                                                                                                            | 30/10000 [02:31<13:59:41,  5.05s/it]Traceback (most recent call last):
+
+{'loss': 59.8325, 'grad_norm': 3294.7421875, 'learning_rate': 0.0, 'ce_loss': 10.404158592224121, 'kl_loss': 5.036721229553223, 'epoch': 0.0}
+{'loss': 73.2123, 'grad_norm': 4262.12646484375, 'learning_rate': 5.000000000000001e-07, 'ce_loss': 11.591989517211914, 'kl_loss': 14.126060485839844, 'epoch': 0.0}
+{'loss': 63.9836, 'grad_norm': 5154.53173828125, 'learning_rate': 1.0000000000000002e-06, 'ce_loss': 8.765837669372559, 'kl_loss': 4.602628707885742, 'epoch': 0.0}
+{'loss': 62.3933, 'grad_norm': 4679.34326171875, 'learning_rate': 1.5e-06, 'ce_loss': 9.95499038696289, 'kl_loss': 5.83390998840332, 'epoch': 0.0}
+{'loss': 63.2851, 'grad_norm': 3740.771240234375, 'learning_rate': 2.0000000000000003e-06, 'ce_loss': 8.709587097167969, 'kl_loss': 3.325986623764038, 'epoch': 0.0}
+{'loss': 59.8981, 'grad_norm': 6660.23193359375, 'learning_rate': 2.5e-06, 'ce_loss': 8.555850982666016, 'kl_loss': 4.885970592498779, 'epoch': 0.0}
+{'loss': 61.5684, 'grad_norm': 2706.98974609375, 'learning_rate': 3e-06, 'ce_loss': 12.385405540466309, 'kl_loss': 5.3991875648498535, 'epoch': 0.0}
+{'loss': 55.1884, 'grad_norm': 1148.7694091796875, 'learning_rate': 3.5000000000000004e-06, 'ce_loss': 8.37668228149414, 'kl_loss': 6.703804016113281, 'epoch': 0.0}
+{'loss': 53.7507, 'grad_norm': 711.134765625, 'learning_rate': 4.000000000000001e-06, 'ce_loss': 8.879518508911133, 'kl_loss': 4.810507774353027, 'epoch': 0.0}
+{'loss': 50.5777, 'grad_norm': 362.5221252441406, 'learning_rate': 4.5e-06, 'ce_loss': 8.117151260375977, 'kl_loss': 4.573452472686768, 'epoch': 0.0}
+{'loss': 52.8118, 'grad_norm': 305.0611267089844, 'learning_rate': 5e-06, 'ce_loss': 8.641552925109863, 'kl_loss': 5.914600372314453, 'epoch': 0.0}
+{'loss': 49.2145, 'grad_norm': 234.49777221679688, 'learning_rate': 5.500000000000001e-06, 'ce_loss': 8.238702774047852, 'kl_loss': 3.5890207290649414, 'epoch': 0.0}
+{'loss': 49.3011, 'grad_norm': 259.30389404296875, 'learning_rate': 6e-06, 'ce_loss': 7.814223766326904, 'kl_loss': 3.7781641483306885, 'epoch': 0.0}
+{'loss': 49.7377, 'grad_norm': 185.60108947753906, 'learning_rate': 6.5000000000000004e-06, 'ce_loss': 7.902944564819336, 'kl_loss': 3.4332685470581055, 'epoch': 0.0}
+{'loss': 51.5481, 'grad_norm': 236.4830780029297, 'learning_rate': 7.000000000000001e-06, 'ce_loss': 7.258340835571289, 'kl_loss': 5.5174102783203125, 'epoch': 0.0}
+{'loss': 51.6539, 'grad_norm': 251.86111450195312, 'learning_rate': 7.5e-06, 'ce_loss': 7.2692365646362305, 'kl_loss': 5.837429046630859, 'epoch': 0.0}
+{'loss': 47.4915, 'grad_norm': 221.80947875976562, 'learning_rate': 8.000000000000001e-06, 'ce_loss': 7.825891971588135, 'kl_loss': 4.125637054443359, 'epoch': 0.0}
+{'loss': 42.8094, 'grad_norm': 146.02003479003906, 'learning_rate': 8.500000000000002e-06, 'ce_loss': 7.41323709487915, 'kl_loss': 2.1767101287841797, 'epoch': 0.0}
+{'loss': 41.7334, 'grad_norm': 157.62277221679688, 'learning_rate': 9e-06, 'ce_loss': 7.536596775054932, 'kl_loss': 2.7056336402893066, 'epoch': 0.0}
+{'loss': 41.5449, 'grad_norm': 187.34254455566406, 'learning_rate': 9.5e-06, 'ce_loss': 7.176042556762695, 'kl_loss': 2.5906124114990234, 'epoch': 0.0}
+{'loss': 35.9499, 'grad_norm': 183.6483154296875, 'learning_rate': 1e-05, 'ce_loss': 6.5421061515808105, 'kl_loss': 3.526489019393921, 'epoch': 0.0}
+{'loss': 37.1703, 'grad_norm': 205.62344360351562, 'learning_rate': 1.05e-05, 'ce_loss': 5.769638538360596, 'kl_loss': 2.5926759243011475, 'epoch': 0.0}
+{'loss': 31.0752, 'grad_norm': 147.2110137939453, 'learning_rate': 1.1000000000000001e-05, 'ce_loss': 5.119792938232422, 'kl_loss': 2.9940199851989746, 'epoch': 0.0}
+{'loss': 31.7712, 'grad_norm': 147.08714294433594, 'learning_rate': 1.1500000000000002e-05, 'ce_loss': 4.197624206542969, 'kl_loss': 3.3470373153686523, 'epoch': 0.0}
+{'loss': 29.4085, 'grad_norm': 136.4954376220703, 'learning_rate': 1.2e-05, 'ce_loss': 3.511660575866699, 'kl_loss': 2.9573147296905518, 'epoch': 0.0}
+{'loss': 25.3056, 'grad_norm': 132.83721923828125, 'learning_rate': 1.25e-05, 'ce_loss': 2.311483383178711, 'kl_loss': 3.028015375137329, 'epoch': 0.0}
+{'loss': 24.4827, 'grad_norm': 147.34190368652344, 'learning_rate': 1.3000000000000001e-05, 'ce_loss': 1.651010513305664, 'kl_loss': 8.332281112670898, 'epoch': 0.0}
+{'loss': 23.0983, 'grad_norm': 175.73562622070312, 'learning_rate': 1.3500000000000001e-05, 'ce_loss': 1.6744221448898315, 'kl_loss': 5.241425037384033, 'epoch': 0.0}
+{'loss': 23.6667, 'grad_norm': 90.5112075805664, 'learning_rate': 1.4000000000000001e-05, 'ce_loss': 1.1919044256210327, 'kl_loss': 3.4379968643188477, 'epoch': 0.0}
+{'loss': 20.6056, 'grad_norm': 73.93865203857422, 'learning_rate': 1.45e-05, 'ce_loss': 0.8134403228759766, 'kl_loss': 4.408550262451172, 'epoch': 0.0}
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 503, in <module>
+    trainer.train()
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 282, in compute_loss
+    with torch.inference_mode():
+         ^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/grad_mode.py", line 270, in __new__
+    def __new__(cls, mode=True):
+
+KeyboardInterrupt

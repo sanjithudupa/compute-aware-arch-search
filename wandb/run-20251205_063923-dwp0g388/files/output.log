@@ -137,3 +137,50 @@ The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and g
 {'loss': 7.8537, 'grad_norm': 7.827863693237305, 'learning_rate': 4.4500000000000004e-05, 'ce_loss': 0.16205443441867828, 'kl_loss': 2.5088918209075928, 'epoch': 0.01}
 {'loss': 8.3063, 'grad_norm': 11.178547859191895, 'learning_rate': 4.5e-05, 'ce_loss': 0.1079939752817154, 'kl_loss': 2.079409599304199, 'epoch': 0.01}
 {'loss': 10.8064, 'grad_norm': 12.882547378540039, 'learning_rate': 4.55e-05, 'ce_loss': 0.08882836252450943, 'kl_loss': 1.488138198852539, 'epoch': 0.01}
+{'loss': 9.3355, 'grad_norm': 14.000700950622559, 'learning_rate': 4.600000000000001e-05, 'ce_loss': 0.1375763863325119, 'kl_loss': 2.823199510574341, 'epoch': 0.01}
+{'loss': 8.6777, 'grad_norm': 8.701362609863281, 'learning_rate': 4.6500000000000005e-05, 'ce_loss': 0.1186220571398735, 'kl_loss': 2.3255233764648438, 'epoch': 0.01}
+{'loss': 8.0273, 'grad_norm': 11.913826942443848, 'learning_rate': 4.7e-05, 'ce_loss': 0.10787160694599152, 'kl_loss': 1.3825716972351074, 'epoch': 0.01}
+{'loss': 8.0358, 'grad_norm': 13.052663803100586, 'learning_rate': 4.75e-05, 'ce_loss': 0.10881977528333664, 'kl_loss': 1.4873281717300415, 'epoch': 0.01}
+{'loss': 8.2004, 'grad_norm': 10.472576141357422, 'learning_rate': 4.8e-05, 'ce_loss': 0.08041892200708389, 'kl_loss': 1.750878095626831, 'epoch': 0.01}
+{'loss': 8.6729, 'grad_norm': 12.610066413879395, 'learning_rate': 4.85e-05, 'ce_loss': 0.09554755687713623, 'kl_loss': 2.094679355621338, 'epoch': 0.01}
+{'loss': 9.7537, 'grad_norm': 12.347158432006836, 'learning_rate': 4.9e-05, 'ce_loss': 0.10776834934949875, 'kl_loss': 2.0615508556365967, 'epoch': 0.01}
+{'loss': 10.6258, 'grad_norm': 19.9112491607666, 'learning_rate': 4.9500000000000004e-05, 'ce_loss': 0.14232900738716125, 'kl_loss': 1.6161036491394043, 'epoch': 0.01}
+{'loss': 9.6676, 'grad_norm': 15.870809555053711, 'learning_rate': 5e-05, 'ce_loss': 0.3650456666946411, 'kl_loss': 4.217441082000732, 'epoch': 0.01}
+{'loss': 8.5746, 'grad_norm': 10.050271987915039, 'learning_rate': 4.99949494949495e-05, 'ce_loss': 0.16474995017051697, 'kl_loss': 2.009993553161621, 'epoch': 0.01}
+{'loss': 7.6328, 'grad_norm': 8.36379337310791, 'learning_rate': 4.9989898989898994e-05, 'ce_loss': 0.0888250544667244, 'kl_loss': 1.148781418800354, 'epoch': 0.01}
+{'loss': 7.4364, 'grad_norm': 11.234648704528809, 'learning_rate': 4.998484848484849e-05, 'ce_loss': 0.1898273080587387, 'kl_loss': 2.3502960205078125, 'epoch': 0.01}
+{'loss': 8.4541, 'grad_norm': 11.25174331665039, 'learning_rate': 4.997979797979798e-05, 'ce_loss': 0.12462485581636429, 'kl_loss': 2.433791160583496, 'epoch': 0.01}
+{'loss': 8.948, 'grad_norm': 12.619585037231445, 'learning_rate': 4.997474747474748e-05, 'ce_loss': 0.09483028948307037, 'kl_loss': 1.3673828840255737, 'epoch': 0.01}
+{'loss': 9.4312, 'grad_norm': 12.469882011413574, 'learning_rate': 4.996969696969697e-05, 'ce_loss': 0.07527398318052292, 'kl_loss': 1.8846757411956787, 'epoch': 0.01}
+{'loss': 9.2743, 'grad_norm': 24.429346084594727, 'learning_rate': 4.996464646464647e-05, 'ce_loss': 0.09847206622362137, 'kl_loss': 2.0778467655181885, 'epoch': 0.01}
+{'loss': 9.1082, 'grad_norm': 11.782678604125977, 'learning_rate': 4.9959595959595964e-05, 'ce_loss': 0.060180194675922394, 'kl_loss': 2.0891075134277344, 'epoch': 0.01}
+{'loss': 10.5847, 'grad_norm': 18.080312728881836, 'learning_rate': 4.995454545454546e-05, 'ce_loss': 0.11808191984891891, 'kl_loss': 2.2445757389068604, 'epoch': 0.01}
+{'loss': 8.2611, 'grad_norm': 10.753546714782715, 'learning_rate': 4.994949494949495e-05, 'ce_loss': 0.1697765588760376, 'kl_loss': 2.4414029121398926, 'epoch': 0.01}
+{'loss': 9.2817, 'grad_norm': 10.841424942016602, 'learning_rate': 4.994444444444445e-05, 'ce_loss': 0.1801590919494629, 'kl_loss': 2.172400712966919, 'epoch': 0.01}
+{'loss': 11.0793, 'grad_norm': 18.604402542114258, 'learning_rate': 4.993939393939394e-05, 'ce_loss': 0.1030469760298729, 'kl_loss': 1.517613410949707, 'epoch': 0.01}
+{'loss': 7.3281, 'grad_norm': 25.5356502532959, 'learning_rate': 4.993434343434344e-05, 'ce_loss': 0.07835565507411957, 'kl_loss': 1.28610098361969, 'epoch': 0.01}
+{'loss': 9.0289, 'grad_norm': 20.777515411376953, 'learning_rate': 4.992929292929293e-05, 'ce_loss': 0.13429924845695496, 'kl_loss': 2.0777788162231445, 'epoch': 0.01}
+{'loss': 8.0978, 'grad_norm': 14.334097862243652, 'learning_rate': 4.992424242424243e-05, 'ce_loss': 0.09702066332101822, 'kl_loss': 1.4444751739501953, 'epoch': 0.01}
+{'loss': 10.9063, 'grad_norm': 22.38311004638672, 'learning_rate': 4.991919191919192e-05, 'ce_loss': 0.10827337205410004, 'kl_loss': 1.7912949323654175, 'epoch': 0.01}
+{'loss': 7.5497, 'grad_norm': 12.64113712310791, 'learning_rate': 4.991414141414142e-05, 'ce_loss': 0.18532177805900574, 'kl_loss': 1.9843653440475464, 'epoch': 0.01}
+{'loss': 7.6876, 'grad_norm': 14.128780364990234, 'learning_rate': 4.990909090909091e-05, 'ce_loss': 0.09604034572839737, 'kl_loss': 1.3859145641326904, 'epoch': 0.01}
+{'loss': 8.9195, 'grad_norm': 9.649725914001465, 'learning_rate': 4.9904040404040406e-05, 'ce_loss': 0.08408740907907486, 'kl_loss': 1.933186411857605, 'epoch': 0.01}
+  File "/workspace/compute-aware-arch-search/distill_videet.py", line 502, in <module>
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 4071, in training_step
+    self.accelerator.backward(loss, **kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2740, in backward
+    loss.backward(**kwargs)
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/_tensor.py", line 647, in backward
+    torch.autograd.backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/workspace/compute-aware-arch-search/.venv/lib/python3.12/site-packages/torch/autograd/graph.py", line 829, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

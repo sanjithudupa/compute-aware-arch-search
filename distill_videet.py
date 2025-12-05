@@ -9,192 +9,6 @@ import wandb
 from datetime import datetime
 
 
-def check_and_fix_gla_config(gla_config_path):
-    """
-    Check GLA config for issues that cause NaN.
-    Returns True if config needs fixing.
-    """
-    if not os.path.exists(gla_config_path):
-        print(f"Warning: GLA config file not found: {gla_config_path}")
-        return False, {}
-    
-    with open(gla_config_path, 'r') as f:
-        config = json.load(f)
-    
-    issues = []
-    fixes = {}
-    
-    # Check clamp_min
-    if config.get('clamp_min') is None:
-        issues.append("clamp_min is None - gates can become too negative, causing exp() underflow")
-        fixes['clamp_min'] = -5.0
-    
-    # Check gate_logit_normalizer
-    if 'gate_logit_normalizer' not in config:
-        issues.append("gate_logit_normalizer not set - defaulting to 16")
-        fixes['gate_logit_normalizer'] = 16
-    elif config.get('gate_logit_normalizer', 16) < 8:
-        issues.append(f"gate_logit_normalizer={config['gate_logit_normalizer']} is low")
-    
-    if issues:
-        print("\n" + "!"*70)
-        print("GLA CONFIG ISSUES FOUND:")
-        print("!"*70)
-        for issue in issues:
-            print(f"  - {issue}")
-        
-        print("\nSuggested fixes:")
-        for k, v in fixes.items():
-            print(f"  {k}: {v}")
-        
-        # Offer to fix
-        print("\nTo fix, update your gla_config.json with:")
-        fixed_config = {**config, **fixes}
-        print(json.dumps(fixed_config, indent=2))
-        print("!"*70 + "\n")
-        
-        return True, fixes
-    
-    print("GLA config looks OK")
-    return False, {}
-
-
-def debug_gla_forward(model, device, layer_attention_types):
-    """
-    Debug GLA layers to find NaN source.
-    Call this before training starts.
-    """
-    print("\n" + "="*70)
-    print("GLA NaN DIAGNOSTIC")
-    print("="*70)
-    
-    model.eval()
-    
-    # Create dummy input
-    dummy_input = torch.randint(100, 1000, (1, 128), device=device)
-    dummy_mask = torch.ones_like(dummy_input)
-    
-    with torch.no_grad():
-        # Step 1: Check embeddings
-        embeds = model.model.embed_tokens(dummy_input)
-        print(f"\n[1] Embeddings: shape={embeds.shape}, "
-              f"min={embeds.min():.4f}, max={embeds.max():.4f}, "
-              f"has_nan={torch.isnan(embeds).any()}")
-        
-        if torch.isnan(embeds).any():
-            print("ERROR: NaN in embeddings!")
-            return
-        
-        # Step 2: Process through layers
-        hidden_states = embeds
-        
-        for layer_idx, layer in enumerate(model.model.layers):
-            attn_type = layer_attention_types[layer_idx]
-            
-            # Apply input layernorm
-            normed = layer.input_layernorm(hidden_states)
-            
-            print(f"\n[Layer {layer_idx}] Type: {attn_type}")
-            print(f"  Input: min={hidden_states.min():.4f}, max={hidden_states.max():.4f}")
-            print(f"  After LayerNorm: min={normed.min():.4f}, max={normed.max():.4f}")
-            
-            if attn_type == "gla":
-                print(f"\n  === GLA DETAILED DEBUG ===")
-                
-                # Get the GLA attention module
-                gla_block = layer.attention
-                gla_attn = gla_block.attn
-                
-                # Apply block's norm
-                normed_for_gla = gla_block.attn_norm(hidden_states)
-                print(f"  After GLA attn_norm: min={normed_for_gla.min():.4f}, max={normed_for_gla.max():.4f}")
-                
-                # Check projections
-                q = gla_attn.q_proj(normed_for_gla)
-                k = gla_attn.k_proj(normed_for_gla)
-                v = gla_attn.v_proj(normed_for_gla)
-                
-                print(f"  Q: min={q.min():.4f}, max={q.max():.4f}, has_nan={torch.isnan(q).any()}")
-                print(f"  K: min={k.min():.4f}, max={k.max():.4f}, has_nan={torch.isnan(k).any()}")
-                print(f"  V: min={v.min():.4f}, max={v.max():.4f}, has_nan={torch.isnan(v).any()}")
-                
-                # CRITICAL: Check gate projection
-                gk_raw = gla_attn.gk_proj(normed_for_gla)
-                print(f"\n  gk_proj OUTPUT (raw): min={gk_raw.min():.4f}, max={gk_raw.max():.4f}")
-                
-                if torch.isnan(gk_raw).any():
-                    print("  ERROR: NaN in gk_proj output!")
-                    # Check the two linear layers in gk_proj
-                    for i, m in enumerate(gla_attn.gk_proj):
-                        if hasattr(m, 'weight'):
-                            w = m.weight
-                            print(f"    gk_proj[{i}] weight: min={w.min():.4f}, max={w.max():.4f}, has_nan={torch.isnan(w).any()}")
-                            if hasattr(m, 'bias') and m.bias is not None:
-                                b = m.bias
-                                print(f"    gk_proj[{i}] bias: min={b.min():.4f}, max={b.max():.4f}, has_nan={torch.isnan(b).any()}")
-                
-                # Check logsigmoid
-                gk_logsig = F.logsigmoid(gk_raw)
-                print(f"  After logsigmoid: min={gk_logsig.min():.4f}, max={gk_logsig.max():.4f}")
-                
-                # Check normalization
-                normalizer = gla_attn.gate_logit_normalizer
-                gk_norm = gk_logsig / normalizer
-                print(f"  After /normalizer({normalizer}): min={gk_norm.min():.4f}, max={gk_norm.max():.4f}")
-                
-                # Check clamp
-                clamp_min = gla_attn.clamp_min
-                print(f"  clamp_min setting: {clamp_min}")
-                if clamp_min is not None:
-                    gk_clamped = torch.clamp_min(gk_norm, clamp_min)
-                    print(f"  After clamp: min={gk_clamped.min():.4f}, max={gk_clamped.max():.4f}")
-                else:
-                    gk_clamped = gk_norm
-                    print(f"  WARNING: clamp_min is None - values can be arbitrarily negative!")
-                
-                # Check exp (this is what kernels compute)
-                gk_exp = torch.exp(gk_clamped)
-                has_inf = torch.isinf(gk_exp).any()
-                has_nan = torch.isnan(gk_exp).any()
-                print(f"  exp(gk): min={gk_exp.min():.6e}, max={gk_exp.max():.6e}, has_inf={has_inf}, has_nan={has_nan}")
-                
-                if has_inf or has_nan:
-                    print(f"\n  !!! PROBLEM FOUND !!!")
-                    print(f"  Gate values too extreme. exp() overflows.")
-                    print(f"  Fix: Set clamp_min=-5.0 in GLA config")
-                
-                # Try running actual forward
-                print(f"\n  Running actual GLA forward...")
-                try:
-                    out, _, _ = gla_attn(
-                        normed_for_gla,
-                        attention_mask=dummy_mask,
-                    )
-                    print(f"  GLA output: min={out.min():.4f}, max={out.max():.4f}, has_nan={torch.isnan(out).any()}")
-                    
-                    if torch.isnan(out).any():
-                        print("  ERROR: NaN in GLA attention output!")
-                except Exception as e:
-                    print(f"  ERROR in GLA forward: {e}")
-                    import traceback
-                    traceback.print_exc()
-                
-                print(f"  === END GLA DEBUG ===")
-                
-                # Don't continue - GLA debugging is what we need
-                break
-            
-            else:
-                # For non-GLA layers, just do a simple forward
-                # We need position embeddings for full attention
-                print(f"  (Skipping full attention layer forward)")
-        
-    model.train()
-    print("\n" + "="*70)
-    print("END DIAGNOSTIC")
-    print("="*70 + "\n")
-
-
 class DistillationTrainer(Trainer):
     def __init__(self, teacher_model, teacher_device, student_device, alpha=0.5, temperature=4.0, *args, **kwargs):
         # Don't move teacher model if it's already on the correct device (avoids duplication)
@@ -366,7 +180,7 @@ if __name__ == "__main__":
     print(f"Teacher model will run on: {teacher_device}")
     print(f"Student model will run on: {student_device}")
     
-    # Load config to get layer_attention_types and check GLA config
+    # Load config to get layer_attention_types
     print(f"\nLoading config from {config_path}...")
     with open(config_path, 'r') as f:
         config_dict = json.load(f)
@@ -377,31 +191,11 @@ if __name__ == "__main__":
     
     print(f"Layer attention types: {layer_attention_types[:5]}... (showing first 5)")
     
-    # Check GLA config if GLA layers are present
-    if "gla" in layer_attention_types:
-        gla_config_path = config_dict.get('gla_config_path', 'linear_attn/gla_config.json')
-        print(f"\nChecking GLA config at {gla_config_path}...")
-        config_needs_fix, fixes = check_and_fix_gla_config(gla_config_path)
-        
-        if config_needs_fix:
-            print("WARNING: GLA config has issues that may cause NaN!")
-            print("Consider updating the GLA config file before proceeding.")
-    
     # Load student model and move to student_device BEFORE passing to Trainer
     # This ensures the Trainer doesn't move it to the default GPU 0
     torch.cuda.set_device(student_device)
 
     student_model = Qwen3WithLinearAttention.from_config_json(config_path=config_path)
-    
-    # Fix GLA config if clamp_min is None (prevents NaN)
-    if "gla" in layer_attention_types:
-        for layer_idx, layer in enumerate(student_model.model.layers):
-            if layer_attention_types[layer_idx] == "gla":
-                gla_block = layer.attention
-                if hasattr(gla_block, 'attn') and hasattr(gla_block.attn, 'clamp_min'):
-                    if gla_block.attn.clamp_min is None:
-                        print(f"Setting clamp_min=-5.0 for GLA layer {layer_idx}")
-                        gla_block.attn.clamp_min = -5.0
     
     # Move model to device and ensure all buffers/parameters are on GPU
     student_model = student_model.to(torch.float32).to(student_device)
@@ -459,6 +253,7 @@ if __name__ == "__main__":
         save_total_limit=2,
         warmup_steps=100,
         max_grad_norm=1.0,
+        lr_scheduler_type="cosine",  # Use cosine annealing LR schedule
         ddp_find_unused_parameters=False,  # Disable unused parameter finding for DDP
         dataloader_pin_memory=False,  # Disable pin_memory to save GPU memory
         dataloader_num_workers=0,  # Disable multiprocessing to save memory
@@ -472,7 +267,7 @@ if __name__ == "__main__":
         # - Optimizer states: fp32 (Adam momentum/variance in fp32)
         # - Loss computation: fp32 (converted via .float() for numerical stability)
         # MEMORY: With gradient checkpointing + fp16 activations, should fit in ~20-25GB
-        gradient_checkpointing=False,  # Enable gradient checkpointing to save memory (~30-50% reduction)
+        gradient_checkpointing=True,  # Enable gradient checkpointing to save memory (~30-50% reduction)
         report_to=["wandb"],
         run_name=run_name,
     )
@@ -494,10 +289,6 @@ if __name__ == "__main__":
         data_collator=data_collator,
         tokenizer=tokenizer,
     )
-    
-    # Run GLA diagnostic before training (optional, can be disabled)
-    if "gla" in layer_attention_types:
-        debug_gla_forward(student_model, student_device, layer_attention_types)
     
     trainer.train()
     
