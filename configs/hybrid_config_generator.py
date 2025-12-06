@@ -49,7 +49,7 @@ ALLOWED_RANGES = {
 import json
 import os
 
-def generate_config_for_percentile(percentile, output_dir="hybrid_model_configs"):
+def generate_config_for_percentile(percentile, output_dir="configs/hybrid_model_configs"):
     num_layers = 28
     layer_types = ["full_attention"] * num_layers
     
@@ -87,8 +87,8 @@ def generate_config_for_percentile(percentile, output_dir="hybrid_model_configs"
         "weights_base_path": "linear-attention-checkpoints",
         "description": f"Top {percentile}% - GLA layers: {sorted(selected_gla)}, RWKV7 layers: {sorted(selected_rwkv7)}",
         "layer_attention_types": layer_types,
-        "rwkv7_config_path": "linear_attn/rwkv7_config.json",
-        "gla_config_path": "linear_attn/gla_config.json"
+        "rwkv7_config_path": "models/linear_attn/rwkv7_config.json",
+        "gla_config_path": "models/linear_attn/gla_config.json"
     }
     
     os.makedirs(output_dir, exist_ok=True)

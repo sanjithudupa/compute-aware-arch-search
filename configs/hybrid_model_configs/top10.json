@@ -1,7 +1,7 @@
 {
   "base_model_path": "Qwen3-1.7B",
   "weights_base_path": "linear-attention-checkpoints",
-  "description": "Top 50% - GLA layers: [3, 7, 8, 9, 10], RWKV7 layers: [17, 18, 19, 20, 21, 22]",
+  "description": "Top 10% - GLA layers: [3], RWKV7 layers: [21]",
   "layer_attention_types": [
     "full_attention",
     "full_attention",
@@ -9,10 +9,14 @@
     "full_attention",
     "full_attention",
     "full_attention",
-    "gla",
-    "gla",
-    "gla",
-    "gla",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
     "full_attention",
     "full_attention",
     "full_attention",
@@ -20,11 +24,7 @@
     "full_attention",
     "full_attention",
     "rwkv7",
-    "rwkv7",
-    "rwkv7",
-    "rwkv7",
-    "rwkv7",
-    "rwkv7",
+    "full_attention",
     "full_attention",
     "full_attention",
     "full_attention",
@@ -32,6 +32,6 @@
     "full_attention",
     "full_attention"
   ],
-  "rwkv7_config_path": "linear_attn/rwkv7_config.json",
-  "gla_config_path": "linear_attn/gla_config.json"
+  "rwkv7_config_path": "models/linear_attn/rwkv7_config.json",
+  "gla_config_path": "models/linear_attn/gla_config.json"
 }

@@ -1,10 +1,17 @@
 import os
+import sys
 import json
+
+# Add project root to Python path to allow imports
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForCausalLM, Trainer, TrainingArguments
-from qwen3_model import Qwen3WithLinearAttention
-from dataset_setup import get_tokenized_dataset, get_data_collator, DATASET_URL
+from models.qwen3_model import Qwen3WithLinearAttention
+from utils.dataset_setup import get_tokenized_dataset, get_data_collator, DATASET_URL
 import wandb
 from datetime import datetime
 
@@ -160,24 +167,12 @@ class DistillationTrainer(Trainer):
         final_kl_loss = loss_kl+loss_klb
         final_kl_loss = final_kl_loss * mask.squeeze(-1)
         final_kl_loss = final_kl_loss.sum() / mask.sum()
-
-
-        # kl_loss = F.kl_div(
-        #     student_log_probs,
-        #     teacher_probs,
-        #     reduction="none",
-        # ).sum(dim=-1)  # [B, T]
-        
-        # kl_loss = (kl_loss * mask.squeeze(-1)).sum() / mask.sum()
-        # kl_loss = kl_loss * (self.temperature ** 2)
-        
         # # Store component losses for logging
         self._current_ce_loss = ce_loss.item() if torch.is_tensor(ce_loss) else float(ce_loss)
         self._current_kl_loss = final_kl_loss.item() if torch.is_tensor(final_kl_loss) else float(final_kl_loss)
         
         loss = self.alpha * ce_loss + (1 - self.alpha) * final_kl_loss
         
-        # Trainer validates that loss.device == args.device
         if loss.device != self.args.device:
             loss = loss.to(self.args.device)
         
@@ -196,23 +191,35 @@ class DistillationTrainer(Trainer):
         if hasattr(self, '_current_kl_loss') and self._current_kl_loss is not None:
             logs['kl_loss'] = self._current_kl_loss
         
-        # Add skipped batch count to logs
         if hasattr(self, '_skipped_batches'):
             logs['skipped_batches'] = self._skipped_batches
         
-        # Ensure total loss is in logs (should already be there, but double-check)
         if 'loss' not in logs:
-            # This shouldn't happen, but add a warning if it does
             print("WARNING: 'loss' not found in logs!")
         
-        # Call parent log method (this will trigger callbacks and send to wandb)
         super().log(logs, start_time)
 
 if __name__ == "__main__":
+    import argparse
     
-    CONFIG_NAME = "top10_gla"
+    parser = argparse.ArgumentParser(description="Train student model with knowledge distillation")
+    parser.add_argument(
+        "--config_name",
+        type=str,
+        default="top10_gla",
+        help="Name of the config file (without .json extension)"
+    )
+    parser.add_argument(
+        "--checkpoint_path",
+        type=str,
+        default=None,
+        help="Path to checkpoint folder to resume training from (e.g., 'distilled_checkpoints/top10_gla/checkpoint-3000')"
+    )
+    args = parser.parse_args()
     
-    config_path = f"hybrid_model_configs/{CONFIG_NAME}.json"
+    CONFIG_NAME = args.config_name
+    
+    config_path = f"configs/hybrid_model_configs/{CONFIG_NAME}.json"
     teacher_path = "Qwen3-8B"
     
     # Set up two-GPU configuration: teacher on GPU 0, student on GPU 1
@@ -244,7 +251,19 @@ if __name__ == "__main__":
     # This ensures the Trainer doesn't move it to the default GPU 0
     torch.cuda.set_device(student_device)
 
-    student_model = Qwen3WithLinearAttention.from_config_json(config_path=config_path)
+    # Load model from checkpoint if provided, otherwise from config
+    if args.checkpoint_path is not None:
+        print(f"\nLoading student model from checkpoint: {args.checkpoint_path}")
+        if not os.path.exists(args.checkpoint_path):
+            raise FileNotFoundError(f"Checkpoint path does not exist: {args.checkpoint_path}")
+        student_model = Qwen3WithLinearAttention.from_checkpoint(
+            checkpoint_path=args.checkpoint_path,
+            config_path=config_path,  # Use config_path to get layer_attention_types if not in checkpoint
+        )
+        print("✓ Successfully loaded model from checkpoint")
+    else:
+        print("\nInitializing student model from config (training from scratch)")
+        student_model = Qwen3WithLinearAttention.from_config_json(config_path=config_path)
     
     # Move model to device and ensure all buffers/parameters are on GPU
     student_model = student_model.to(torch.float32).to(student_device)
@@ -268,7 +287,12 @@ if __name__ == "__main__":
         param.requires_grad = False
     torch.cuda.empty_cache()
     
-    tokenizer = AutoTokenizer.from_pretrained(teacher_path)
+    # Load tokenizer from checkpoint if resuming, otherwise from teacher model
+    if args.checkpoint_path is not None and os.path.exists(os.path.join(args.checkpoint_path, "tokenizer.json")):
+        print(f"Loading tokenizer from checkpoint: {args.checkpoint_path}")
+        tokenizer = AutoTokenizer.from_pretrained(args.checkpoint_path)
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(teacher_path)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     
@@ -277,21 +301,33 @@ if __name__ == "__main__":
         tokenizer=tokenizer,
         max_length=512,  # Back to 1024 - teacher should fit comfortably in fp16
         streaming=True,
-        seed=42,
+        seed=422,
     )
     data_collator = get_data_collator(tokenizer, mlm=False)
     
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_name = f"distill_{CONFIG_NAME}_{timestamp}"
-    output_dir = f"distilled_checkpoints/{CONFIG_NAME}/{run_name}"
+    # Determine output directory and run name
+    if args.checkpoint_path is not None:
+        # When resuming, use the checkpoint's parent directory as output_dir
+        # This allows continuing to save checkpoints in the same run
+        output_dir = os.path.dirname(args.checkpoint_path)
+        # Extract run_name from checkpoint path (e.g., "distilled_checkpoints/top10_gla/run_name/checkpoint-3000" -> "run_name")
+        checkpoint_dir = os.path.dirname(args.checkpoint_path)
+        run_name = os.path.basename(checkpoint_dir)
+        print(f"Resuming training: output_dir={output_dir}, run_name={run_name}")
+    else:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        run_name = f"distill_{CONFIG_NAME}_{timestamp}"
+        output_dir = f"distilled_checkpoints/{CONFIG_NAME}/{run_name}"
     
     wandb.init(
         project="compute-aware-arch-search",
         name=run_name,
+        resume="allow" if args.checkpoint_path is not None else None,
     )
     
     training_args = TrainingArguments(
         output_dir=output_dir,
+        resume_from_checkpoint=args.checkpoint_path if args.checkpoint_path is not None else None,
         per_device_train_batch_size=1,  # Reduced to 1 to save memory
         gradient_accumulation_steps=8,  # Increased to maintain effective batch size
         learning_rate=5e-5,

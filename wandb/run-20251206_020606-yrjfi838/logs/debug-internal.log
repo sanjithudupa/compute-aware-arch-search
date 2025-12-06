@@ -1,0 +1,13 @@
+{"time":"2025-12-06T02:06:06.950132699Z","level":"INFO","msg":"stream: starting","core version":"0.23.0"}
+{"time":"2025-12-06T02:06:07.213788442Z","level":"INFO","msg":"stream: created new stream","id":"yrjfi838"}
+{"time":"2025-12-06T02:06:07.213896911Z","level":"INFO","msg":"handler: started","stream_id":"yrjfi838"}
+{"time":"2025-12-06T02:06:07.214291649Z","level":"INFO","msg":"stream: started","id":"yrjfi838"}
+{"time":"2025-12-06T02:06:07.214328199Z","level":"INFO","msg":"writer: started","stream_id":"yrjfi838"}
+{"time":"2025-12-06T02:06:07.214345889Z","level":"INFO","msg":"sender: started","stream_id":"yrjfi838"}
+{"time":"2025-12-06T02:20:18.165860009Z","level":"INFO","msg":"stream: closing","id":"yrjfi838"}
+{"time":"2025-12-06T02:20:18.263184317Z","level":"ERROR","msg":"sender: sendSummary called after exit"}
+{"time":"2025-12-06T02:20:18.263831264Z","level":"WARN","msg":"sender: received Exit record more than once, ignoring"}
+{"time":"2025-12-06T02:20:18.495643484Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-12-06T02:20:18.654297531Z","level":"INFO","msg":"handler: closed","stream_id":"yrjfi838"}
+{"time":"2025-12-06T02:20:18.654550539Z","level":"INFO","msg":"sender: closed","stream_id":"yrjfi838"}
+{"time":"2025-12-06T02:20:18.654587229Z","level":"INFO","msg":"stream: closed","id":"yrjfi838"}

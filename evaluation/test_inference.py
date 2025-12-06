@@ -1,5 +1,13 @@
+import os
+import sys
+
+# Add project root to Python path to allow imports
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from benchmark import benchmark_model
+from utils.benchmark import benchmark_model
 
 model_path = "models/qwen3-1.7b"
 

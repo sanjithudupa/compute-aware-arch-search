@@ -1,6 +1,12 @@
 import os
+import sys
 import json
 import math
+
+# Add project root to Python path to allow imports
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 import torch
 import torch.nn as nn
@@ -16,7 +22,7 @@ from transformers import (
 )
 from safetensors.torch import save_file
 import wandb
-from qwen3_model import Qwen3ForNAS
+from models.qwen3_model import Qwen3ForNAS
 
 # OPTION 1: RWKV7 (currently active)
 from fla.models.rwkv7 import RWKV7Config
@@ -26,7 +32,7 @@ from fla.models.rwkv7.modeling_rwkv7 import RWKV7Block
 # from fla.models.gla import GLAConfig
 # from fla.models.gla.modeling_gla import GLABlock
 
-from dataset_setup import (
+from utils.dataset_setup import (
     get_tokenized_dataset,
     get_data_collator,
     DATASET_URL,
@@ -276,11 +282,11 @@ teacher_model = Qwen3ForNAS.from_pretrained(
 )
 
 # OPTION 1: RWKV7 (currently active)
-with open("linear_attn/rwkv7_config.json", "r") as f:
+with open("models/linear_attn/rwkv7_config.json", "r") as f:
     rwkv7_config_dict = json.load(f)
 
 # OPTION 2: GLA
-# with open("linear_attn/gla_config.json", "r") as f:
+# with open("models/linear_attn/gla_config.json", "r") as f:
 #     gla_config_dict = json.load(f)
 
 train_dataset, tokenizer = get_tokenized_dataset(
@@ -340,10 +346,7 @@ for layer_idx in range(1, num_layers + 1):
         output_dir=layer_output_dir,
         max_steps=max_steps,
         per_device_train_batch_size=per_device_batch_size,
-<<<<<<< HEAD
         per_device_eval_batch_size=per_device_batch_size,
-=======
->>>>>>> 869de4de327143ec43102e86506bfe2e94550b79
         learning_rate=1e-3,
         lr_scheduler_type="cosine",  # Will be replaced by callback
         warmup_steps=int(max_steps * 0.1),

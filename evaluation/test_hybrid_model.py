@@ -1,9 +1,17 @@
+import os
+import sys
+
+# Add project root to Python path to allow imports
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from transformers import AutoTokenizer
-from qwen3_model import Qwen3WithLinearAttention
+from models.qwen3_model import Qwen3WithLinearAttention
 import torch
 
 model = Qwen3WithLinearAttention.from_config_json(
-    config_path="hybrid_model_configs/top10.json",
+    config_path="configs/hybrid_model_configs/top10.json",
 )
 
 tokenizer = AutoTokenizer.from_pretrained("Qwen3-1.7B")

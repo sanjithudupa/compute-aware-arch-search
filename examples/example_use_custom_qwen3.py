@@ -1,6 +1,13 @@
+import os
+import sys
+
+# Add project root to Python path to allow imports
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 from transformers import AutoTokenizer, AutoConfig
-from qwen3_model import Qwen3ForCausalLM, Qwen3ForNAS
+from models.qwen3_model import Qwen3ForCausalLM, Qwen3ForNAS
 import torch
 from fla.layers import MultiScaleRetention
 from transformers import Trainer

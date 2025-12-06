@@ -1,10 +1,17 @@
 import os
+import sys
 import json
+
+# Add project root to Python path to allow imports
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForCausalLM, Trainer, TrainingArguments
-from qwen3_model import Qwen3WithLinearAttention
-from dataset_setup import get_tokenized_dataset, get_data_collator, DATASET_URL
+from models.qwen3_model import Qwen3WithLinearAttention
+from utils.dataset_setup import get_tokenized_dataset, get_data_collator, DATASET_URL
 import wandb
 from datetime import datetime
 
@@ -191,7 +198,7 @@ if __name__ == "__main__":
     
     CONFIG_NAME = "top10_gla"
     
-    config_path = f"hybrid_model_configs/{CONFIG_NAME}.json"
+    config_path = f"configs/hybrid_model_configs/{CONFIG_NAME}.json"
     teacher_path = "Qwen3-8B"
     
     # Determine if we're resuming from a checkpoint
