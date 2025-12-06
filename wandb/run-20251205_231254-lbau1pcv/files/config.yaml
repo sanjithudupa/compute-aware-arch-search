@@ -1,0 +1,67 @@
+_wandb:
+    value:
+        cli_version: 0.23.0
+        e:
+            7rvckpw85sxzr2rm0y7aq0tdt5oaa51z:
+                args:
+                    - --resume_from_checkpoint
+                    - /workspace/compute-aware-arch-search/distilled_checkpoints/top10_gla/distill_top10_gla_20251205_165943
+                codePath: distill_videet.py
+                codePathLocal: distill_videet.py
+                cpu_count: 64
+                cpu_count_logical: 128
+                cudaVersion: "12.4"
+                disk:
+                    /:
+                        total: "32212254720"
+                        used: "1624248320"
+                email: mvideet@gmail.com
+                executable: /workspace/compute-aware-arch-search/.venv/bin/python
+                git:
+                    commit: d9b083d6f107e7a0f106346f3ccdee048d312770
+                    remote: https://github.com/sanjithudupa/compute-aware-arch-search.git
+                gpu: NVIDIA RTX A6000
+                gpu_count: 2
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-155a9c1e-5f26-8110-4d85-0fde86561687
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-278f9f8f-f22f-f884-e15d-6f4348253283
+                host: 6e7adcb2229d
+                memory:
+                    total: "540821860352"
+                os: Linux-5.15.0-139-generic-x86_64-with-glibc2.39
+                program: /workspace/compute-aware-arch-search/distill_videet.py
+                python: CPython 3.12.3
+                root: /workspace/compute-aware-arch-search
+                startedAt: "2025-12-05T23:12:54.282936Z"
+                writerId: 7rvckpw85sxzr2rm0y7aq0tdt5oaa51z
+        m: []
+        python_version: 3.12.3
+        t:
+            "1":
+                - 1
+                - 11
+                - 49
+                - 51
+                - 71
+            "2":
+                - 1
+                - 11
+                - 49
+                - 51
+                - 71
+            "3":
+                - 2
+                - 13
+            "4": 3.12.3
+            "5": 0.23.0
+            "6": 4.57.1
+            "12": 0.23.0
+            "13": linux-x86_64

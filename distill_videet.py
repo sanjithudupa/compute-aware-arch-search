@@ -178,11 +178,94 @@ class DistillationTrainer(Trainer):
         super().log(logs, start_time)
 
 if __name__ == "__main__":
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="Train student model via distillation")
+    parser.add_argument(
+        "--resume_from_checkpoint",
+        type=str,
+        default=None,
+        help="Path to checkpoint directory to resume training from (e.g., /path/to/checkpoint-3000 or /path/to/output_dir)"
+    )
+    args = parser.parse_args()
     
     CONFIG_NAME = "top10_gla"
     
     config_path = f"hybrid_model_configs/{CONFIG_NAME}.json"
     teacher_path = "Qwen3-8B"
+    
+    # Determine if we're resuming from a checkpoint
+    resume_from_checkpoint = None
+    output_dir = None
+    optimizer_corrupted = False
+    
+    if args.resume_from_checkpoint:
+        checkpoint_path = args.resume_from_checkpoint
+        print(f"\n{'='*70}")
+        print(f"RESUMING TRAINING FROM CHECKPOINT: {checkpoint_path}")
+        print(f"{'='*70}\n")
+        
+        # Check if the path is a checkpoint directory (checkpoint-XXXX) or output directory
+        if os.path.basename(checkpoint_path).startswith("checkpoint-"):
+            # It's a checkpoint directory, use its parent as output_dir
+            output_dir = os.path.dirname(checkpoint_path)
+            resume_from_checkpoint = checkpoint_path
+        elif os.path.isdir(checkpoint_path):
+            # It's an output directory, find the latest checkpoint
+            checkpoint_dirs = [d for d in os.listdir(checkpoint_path) 
+                             if d.startswith("checkpoint-") and os.path.isdir(os.path.join(checkpoint_path, d))]
+            if checkpoint_dirs:
+                latest_checkpoint = sorted(checkpoint_dirs, key=lambda x: int(x.split("-")[1]))[-1]
+                resume_from_checkpoint = os.path.join(checkpoint_path, latest_checkpoint)
+                output_dir = checkpoint_path
+                print(f"Found latest checkpoint: {resume_from_checkpoint}")
+            else:
+                raise ValueError(f"No checkpoint directories found in {checkpoint_path}")
+        else:
+            raise ValueError(f"Checkpoint path does not exist: {checkpoint_path}")
+        
+        # Verify checkpoint exists and has required files
+        if not os.path.exists(resume_from_checkpoint):
+            raise ValueError(f"Checkpoint directory does not exist: {resume_from_checkpoint}")
+        
+        checkpoint_files = os.listdir(resume_from_checkpoint)
+        has_model = any(f.startswith("model") and f.endswith(".safetensors") for f in checkpoint_files)
+        optimizer_path = os.path.join(resume_from_checkpoint, "optimizer.pt")
+        has_optimizer = os.path.exists(optimizer_path)
+        
+        print(f"Checkpoint contents:")
+        print(f"  - Model weights: {'✓' if has_model else '✗'}")
+        print(f"  - Optimizer state: {'✓' if has_optimizer else '✗'}")
+        
+        if not has_model:
+            raise ValueError(f"Checkpoint missing model weights: {resume_from_checkpoint}")
+        
+        # Try to validate optimizer state if it exists
+        if has_optimizer:
+            try:
+                # Try to load optimizer state to check if it's corrupted
+                optimizer_state = torch.load(optimizer_path, map_location="cpu", weights_only=False)
+                if not isinstance(optimizer_state, dict):
+                    optimizer_corrupted = True
+                    print(f"  ⚠️  Optimizer state file exists but appears corrupted (not a dict)")
+                elif "state" not in optimizer_state:
+                    optimizer_corrupted = True
+                    print(f"  ⚠️  Optimizer state file exists but missing 'state' key")
+                else:
+                    print(f"  ✓ Optimizer state appears valid")
+            except Exception as e:
+                optimizer_corrupted = True
+                print(f"  ⚠️  Failed to load optimizer state: {e}")
+                print(f"  ⚠️  Optimizer will be initialized from scratch")
+        
+        if not has_optimizer or optimizer_corrupted:
+            optimizer_corrupted = True
+            print(f"\n{'='*70}")
+            print(f"WARNING: Optimizer state is missing or corrupted!")
+            print(f"  → Training will resume with model weights from checkpoint")
+            print(f"  → Optimizer will be initialized from scratch (momentum/Adam states reset)")
+            print(f"  → Learning rate schedule will restart from the current step")
+            print(f"{'='*70}\n")
     
     # Set up two-GPU configuration: teacher on GPU 0, student on GPU 1
     if not torch.cuda.is_available():
@@ -213,7 +296,23 @@ if __name__ == "__main__":
     # This ensures the Trainer doesn't move it to the default GPU 0
     torch.cuda.set_device(student_device)
 
-    student_model = Qwen3WithLinearAttention.from_config_json(config_path=config_path)
+    if resume_from_checkpoint:
+        # When resuming, Trainer will load the model from checkpoint automatically
+        # But we still need to initialize the model structure for the Trainer
+        # Load config from checkpoint to get layer_attention_types
+        checkpoint_config_path = os.path.join(resume_from_checkpoint, "config.json")
+        if os.path.exists(checkpoint_config_path):
+            with open(checkpoint_config_path, 'r') as f:
+                checkpoint_config = json.load(f)
+            # Use layer_attention_types from checkpoint config if available
+            if 'layer_attention_types' in checkpoint_config:
+                print(f"Using layer_attention_types from checkpoint config")
+        # Initialize model structure (Trainer will load weights from checkpoint)
+        print(f"\nInitializing student model structure (weights will be loaded from checkpoint)...")
+        student_model = Qwen3WithLinearAttention.from_config_json(config_path=config_path)
+    else:
+        # Initialize new model
+        student_model = Qwen3WithLinearAttention.from_config_json(config_path=config_path)
     
     # Move model to device and ensure all buffers/parameters are on GPU
     student_model = student_model.to(torch.float32).to(student_device)
@@ -250,13 +349,25 @@ if __name__ == "__main__":
     )
     data_collator = get_data_collator(tokenizer, mlm=False)
     
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_name = f"distill_{CONFIG_NAME}_{timestamp}"
-    output_dir = f"distilled_checkpoints/{CONFIG_NAME}/{run_name}"
+    # Set output directory and run name
+    if output_dir is None:
+        # New training run
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        run_name = f"distill_{CONFIG_NAME}_{timestamp}"
+        output_dir = f"distilled_checkpoints/{CONFIG_NAME}/{run_name}"
+    else:
+        # Resuming - extract run name from output_dir
+        run_name = os.path.basename(output_dir)
+        if not run_name.startswith("distill_"):
+            # Fallback if basename doesn't match expected format
+            run_name = f"distill_{CONFIG_NAME}_resumed_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     
+    # Initialize wandb (resume if resuming from checkpoint)
     wandb.init(
         project="compute-aware-arch-search",
         name=run_name,
+        resume="allow" if resume_from_checkpoint else None,
+        id=None,  # Let wandb auto-detect or create new run
     )
     
     training_args = TrainingArguments(
@@ -278,13 +389,6 @@ if __name__ == "__main__":
         # fp16=False,  # Use mixed precision - Accelerate handles autocast automatically
         # PRECISION BREAKDOWN with fp16=True:
         bf16=True,
-        # - Model parameters: fp32 (stored in fp32, master weights)
-        # - Activations during forward: fp16 (via autocast, saves ~50% memory)
-        # - Gradients during backward: fp16 (computed in fp16, saves ~50% memory)
-        # - Gradient accumulation: fp32 (accumulated in fp32 for stability)
-        # - Optimizer states: fp32 (Adam momentum/variance in fp32)
-        # - Loss computation: fp32 (converted via .float() for numerical stability)
-        # MEMORY: With gradient checkpointing + fp16 activations, should fit in ~20-25GB
         gradient_checkpointing=True,  # Enable gradient checkpointing to save memory (~30-50% reduction)
         report_to=["wandb"],
         run_name=run_name,
@@ -309,7 +413,15 @@ if __name__ == "__main__":
     )
     
     try:
-        trainer.train()
+        # Resume from checkpoint if specified
+        # Note: If optimizer state is corrupted, Trainer will automatically create a new optimizer
+        # The model weights and training step will still be loaded from the checkpoint
+        if resume_from_checkpoint and optimizer_corrupted:
+            print(f"\nResuming training (optimizer will be reinitialized due to corruption)...")
+        elif resume_from_checkpoint:
+            print(f"\nResuming training from checkpoint...")
+        
+        trainer.train(resume_from_checkpoint=resume_from_checkpoint)
         
         final_save_dir = os.path.join(output_dir, "final_model")
         student_model.save_pretrained(final_save_dir)
@@ -322,16 +434,42 @@ if __name__ == "__main__":
         print(f"Error message: {str(e)}")
         print(f"{'='*70}\n")
         
-        print("Saving model checkpoint before exiting...")
+        # Check if any checkpoints were saved before the error
+        print("Checking for existing checkpoints...")
+        if os.path.exists(output_dir):
+            checkpoint_dirs = [d for d in os.listdir(output_dir) if d.startswith("checkpoint-")]
+            if checkpoint_dirs:
+                latest_checkpoint = sorted(checkpoint_dirs, key=lambda x: int(x.split("-")[1]))[-1]
+                latest_checkpoint_path = os.path.join(output_dir, latest_checkpoint)
+                print(f"Found checkpoint directory: {latest_checkpoint_path}")
+                
+                # Check what files exist in the latest checkpoint
+                if os.path.exists(latest_checkpoint_path):
+                    checkpoint_files = os.listdir(latest_checkpoint_path)
+                    model_files = [f for f in checkpoint_files if f.startswith("model") and f.endswith(".safetensors")]
+                    optimizer_exists = "optimizer.pt" in checkpoint_files
+                    training_state_exists = "training_state.bin" in checkpoint_files
+                    
+                    print(f"  - Model weight files: {len(model_files)} found")
+                    print(f"  - Optimizer state: {'EXISTS' if optimizer_exists else 'MISSING'}")
+                    print(f"  - Training state: {'EXISTS' if training_state_exists else 'MISSING'}")
+                    
+                    if model_files and not optimizer_exists:
+                        print(f"\n  ⚠️  WARNING: Model weights saved but optimizer state missing/corrupted.")
+                        print(f"  ⚠️  You can resume from this checkpoint, but optimizer state will be reset.")
+        
+        print("\nAttempting to save recovery checkpoint...")
         recovery_save_dir = os.path.join(output_dir, "recovery_checkpoint")
         os.makedirs(recovery_save_dir, exist_ok=True)
         
         try:
             student_model.save_pretrained(recovery_save_dir)
             tokenizer.save_pretrained(recovery_save_dir)
-            print(f"Model saved to recovery checkpoint: {recovery_save_dir}")
+            print(f"✓ Model saved to recovery checkpoint: {recovery_save_dir}")
         except Exception as save_error:
-            print(f"ERROR: Failed to save recovery checkpoint: {save_error}")
+            print(f"✗ ERROR: Failed to save recovery checkpoint: {save_error}")
+            if "No space left on device" in str(save_error):
+                print(f"  → Disk is full. Check existing checkpoints in: {output_dir}")
         
         # Re-raise the original error
         raise

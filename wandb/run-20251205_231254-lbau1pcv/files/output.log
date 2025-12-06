@@ -1,0 +1,23 @@
+Set CUDA current device to: 1 (should be 1)
+/workspace/compute-aware-arch-search/distill_videet.py:43: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `DistillationTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+
+Resuming training (optimizer will be reinitialized due to corruption)...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+
+======================================================================
+ERROR occurred during training: FileNotFoundError
+Error message: [Errno 2] No such file or directory: '/workspace/compute-aware-arch-search/distilled_checkpoints/top10_gla/distill_top10_gla_20251205_165943/checkpoint-3000/trainer_state.json'
+======================================================================
+
+Checking for existing checkpoints...
+Found checkpoint directory: /workspace/compute-aware-arch-search/distilled_checkpoints/top10_gla/distill_top10_gla_20251205_165943/checkpoint-3000
+  - Model weight files: 2 found
+  - Optimizer state: MISSING
+  - Training state: MISSING
+
+  ⚠️  WARNING: Model weights saved but optimizer state missing/corrupted.
+  ⚠️  You can resume from this checkpoint, but optimizer state will be reset.
+
+Attempting to save recovery checkpoint...
+✓ Model saved to recovery checkpoint: /workspace/compute-aware-arch-search/distilled_checkpoints/top10_gla/distill_top10_gla_20251205_165943/recovery_checkpoint

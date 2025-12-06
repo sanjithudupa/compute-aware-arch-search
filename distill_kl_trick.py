@@ -158,6 +158,9 @@ class DistillationTrainer(Trainer):
         ).sum(dim=-1)
         loss_kl = p_t * loss_kl * (self.temperature ** 2)
         final_kl_loss = loss_kl+loss_klb
+        final_kl_loss = final_kl_loss * mask.squeeze(-1)
+        final_kl_loss = final_kl_loss.sum() / mask.sum()
+
 
         # kl_loss = F.kl_div(
         #     student_log_probs,
