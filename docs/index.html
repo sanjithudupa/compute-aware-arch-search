@@ -360,8 +360,14 @@
     <div class="content-margin-container" id="linear-attention">
       <div class="margin-left-block"></div>
       <div class="main-content-block">
-        <h1>Gated Linear Attention</h1>
+        <h1>Linear Attention Mechanisms</h1>
 
+        <p>
+          We investigated two linear attention mechanisms as candidates for
+          layer replacement: Gated Linear Attention (GLA) and RWKV7.
+        </p>
+
+        <h2>Gated Linear Attention (GLA)</h2>
         <p>
           Gated Linear Attention (GLA) <a href="#ref_4">[4]</a> replaces softmax
           attention with a gated recurrent formulation. The key insight is that
@@ -390,19 +396,40 @@
           computation that processes multiple positions simultaneously.
         </p>
 
+        <h2>RWKV7</h2>
         <p>
-          We use the GLA implementation from the Flash Linear Attention (FLA)
-          library, which provides optimized CUDA kernels for both training and
-          inference.
+          RWKV7 <a href="#ref_7">[7]</a> is a linear attention variant that
+          combines aspects of RNNs and transformers. It uses a time-mixing
+          mechanism with learned decay rates to control information flow across
+          positions. RWKV7 maintains a recurrent state that is updated at each
+          position:
+        </p>
+        <p style="text-align: center">
+          \[s_t = \text{diag}(w) \cdot s_{t-1} + k_t^T v_t\] \[o_t = \sigma(r_t)
+          \odot (q_t \cdot s_t)\]
+        </p>
+        <p>
+          where \(w\) is a learned decay vector, \(r_t\) is a receptance gate,
+          and \(\sigma\) is a nonlinearity. The decay mechanism allows RWKV7 to
+          model different time scales of information retention.
+        </p>
+
+        <p>
+          We use implementations from the Flash Linear Attention (FLA) library,
+          which provides optimized CUDA kernels for both GLA and RWKV7 for
+          training and inference.
         </p>
       </div>
       <div class="margin-right-block">
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        The key difference from standard attention is that GLA never
-        materializes the full \(n \times n\) attention matrix.
+        The key difference from standard attention is that these linear
+        mechanisms never materialize the full \(n \times n\) attention matrix.
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
         GLA's gating mechanism makes it more expressive than simple linear
         attention while maintaining linear complexity.
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        RWKV7's decay mechanism provides a different inductive bias, allowing
+        explicit control over how quickly information fades.
       </div>
     </div>
 
@@ -412,18 +439,19 @@
         <h1>Stage 0: Layer-wise Linear Attention Training</h1>
 
         <p>
-          The first stage trains a GLA replacement for each layer independently.
-          The goal is to measure how well each layer's behavior can be
-          approximated by linear attention, which tells us which layers are good
-          candidates for replacement.
+          The first stage trains linear attention replacements for each layer
+          independently. We trained both GLA and RWKV7 variants to measure how
+          well each layer's behavior can be approximated by linear attention,
+          which tells us which layers are good candidates for replacement.
         </p>
 
         <h2>Training Setup</h2>
         <p>
           We modified the Qwen3 architecture to create a
           <code>Qwen3ForNAS</code> class that outputs the hidden states before
-          and after any specified layer. For each layer \(l\), we train a
-          separate GLA block to match the teacher's behavior by minimizing MSE:
+          and after any specified layer. For each layer \(l\), we train separate
+          GLA and RWKV7 blocks to match the teacher's behavior by minimizing
+          MSE:
         </p>
         <p style="text-align: center">
           \[\mathcal{L}_{\text{MSE}}^{(l)} = \mathbb{E}_{x \sim \mathcal{D}}
@@ -449,10 +477,12 @@
 
         <h2>Training Configuration</h2>
         <p>
-          We trained each layer on approximately 500 million tokens from the
+          We trained each layer on approximately 40 million tokens from the
           DCLM-baseline-1.0 dataset with batch size 32, sequence length 1024,
           learning rate 1e-3 with cosine decay to 1e-5, and 10% warmup. Each
-          layer takes approximately 2 hours to train on a single GPU.
+          layer takes approximately 2 hours to train on a single GPU. We trained
+          GLA for layers 1-10 and RWKV7 for layers 11-22, based on preliminary
+          experiments showing these ranges worked best for each architecture.
         </p>
 
         <h2>Layer-wise Training Results</h2>
@@ -463,6 +493,24 @@
         <p class="figure-caption">
           Figure 1: Training curves for GLA student layers showing normalized
           MSE loss over training.
+        </p>
+
+        <div class="figure-placeholder">
+          [FILL IN WITH RWKV7 STUDENT LAYER TRAINING CURVES FIGURE]
+        </div>
+        <p class="figure-caption">
+          Figure 2: Training curves for RWKV7 student layers showing normalized
+          MSE loss over training.
+        </p>
+
+        <h2>RWKV7 Issues</h2>
+        <div class="figure-placeholder">
+          [FILL IN WITH EXPLANATION OF RWKV7 ISSUES - WHY IT DIDN'T WORK FOR
+          FINAL MODEL]
+        </div>
+        <p>
+          (**TODO**) Due to these issues with RWKV7, we proceeded with only GLA
+          layers for the final hybrid model configuration.
         </p>
 
         <h2>Identifying the Best Layers</h2>
@@ -949,6 +997,13 @@
           <a id="ref_6"></a>[6] Tenney, I., Das, D., & Pavlick, E. (2019).
           <a href="https://arxiv.org/abs/1905.05950"
             >BERT Rediscovers the Classical NLP Pipeline.</a
+          >
+          ACL 2019.<br /><br />
+
+          <a id="ref_7"></a>[7] Peng, B., et al. (2024).
+          <a href="https://arxiv.org/abs/2404.05892"
+            >Eagle and Finch: RWKV with Matrix-Valued States and Dynamic
+            Recurrence.</a
           >
           ACL 2019.<br /><br />
 
