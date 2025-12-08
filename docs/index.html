@@ -826,30 +826,20 @@
         <h2>Qualitative Evaluation</h2>
         <p>To verify that the hybrid model maintains coherent generation:</p>
 
-        <div
-          style="
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-left: 3px solid #0e7862;
-            margin: 15px 0;
-          "
-        >
-          <strong>Prompt:</strong> "The capital of France is"<br />
-          <strong>Baseline:</strong> "The capital of France is Paris, a city
-          known for..."<br />
-          <strong>Hybrid:</strong> "The capital of France is Paris, which serves
-          as..."<br /><br />
-          <strong>Prompt:</strong> "Once upon a time"<br />
-          <strong>Baseline:</strong> "Once upon a time, in a kingdom far
-          away..."<br />
-          <strong>Hybrid:</strong> "Once upon a time, there lived a young..."
-        </div>
-
         <p>
-          The hybrid model produces grammatically correct and contextually
-          appropriate completions, demonstrating that selective layer
-          replacement preserves core language modeling capabilities.
+          Unfortunately, our hybrid model did not achieve good performance in
+          text prediction during qualitative evaluation. The generated outputs
+          were often incoherent or failed to follow the prompt context
+          appropriately.
         </p>
+
+        <ul>
+          <li>
+            Due to limited training (only ~40 million tokens) and the challenges
+            of distillation with replaced attention layers, the model produces
+            poor quality outputs compared to the baseline.
+          </li>
+        </ul>
       </div>
       <div class="margin-right-block">
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
@@ -874,11 +864,12 @@
           <strong>Limited training compute:</strong> Our knowledge distillation
           training did not exceed approximately 40 million tokens (5,000 steps ×
           8 batch × 1,024 tokens ≈ 40,960,000 tokens). This is significantly
-          less than the billions of tokens typically used for pretraining. With
-          more compute and training tokens, the hybrid model would likely
-          achieve better performance and more closely match the teacher model's
-          capabilities. Future work should explore training with substantially
-          more data to understand the full potential of this approach.
+          less than the billions of tokens typically used for pretraining.
+          Additionally, we observed that training time scaled superlinearly with
+          layer depth, which limited our ability to train all layers within the
+          available compute budget. With more compute and training tokens, the
+          hybrid model would likely achieve better performance and more closely
+          match the teacher model's capabilities.
         </p>
 
         <p>
