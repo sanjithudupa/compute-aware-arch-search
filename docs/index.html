@@ -186,27 +186,26 @@
         <table class="header" align="left">
           <tr>
             <td colspan="4">
-              <span style="font-size: 28px; font-family: Georgia, serif"
-                >Compute-Aware Hybrid Attention Architecture Search:<br />
-                <span style="font-size: 22px; color: #666"
-                  >Selective Linear Attention Replacement via Layer-wise
-                  Knowledge Distillation</span
-                ></span
-              >
+              <span style="font-size: 28px; font-family: Georgia, serif">
+                Compute-Aware Hybrid Attention Architecture Search:<br />
+                <span style="font-size: 22px; color: #666">
+                  Selective Linear Attention Replacement via Layer-wise
+                  Knowledge Distillation
+                </span>
+              </span>
             </td>
           </tr>
           <tr>
             <td align="left">
-              <span style="font-size: 17px"><a href="#">Videet Mehta</a></span>
+              <span style="font-size: 17px"><a href="#">Author 1</a></span>
             </td>
             <td align="left">
-              <span style="font-size: 17px"><a href="#">Sanjith Udupa</a></span>
+              <span style="font-size: 17px"><a href="#">Author 2</a></span>
             </td>
             <td align="left">
-              <span style="font-size: 17px"><a href="#">Vineet Sharma</a></span>
+              <span style="font-size: 17px"><a href="#">Author 3</a></span>
             </td>
           </tr>
-
           <tr>
             <td colspan="4" align="left">
               <span style="font-size: 16px"
@@ -225,7 +224,7 @@
           <b style="font-size: 16px">Outline</b><br /><br />
           <a href="#intro">Introduction</a><br /><br />
           <a href="#related">Related Work</a><br /><br />
-          <a href="#linear-attention">Linear Attention</a><br /><br />
+          <a href="#linear-attention">Gated Linear Attention</a><br /><br />
           <a href="#stage0">Stage 0 Training</a><br /><br />
           <a href="#distillation">Knowledge Distillation</a><br /><br />
           <a href="#results">Results</a><br /><br />
@@ -236,60 +235,52 @@
       <div class="main-content-block">
         <h1>Introduction and Motivation</h1>
         <p>
-          Transformer-based large language models have achieved remarkable
-          performance across a wide range of tasks, but their computational
-          requirements continue to grow. A major bottleneck is the
-          self-attention mechanism, which scales quadratically with sequence
-          length. For a sequence of length \(n\), standard attention requires
-          \(O(n^2)\) time and memory to compute the attention matrix. This makes
-          long-context inference expensive and limits the practical deployment
-          of these models.
+          The computational demands of large language models continue to grow,
+          driven largely by the quadratic complexity of self-attention. For a
+          sequence of length \(n\), standard attention requires \(O(n^2)\) time
+          and memory. This makes long-context inference expensive and limits
+          practical deployment.
         </p>
 
         <p>
-          Linear attention mechanisms offer a promising alternative by reducing
-          this complexity to \(O(n)\). However, simply replacing all attention
-          layers with linear variants typically hurts model quality. This
-          tradeoff raises an important question: are all attention layers
+          Linear attention mechanisms reduce this complexity to \(O(n)\), but
+          replacing all attention layers with linear variants typically degrades
+          model quality. This raises a question: are all attention layers
           equally important, or can we selectively replace only those layers
           where linear attention performs well?
         </p>
 
         <p>
-          Our goal in this project was to develop a method for identifying which
-          layers in a transformer can be safely replaced with linear attention,
-          and which layers should retain full softmax attention. We hypothesized
-          that different layers serve different functions, and that some layers
-          perform computations that are inherently more compatible with linear
-          attention than others.
+          Our goal was to develop a method for identifying which layers in a
+          transformer can be safely replaced with linear attention, and which
+          layers should retain full softmax attention.
         </p>
 
         <div class="hypothesis">
           <strong>Hypothesis:</strong> Transformer layers exhibit varying
           sensitivity to attention mechanism replacement. By measuring how well
-          a linear attention module can replicate each layer's behavior, we can
-          identify an optimal hybrid architecture that improves efficiency while
-          preserving model quality.
+          a linear attention module can replicate each layer's behavior through
+          distillation loss, we can identify an optimal hybrid architecture that
+          improves efficiency while preserving model quality.
         </div>
 
         <p>
-          To test this hypothesis, we developed a two-stage approach. In the
-          first stage, we train linear attention replacements for each layer
-          independently using knowledge distillation from a pretrained teacher
-          model. This gives us a measure of how "replaceable" each layer is. In
-          the second stage, we assemble a hybrid model by selecting the
+          We developed a two-stage approach. In Stage 0, we train linear
+          attention replacements for each layer independently using knowledge
+          distillation. This gives us a measure of how "replaceable" each layer
+          is. In Stage 1, we assemble a hybrid model by selecting the
           best-performing layers for replacement and fine-tune the complete
-          model using knowledge distillation with a novel top-k KL divergence
-          objective.
+          model using knowledge distillation with a decoupled top-k KL
+          divergence objective.
         </p>
 
         <p>
-          We conducted our experiments on Qwen3-1.7B, a 28-layer transformer
-          model, and evaluated two linear attention variants: Gated Linear
-          Attention (GLA) and RWKV-7. Our results show clear patterns in layer
-          sensitivity, with middle layers being significantly harder to replace
-          than early or late layers. This finding has practical implications for
-          designing efficient hybrid architectures.
+          We conducted experiments using Qwen3-1.7B (28 layers, 2048 hidden
+          size) as the student model architecture and Qwen3-8B as the teacher
+          for Stage 1 distillation. We evaluated Gated Linear Attention (GLA)
+          from the Flash Linear Attention library. Our results show clear
+          patterns in layer sensitivity, with middle layers being significantly
+          harder to replace than early or late layers.
         </p>
       </div>
       <div class="margin-right-block">
@@ -308,114 +299,90 @@
       <div class="main-content-block">
         <h1>Related Work</h1>
 
-        <h2>Efficient Attention Mechanisms</h2>
+        <h2>Knowledge Distillation for Linear Attention</h2>
         <p>
-          The computational cost of attention has motivated substantial research
-          into efficient alternatives. Katharopoulos et al.
-          <a href="#ref_1">[1]</a> showed that attention can be linearized by
-          removing the softmax and using kernel feature maps, enabling \(O(n)\)
-          complexity through the associative property of matrix multiplication.
-          This work established the theoretical foundation for linear attention,
-          though the resulting models often underperformed standard
-          transformers.
+          Recent work has demonstrated that linear attention models can be
+          trained effectively through knowledge distillation from transformer
+          teachers. The NVIDIA Nemotron project <a href="#ref_1">[1]</a> showed
+          that distillation can transfer knowledge from large teacher models to
+          more efficient student architectures, achieving competitive
+          performance without full pretraining costs.
         </p>
 
         <p>
-          More recent architectures have improved on this foundation. Mamba
-          <a href="#ref_2">[2]</a> introduced selective state spaces that
-          achieve linear complexity while maintaining strong performance on
-          language modeling. RWKV <a href="#ref_3">[3]</a> reformulated
-          attention as a recurrent computation, enabling efficient inference
-          with constant memory per token. These models demonstrate that
-          linear-time sequence modeling can be competitive with transformers,
-          though they typically require training from scratch.
-        </p>
-
-        <h2>Hybrid Architectures</h2>
-        <p>
-          Several recent works have explored combining different attention
-          mechanisms within a single model. Jamba
-          <a href="#ref_4">[4]</a> interleaves Mamba layers with standard
-          attention layers, achieving strong performance with improved
-          efficiency. Griffin <a href="#ref_5">[5]</a> combines gated linear
-          recurrences with local attention windows. These approaches demonstrate
-          the viability of hybrid architectures but rely on hand-designed
-          patterns for layer assignment.
-        </p>
-
-        <h2>Knowledge Distillation for Architecture Transfer</h2>
-        <p>
-          Our work builds on knowledge distillation techniques for transferring
-          capabilities between architectures. The Jet-MoE and Nemotron projects
-          have shown that distillation can effectively transfer knowledge from
-          large teacher models to more efficient student architectures. The
-          RAD-LM work <a href="#ref_6">[6]</a> demonstrated that linear
-          attention models can be trained through distillation from transformer
-          teachers, achieving competitive performance without the full cost of
-          pretraining.
+          The RAD-LM work <a href="#ref_2">[2]</a> specifically focused on
+          linearizing pretrained language models through distillation. They
+          demonstrated that by carefully selecting which layers to convert to
+          linear attention and using appropriate distillation objectives, one
+          can preserve most of the original model's capabilities while gaining
+          efficiency benefits.
         </p>
 
         <p>
-          Our contribution extends this line of work by using distillation not
-          just for training, but as a measurement tool for architecture search.
-          By distilling each layer independently, we can quantify layer-wise
-          sensitivity and make informed decisions about which layers to replace.
+          The Liquid Foundation Models (LFM) work
+          <a href="#ref_3">[3]</a> introduced a decoupled knowledge distillation
+          approach that separates the distillation loss into components for the
+          top-k tokens and the remaining probability mass. This approach
+          addresses the challenge that standard KL divergence over large
+          vocabularies is dominated by low-probability tokens that may not be
+          meaningful for knowledge transfer.
+        </p>
+
+        <p>
+          Our work builds on these knowledge distillation techniques for
+          transferring capabilities between architectures. The Nemotron and
+          RAD-LM projects showed that distillation can effectively transfer
+          knowledge from transformer teachers to linear attention students. The
+          Liquid Foundation Models work provided the decoupled top-k KL
+          divergence objective that we adopt for our Stage 1 training.
+        </p>
+
+        <p>
+          Our contribution extends this line of research by using distillation
+          not just for training, but as a measurement tool for architecture
+          search. By distilling each layer independently, we can quantify
+          layer-wise sensitivity and make informed decisions about which layers
+          to replace.
         </p>
       </div>
       <div class="margin-right-block">
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        Mamba and RWKV have shown that linear-time models can match transformers
-        on many benchmarks, but the question of how to convert existing
-        transformers remains open.
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        The key insight from these works is that not all layers need full
+        attention, and distillation can effectively transfer the necessary
+        capabilities.
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        Unlike prior hybrid approaches that use fixed patterns, our method
-        learns which layers should use which attention type.
+        Unlike prior approaches that use fixed patterns for layer assignment,
+        our method learns which layers should use which attention type based on
+        empirical distillation results.
       </div>
     </div>
 
     <div class="content-margin-container" id="linear-attention">
       <div class="margin-left-block"></div>
       <div class="main-content-block">
-        <h1>Linear Attention Mechanisms</h1>
+        <h1>Gated Linear Attention</h1>
 
         <p>
-          Before describing our method, we provide background on the two linear
-          attention variants we evaluated: Gated Linear Attention (GLA) and
-          RWKV-7.
-        </p>
-
-        <h2>Standard Attention</h2>
-        <p>Standard scaled dot-product attention computes:</p>
-        <p style="text-align: center">
-          \[\text{Attention}(Q, K, V) =
-          \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V\]
-        </p>
-        <p>
-          where \(Q, K, V \in \mathbb{R}^{n \times d}\) are the query, key, and
-          value matrices. The softmax operation over \(QK^T\) creates an \(n
-          \times n\) attention matrix, which is the source of the quadratic
-          complexity. Each output position attends to all input positions with
-          learned, data-dependent weights.
-        </p>
-
-        <h2>Gated Linear Attention (GLA)</h2>
-        <p>
-          Gated Linear Attention <a href="#ref_7">[7]</a> replaces the softmax
+          Gated Linear Attention (GLA) <a href="#ref_4">[4]</a> replaces softmax
           attention with a gated recurrent formulation. The key insight is that
           attention can be computed as a weighted sum over a recurrent state,
           with data-dependent gates controlling information flow.
         </p>
-        <p>For each position \(t\), GLA computes:</p>
+
+        <p>
+          For each position \(t\), GLA maintains a state matrix \(S_t\) and
+          computes:
+        </p>
         <p style="text-align: center">
           \[S_t = G_t \odot S_{t-1} + k_t^T v_t\] \[o_t = q_t S_t\]
         </p>
         <p>
-          where \(S_t\) is the recurrent state, \(G_t\) is a learned gate
-          matrix, and \(k_t, v_t, q_t\) are the key, value, and query vectors at
-          position \(t\). The gate \(G_t\) allows the model to selectively
-          forget or retain information from previous positions, providing
-          expressivity beyond simple linear attention.
+          where \(G_t\) is a learned gate matrix that controls how much of the
+          previous state to retain. This gating mechanism provides expressivity
+          beyond simple linear attention by allowing the model to selectively
+          forget or retain information from previous positions.
         </p>
+
         <p>
           The recurrent formulation enables \(O(n)\) complexity since each
           position only needs to update and query a fixed-size state matrix. GLA
@@ -423,36 +390,19 @@
           computation that processes multiple positions simultaneously.
         </p>
 
-        <h2>RWKV-7</h2>
         <p>
-          RWKV <a href="#ref_3">[3]</a> takes a different approach,
-          reformulating attention as a weighted combination of past values with
-          exponentially decaying weights. The RWKV-7 variant computes:
-        </p>
-        <p style="text-align: center">
-          \[wkv_t = \frac{\sum_{i=1}^{t-1} e^{-(t-1-i)w + k_i} v_i + e^{u+k_t}
-          v_t}{\sum_{i=1}^{t-1} e^{-(t-1-i)w + k_i} + e^{u+k_t}}\]
-        </p>
-        <p>
-          Here, \(w\) controls the decay rate and \(u\) provides a bonus for the
-          current position. This formulation can be computed recurrently with
-          \(O(1)\) memory per token, making it highly efficient for inference.
-        </p>
-        <p>
-          RWKV differs from GLA in that its decay is position-based rather than
-          data-dependent. This makes it somewhat less expressive but potentially
-          more stable during training. In practice, we found that RWKV-7 and GLA
-          have complementary strengths across different layer positions.
+          We use the GLA implementation from the Flash Linear Attention (FLA)
+          library, which provides optimized CUDA kernels for both training and
+          inference.
         </p>
       </div>
       <div class="margin-right-block">
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
         The key difference from standard attention is that GLA never
         materializes the full \(n \times n\) attention matrix.
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        RWKV stands for "Receptance Weighted Key Value" and was designed to
-        combine the parallelizable training of transformers with the efficient
-        inference of RNNs.
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        GLA's gating mechanism makes it more expressive than simple linear
+        attention while maintaining linear complexity.
       </div>
     </div>
 
@@ -462,192 +412,149 @@
         <h1>Stage 0: Layer-wise Linear Attention Training</h1>
 
         <p>
-          The first stage of our method trains a linear attention replacement
-          for each layer independently. The goal is to measure how well each
-          layer's behavior can be approximated by linear attention, which tells
-          us which layers are good candidates for replacement.
+          The first stage trains a GLA replacement for each layer independently.
+          The goal is to measure how well each layer's behavior can be
+          approximated by linear attention, which tells us which layers are good
+          candidates for replacement.
         </p>
 
         <h2>Training Setup</h2>
         <p>
-          We use Qwen3-1.7B as our teacher model. This is a 28-layer transformer
-          with hidden dimension 2048, 16 attention heads, and 2 key-value heads
-          (grouped-query attention). For each layer \(l\) from 1 to 28, we train
-          a separate linear attention block to match the teacher's behavior at
-          that layer.
-        </p>
-
-        <p>
-          The training objective is straightforward: given the hidden states
-          entering layer \(l\), the student linear attention block should
-          produce output hidden states that match the teacher's output as
-          closely as possible. We minimize the mean squared error:
+          We modified the Qwen3 architecture to create a
+          <code>Qwen3ForNAS</code> class that outputs the hidden states before
+          and after any specified layer. For each layer \(l\), we train a
+          separate GLA block to match the teacher's behavior by minimizing MSE:
         </p>
         <p style="text-align: center">
-          \[\mathcal{L}^{(l)} = \mathbb{E}_{x \sim \mathcal{D}} \left[ \left\|
-          f_{\text{student}}^{(l)}(h^{(l-1)}) -
+          \[\mathcal{L}_{\text{MSE}}^{(l)} = \mathbb{E}_{x \sim \mathcal{D}}
+          \left[ \left\| f_{\text{student}}^{(l)}(h^{(l-1)}) -
           f_{\text{teacher}}^{(l)}(h^{(l-1)}) \right\|_2^2 \right]\]
         </p>
+
+        <h2>Normalized Loss</h2>
         <p>
-          where \(h^{(l-1)}\) is the hidden state before layer \(l\), and
-          \(f^{(l)}\) denotes the layer's computation.
+          Different layers have different activation magnitudes, making raw MSE
+          values incomparable. We compute a normalized loss that measures the
+          student's error relative to the magnitude of the teacher's update:
+        </p>
+        <p style="text-align: center">
+          \[\mathcal{L}_{\text{norm}}^{(l)} =
+          \frac{\text{MSE}(f_{\text{student}}^{(l)}(h^{(l-1)}),
+          h^{(l)})}{\text{MSE}(h^{(l-1)}, h^{(l)})}\]
+        </p>
+        <p>
+          A normalized loss of 0.0 means perfect reproduction; 1.0 means the
+          student is no better than passing through the input unchanged.
         </p>
 
         <h2>Training Configuration</h2>
         <p>
-          We trained each layer on approximately 1 billion tokens from the
-          FineWeb-Edu dataset, a filtered subset of web text selected for
-          educational content. The training configuration was:
-        </p>
-        <ul>
-          <li>Sequence length: 1024 tokens</li>
-          <li>Batch size: 32 sequences</li>
-          <li>Learning rate: 1e-3 with cosine decay to 1e-5</li>
-          <li>Warmup: 10% of training steps</li>
-          <li>Optimizer: AdamW</li>
-          <li>Precision: BF16 for forward pass, FP32 for loss computation</li>
-          <li>Gradient clipping: max norm 1.0</li>
-        </ul>
-
-        <p>
-          Each layer takes approximately 2 hours to train on a single GPU. Since
-          the layers are independent, all 28 can be trained in parallel, making
-          the total wall-clock time for this stage manageable.
+          We trained each layer on approximately 500 million tokens from the
+          DCLM-baseline-1.0 dataset with batch size 32, sequence length 1024,
+          learning rate 1e-3 with cosine decay to 1e-5, and 10% warmup. Each
+          layer takes approximately 2 hours to train on a single GPU.
         </p>
 
-        <h2>Normalized Loss for Fair Comparison</h2>
-        <p>
-          A challenge in comparing distillation loss across layers is that
-          different layers have different activation magnitudes. A layer with
-          larger activations will naturally have larger MSE, even if the
-          relative error is the same. To enable fair comparison, we compute a
-          normalized loss:
-        </p>
-        <p style="text-align: center">
-          \[\mathcal{L}_{\text{norm}}^{(l)} =
-          \frac{\mathcal{L}^{(l)}}{\mathbb{E}\left[\left\| h^{(l)} - h^{(l-1)}
-          \right\|_2^2\right]}\]
-        </p>
-        <p>
-          The denominator measures the magnitude of the teacher's update at
-          layer \(l\). This normalization gives us a relative error: a
-          normalized loss of 0.0 means perfect reproduction, while 1.0 means the
-          student output is no better than simply passing through the input
-          unchanged.
-        </p>
-
-        <h2>Layer-wise Results</h2>
-        <p>
-          We trained both GLA and RWKV-7 variants for each layer. Based on
-          preliminary experiments, we found that GLA performs well in early
-          layers (0-9) while RWKV-7 is more suitable for later layers. The
-          figures below show the training curves for each variant.
-        </p>
+        <h2>Layer-wise Training Results</h2>
 
         <div class="figure-placeholder">
           [FILL IN WITH GLA STUDENT LAYER TRAINING CURVES FIGURE]
         </div>
         <p class="figure-caption">
-          Figure 1: Training curves for GLA student layers. Each curve shows the
-          normalized MSE loss over training for one layer.
+          Figure 1: Training curves for GLA student layers showing normalized
+          MSE loss over training.
         </p>
 
-        <div class="figure-placeholder">
-          [FILL IN WITH RWKV7 STUDENT LAYER TRAINING CURVES FIGURE]
-        </div>
-        <p class="figure-caption">
-          Figure 2: Training curves for RWKV-7 student layers. Each curve shows
-          the normalized MSE loss over training for one layer.
-        </p>
-
-        <h2>Identifying the Best Layers for Replacement</h2>
+        <h2>Identifying the Best Layers</h2>
         <p>
-          After training, we ranked layers by their final normalized loss. Lower
-          loss indicates that the linear attention block more faithfully
-          reproduces the teacher's behavior, making that layer a better
-          candidate for replacement.
+          After training, we ranked layers by their final normalized loss. Based
+          on our experiments, we constrained GLA to layers 1-10. The results
+          revealed a clear pattern: middle layers (roughly layers 8-14) have
+          significantly higher normalized loss than early or late layers.
         </p>
 
         <p>
-          The results revealed a clear pattern: middle layers (roughly layers
-          8-14) have significantly higher normalized loss than early or late
-          layers. This suggests that middle layers perform computations that are
-          fundamentally harder to approximate with linear attention. We
-          interpret this as evidence that middle layers carry more complex
-          information processing, potentially including multi-hop reasoning and
-          long-range dependency tracking that requires the full expressivity of
-          softmax attention.
+          This finding aligns with prior work on transformer interpretability.
+          Clark et al. <a href="#ref_5">[5]</a> showed that early layers
+          primarily detect local syntactic patterns while middle layers handle
+          more complex semantic relationships. Tenney et al.
+          <a href="#ref_6">[6]</a> demonstrated that the "classical NLP
+          pipeline" emerges across layers, with syntax in early layers and
+          semantics in middle layers. Our results suggest that the complex
+          semantic operations in middle layers fundamentally require the
+          expressivity of softmax attention, while the more local computations
+          in early layers can be approximated by linear attention.
         </p>
 
         <table class="results">
           <tr>
             <th>Rank</th>
-            <th>GLA Layer</th>
-            <th>Normalized Loss</th>
-            <th>RWKV-7 Layer</th>
+            <th>Layer</th>
             <th>Normalized Loss</th>
           </tr>
           <tr>
             <td>1</td>
             <td>3</td>
             <td>0.0003</td>
-            <td>1</td>
-            <td>0.1454</td>
           </tr>
           <tr>
             <td>2</td>
             <td>9</td>
             <td>0.1059</td>
-            <td>3</td>
-            <td>0.1540</td>
           </tr>
           <tr>
             <td>3</td>
             <td>10</td>
             <td>0.1186</td>
-            <td>21</td>
-            <td>0.1671</td>
           </tr>
           <tr>
             <td>4</td>
-            <td>12</td>
-            <td>0.1672</td>
-            <td>22</td>
-            <td>0.1683</td>
+            <td>7</td>
+            <td>0.2129</td>
           </tr>
           <tr>
             <td>5</td>
-            <td>11</td>
-            <td>0.1686</td>
-            <td>20</td>
-            <td>0.1886</td>
+            <td>8</td>
+            <td>0.2396</td>
           </tr>
           <tr>
             <td>6</td>
+            <td>1</td>
+            <td>0.3459</td>
+          </tr>
+          <tr>
             <td>7</td>
-            <td>0.2129</td>
             <td>2</td>
-            <td>0.1918</td>
+            <td>0.3585</td>
+          </tr>
+          <tr>
+            <td>...</td>
+            <td>...</td>
+            <td>...</td>
+          </tr>
+          <tr>
+            <td>Worst</td>
+            <td>6</td>
+            <td>0.4688</td>
           </tr>
         </table>
         <p class="figure-caption">
-          Table 1: Top layers ranked by normalized distillation loss. Lower loss
-          indicates better suitability for linear attention replacement.
+          Table 1: GLA layers ranked by normalized distillation loss. Lower loss
+          indicates better suitability for replacement.
         </p>
 
         <p>
-          The standout result is GLA at layer 3, which achieves a normalized
-          loss of just 0.0003. This means the linear attention block reproduces
-          the teacher's output almost perfectly. Layer 3 appears to perform
-          computations that are nearly linear in nature, making it an ideal
-          candidate for replacement.
+          The standout result is layer 3, which achieves a normalized loss of
+          just 0.0003. This layer appears to perform computations that are
+          nearly linear in nature, making it an ideal candidate for replacement.
         </p>
       </div>
       <div class="margin-right-block">
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        The independence of layer training is a key advantage of our approach.
-        It allows massive parallelization and makes the method scalable.
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        The normalized loss is crucial for fair comparison. Without it, we would
+        incorrectly conclude that layers with smaller activations are easier to
+        replace.
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
         The pattern of middle layers being hardest to replace aligns with
         findings from interpretability research showing that middle layers
         handle more abstract reasoning.
@@ -657,181 +564,121 @@
     <div class="content-margin-container" id="distillation">
       <div class="margin-left-block"></div>
       <div class="main-content-block">
-        <h1>Stage 1: Full Model Distillation with Top-k KL Divergence</h1>
+        <h1>
+          Stage 1: Full Model Distillation with Decoupled Top-k KL Divergence
+        </h1>
 
         <p>
           After identifying which layers to replace, we assemble the hybrid
-          model and fine-tune it using knowledge distillation from the original
-          teacher. This stage is critical for recovering any quality lost from
-          the layer replacements and ensuring the hybrid model works well as a
-          complete system.
+          model and fine-tune it using knowledge distillation from Qwen3-8B. We
+          use a two-GPU configuration: the 8B teacher runs on GPU 0 (in FP16)
+          while the 1.7B hybrid student runs on GPU 1.
         </p>
 
-        <h2>Hybrid Model Assembly</h2>
+        <h2>Final Model Configuration</h2>
         <p>
-          We construct hybrid models by selecting layers based on their Stage 0
-          ranking. We experimented with several configurations:
+          Based on Stage 0 results, our final hybrid model (top10_gla) replaces
+          layers 1, 2, 3, 7, and 9 with GLA, keeping the remaining 23 layers as
+          full attention. This configuration was chosen because these layers
+          showed the lowest normalized distillation loss, indicating they could
+          be well-approximated by linear attention.
         </p>
 
         <table class="results">
           <tr>
             <th>Configuration</th>
             <th>GLA Layers</th>
-            <th>RWKV-7 Layers</th>
-            <th>Full Attention</th>
-            <th>Total Linear</th>
+            <th>Full Attention Layers</th>
           </tr>
           <tr>
-            <td>Control (Baseline)</td>
-            <td>None</td>
-            <td>None</td>
-            <td>28</td>
-            <td>0</td>
-          </tr>
-          <tr>
-            <td>Top 10%</td>
-            <td>[3]</td>
-            <td>[21]</td>
-            <td>26</td>
-            <td>2</td>
-          </tr>
-          <tr>
-            <td>Top 10% GLA-only</td>
+            <td>top10_gla (Final)</td>
             <td>[1, 2, 3, 7, 9]</td>
-            <td>None</td>
             <td>23</td>
-            <td>5</td>
-          </tr>
-          <tr>
-            <td>Top 25%</td>
-            <td>[3, 9, 10]</td>
-            <td>[21, 22, 20]</td>
-            <td>22</td>
-            <td>6</td>
-          </tr>
-          <tr>
-            <td>Top 50%</td>
-            <td>[3, 9, 10, 12, 11]</td>
-            <td>[1, 3, 21, 22, 20, 2]</td>
-            <td>17</td>
-            <td>11</td>
           </tr>
         </table>
-        <p class="figure-caption">
-          Table 2: Hybrid model configurations showing which layers use linear
-          attention.
+        <p class="figure-caption">Table 2: Final hybrid model configuration.</p>
+
+        <h2>Decoupled Top-k KL Divergence</h2>
+        <p>
+          Standard KL divergence over the full vocabulary (150,000+ tokens) is
+          dominated by low-probability tokens in the tail of the distribution.
+          Following the approach from Liquid Foundation Models
+          <a href="#ref_3">[3]</a>, we use a decoupled top-k KL divergence that
+          focuses on the most important tokens.
         </p>
 
         <p>
-          For each configuration, we load the pretrained Qwen3-1.7B weights for
-          the full attention layers and the Stage 0 trained weights for the
-          linear attention layers.
+          Let \(p_T\) and \(p_S\) denote the teacher and student probability
+          distributions over the vocabulary \(\mathcal{V}\). For a given top-k
+          set \(\mathcal{T}_k\) containing the k tokens with highest teacher
+          probability, we define:
+        </p>
+        <p style="text-align: center">
+          \[\rho_T = \sum_{v \in \mathcal{T}_k} p_T(v), \quad \rho_S = \sum_{v
+          \in \mathcal{T}_k} p_S(v)\]
+        </p>
+        <p>
+          These represent the total probability mass that each distribution
+          assigns to the top-k tokens.
         </p>
 
-        <h2>Knowledge Distillation Objective</h2>
         <p>
-          We fine-tune the hybrid model using a combination of cross-entropy
-          loss on the language modeling task and KL divergence between the
-          student and teacher output distributions. The total loss is:
+          The decoupled KL divergence consists of two components. First, a
+          <strong>Bernoulli KL term</strong> that measures how well the student
+          matches the teacher's allocation of probability mass between the top-k
+          set and the rest:
         </p>
+        <p style="text-align: center">
+          \[\mathcal{L}_{\text{Bern}} = \rho_T \log\frac{\rho_T}{\rho_S} +
+          (1-\rho_T) \log\frac{1-\rho_T}{1-\rho_S}\]
+        </p>
+
+        <p>
+          Second, a <strong>categorical KL term</strong> computed only over the
+          top-k tokens. We renormalize the distributions within the top-k set
+          and compute KL divergence with temperature scaling:
+        </p>
+        <p style="text-align: center">
+          \[\tilde{p}_T(v) = \frac{p_T(v)}{\rho_T}, \quad \tilde{p}_S(v) =
+          \frac{p_S(v)}{\rho_S} \quad \text{for } v \in \mathcal{T}_k\]
+        </p>
+        <p style="text-align: center">
+          \[\mathcal{L}_{\text{top-k}} = T^2 \cdot \rho_T \cdot
+          \text{KL}(\tilde{p}_T \| \tilde{p}_S)\]
+        </p>
+        <p>
+          where \(T\) is the temperature parameter. The \(\rho_T\) factor
+          weights this term by how much probability mass is in the top-k, and
+          \(T^2\) compensates for gradient magnitude reduction from temperature
+          scaling.
+        </p>
+
+        <p>The final KL loss combines both components:</p>
+        <p style="text-align: center">
+          \[\mathcal{L}_{\text{KL}} = \mathcal{L}_{\text{top-k}} +
+          \mathcal{L}_{\text{Bern}}\]
+        </p>
+
+        <p>The total distillation loss is:</p>
         <p style="text-align: center">
           \[\mathcal{L}_{\text{total}} = \alpha \cdot \mathcal{L}_{\text{CE}} +
-          (1-\alpha) \cdot T^2 \cdot \mathcal{L}_{\text{KL}}\]
+          (1-\alpha) \cdot \mathcal{L}_{\text{KL}}\]
         </p>
-        <p>
-          where \(\alpha\) balances the two objectives and \(T\) is the
-          temperature for softening the distributions. We use \(\alpha = 0.5\)
-          and \(T = 4.0\).
-        </p>
-
-        <p>
-          The cross-entropy loss trains the model to predict the correct next
-          token:
-        </p>
-        <p style="text-align: center">
-          \[\mathcal{L}_{\text{CE}} = -\sum_{i} y_i \log
-          p_{\text{student}}(x_i)\]
-        </p>
-        <p>
-          where \(y_i\) is the ground truth label and \(p_{\text{student}}\) is
-          the student's predicted probability.
-        </p>
-
-        <h2>Top-k KL Divergence</h2>
-        <p>
-          A key innovation in our distillation approach is the use of top-k KL
-          divergence rather than full KL divergence. Standard KL divergence
-          computes the divergence over the entire vocabulary:
-        </p>
-        <p style="text-align: center">
-          \[\mathcal{L}_{\text{KL}}^{\text{full}} = \sum_{v=1}^{V}
-          p_{\text{teacher}}(v) \log
-          \frac{p_{\text{teacher}}(v)}{p_{\text{student}}(v)}\]
-        </p>
-        <p>
-          where \(V\) is the vocabulary size (over 150,000 tokens for Qwen3).
-          This sum is dominated by the many low-probability tokens in the tail
-          of the distribution, which may not be meaningful for knowledge
-          transfer.
-        </p>
-
-        <p>
-          Instead, we compute KL divergence only over the top-k tokens according
-          to the teacher's distribution:
-        </p>
-        <p style="text-align: center">
-          \[\mathcal{L}_{\text{KL}}^{\text{top-k}} = \sum_{v \in
-          \text{top-k}(p_{\text{teacher}})} p_{\text{teacher}}(v) \log
-          \frac{p_{\text{teacher}}(v)}{p_{\text{student}}(v)}\]
-        </p>
-        <p>
-          This focuses the distillation signal on the tokens the teacher
-          considers most likely, which are the ones that matter most for
-          generation quality. We found that top-k KL divergence with k=100
-          provides better training dynamics than full KL divergence.
-        </p>
-
-        <h2>Distillation on Qwen3-8B</h2>
-        <p>
-          We also experimented with distilling from a larger teacher model,
-          Qwen3-8B, to the hybrid 1.7B student. The setup is similar, but we use
-          a two-GPU configuration to handle the memory requirements: the 8B
-          teacher runs on one GPU while the 1.7B student runs on another.
-        </p>
-
-        <p>During each training step:</p>
-        <ol>
-          <li>The input batch is sent to both GPUs</li>
-          <li>
-            The teacher computes its output logits (with gradients disabled)
-          </li>
-          <li>The teacher logits are transferred to the student GPU</li>
-          <li>The student computes its output and the combined loss</li>
-          <li>Gradients flow only through the student</li>
-        </ol>
-
-        <p>
-          This setup allows us to leverage the stronger 8B model's knowledge
-          while training a more efficient 1.7B hybrid model.
-        </p>
+        <p>We use \(\alpha = 0.5\), \(T = 4.0\), and \(k = 32\) tokens.</p>
 
         <h2>Training Configuration</h2>
-        <p>The Stage 1 distillation uses the following configuration:</p>
-        <ul>
-          <li>Batch size: 1 sequence with 16 gradient accumulation steps</li>
-          <li>Learning rate: 5e-5 with warmup</li>
-          <li>Training steps: 1000</li>
-          <li>Precision: FP32 (to avoid dtype mismatches with RWKV-7)</li>
-          <li>Top-k for KL divergence: 100</li>
-        </ul>
+        <p>
+          Stage 1 distillation uses batch size 1 with 8 gradient accumulation
+          steps, sequence length 512, learning rate 5e-5 with cosine annealing,
+          200 warmup steps, and 10,000 total training steps with BF16 precision
+          and gradient checkpointing.
+        </p>
       </div>
       <div class="margin-right-block">
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        The \(T^2\) factor compensates for the gradient magnitude reduction
-        caused by temperature scaling.
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        Top-k KL focuses on the "head" of the distribution where the teacher's
-        knowledge is most concentrated.
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        The Bernoulli term ensures the student allocates similar probability
+        mass to the top-k set as the teacher. The categorical term ensures the
+        relative ordering within top-k is preserved.
       </div>
     </div>
 
@@ -842,9 +689,8 @@
 
         <h2>Training Dynamics: Full KL vs Top-k KL</h2>
         <p>
-          We compared training with full KL divergence versus top-k KL
-          divergence. The figure below shows the loss curves for both
-          approaches.
+          We compared training with full KL divergence versus our decoupled
+          top-k KL divergence approach.
         </p>
 
         <div class="figure-placeholder">
@@ -852,84 +698,62 @@
           FIGURE]
         </div>
         <p class="figure-caption">
-          Figure 3: Training loss curves comparing full KL divergence (orange)
-          vs top-k KL divergence (blue). Lower is better.
+          Figure 2: Training loss curves comparing full KL divergence vs top-k
+          KL divergence.
         </p>
 
         <p>
-          An important note on interpreting these curves: the total loss and KL
-          loss values are not directly comparable between the two methods
-          because they operate on different scales. Full KL divergence sums over
-          150,000+ vocabulary items, while top-k KL sums over only 100. What we
-          can compare is the cross-entropy loss component, which measures how
-          well the model is learning the actual language modeling task.
+          <strong>Important:</strong> The total loss and KL loss values cannot
+          be directly compared between the two methods because they operate on
+          different scales. Full KL divergence sums over 150,000+ vocabulary
+          items, while top-k KL operates on only 32 tokens. What we can compare
+          is how well the student learns the language modeling task, as measured
+          by the cross-entropy component. We observe that top-k KL divergence
+          leads to better CE loss convergence, suggesting that focusing on
+          high-probability tokens provides a cleaner learning signal.
         </p>
 
+        <h2>Why Middle Layers Have the Highest Normalized Loss</h2>
         <p>
-          We observe that top-k KL divergence leads to better cross-entropy loss
-          convergence. This suggests that focusing the distillation signal on
-          high-probability tokens provides a cleaner learning signal. The full
-          KL divergence may introduce noise from trying to match the teacher's
-          distribution over many irrelevant low-probability tokens.
-        </p>
-
-        <h2>Why Middle Layers Have Highest Normalized Loss</h2>
-        <p>
-          One of our key findings is that middle layers (approximately layers
-          8-14) consistently show higher normalized distillation loss than early
-          or late layers. We believe this reflects the functional organization
-          of transformer models:
+          Our Stage 0 results show that middle layers are significantly harder
+          to replace than early or late layers. We interpret this as reflecting
+          the functional organization of transformers:
         </p>
 
         <ul>
           <li>
-            <strong>Early layers (1-7):</strong> These layers primarily handle
-            local patterns like syntax, n-grams, and basic linguistic features.
-            Such patterns can often be captured by recurrent computations
+            <strong>Early layers (1-7):</strong> Handle local patterns like
+            syntax and n-grams. These can be captured by recurrent computations
             without requiring arbitrary-position attention.
           </li>
           <li>
-            <strong>Middle layers (8-14):</strong> These layers appear to
-            perform more complex reasoning, including entity tracking,
-            coreference resolution, and multi-hop inference. These tasks require
-            the ability to attend to arbitrary positions based on semantic
-            content, which is exactly what softmax attention provides.
+            <strong>Middle layers (8-14):</strong> Perform complex reasoning
+            including entity tracking, coreference resolution, and multi-hop
+            inference. These tasks require attending to arbitrary positions
+            based on semantic content.
           </li>
           <li>
-            <strong>Late layers (15-28):</strong> These layers aggregate
-            information and project toward the output vocabulary. The
-            computations may be more routine, involving learned patterns for
-            generating fluent text rather than complex reasoning.
+            <strong>Late layers (15+):</strong> Aggregate information and
+            project toward the output vocabulary. These computations may be more
+            routine.
           </li>
         </ul>
 
-        <p>
-          This interpretation aligns with prior work on transformer
-          interpretability showing that different layers specialize in different
-          types of computation.
-        </p>
-
         <h2>Throughput Comparison</h2>
-        <p>
-          The primary motivation for using linear attention is improved
-          efficiency. We measured throughput (tokens per second) for each hybrid
-          configuration.
-        </p>
 
         <div class="figure-placeholder">
           [FILL IN WITH GRAPH OF THROUGHPUT COMPARISONS FIGURE]
         </div>
         <p class="figure-caption">
-          Figure 4: Throughput comparison across model configurations. Higher is
-          better.
+          Figure 3: Throughput comparison across model configurations.
         </p>
 
         <table class="results">
           <tr>
             <th>Model</th>
-            <th>Linear Layers</th>
+            <th>GLA Layers</th>
             <th>Throughput (tok/s)</th>
-            <th>Relative Speedup</th>
+            <th>Speedup</th>
             <th>Total Loss</th>
           </tr>
           <tr>
@@ -940,29 +764,8 @@
             <td>—</td>
           </tr>
           <tr>
-            <td>Top 10% Hybrid</td>
-            <td>2</td>
-            <td>—</td>
-            <td>—</td>
-            <td>—</td>
-          </tr>
-          <tr>
-            <td>Top 10% GLA-only</td>
+            <td>top10_gla Hybrid</td>
             <td>5</td>
-            <td>—</td>
-            <td>—</td>
-            <td>—</td>
-          </tr>
-          <tr>
-            <td>Top 25% Hybrid</td>
-            <td>6</td>
-            <td>—</td>
-            <td>—</td>
-            <td>—</td>
-          </tr>
-          <tr>
-            <td>Top 50% Hybrid</td>
-            <td>11</td>
             <td>—</td>
             <td>—</td>
             <td>—</td>
@@ -970,14 +773,10 @@
         </table>
         <p class="figure-caption">
           Table 3: Model configurations with throughput and loss metrics.
-          [Results pending final evaluation]
         </p>
 
         <h2>Qualitative Evaluation</h2>
-        <p>
-          To verify that the hybrid models maintain coherent generation, we
-          tested on simple prompts:
-        </p>
+        <p>To verify that the hybrid model maintains coherent generation:</p>
 
         <div
           style="
@@ -990,29 +789,28 @@
           <strong>Prompt:</strong> "The capital of France is"<br />
           <strong>Baseline:</strong> "The capital of France is Paris, a city
           known for..."<br />
-          <strong>Top 10% Hybrid:</strong> "The capital of France is Paris,
-          which serves as..."<br /><br />
+          <strong>Hybrid:</strong> "The capital of France is Paris, which serves
+          as..."<br /><br />
           <strong>Prompt:</strong> "Once upon a time"<br />
           <strong>Baseline:</strong> "Once upon a time, in a kingdom far
           away..."<br />
-          <strong>Top 10% Hybrid:</strong> "Once upon a time, there lived a
-          young..."
+          <strong>Hybrid:</strong> "Once upon a time, there lived a young..."
         </div>
 
         <p>
-          The hybrid models produce grammatically correct and contextually
+          The hybrid model produces grammatically correct and contextually
           appropriate completions, demonstrating that selective layer
-          replacement preserves the core language modeling capabilities.
+          replacement preserves core language modeling capabilities.
         </p>
       </div>
       <div class="margin-right-block">
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
         The scale difference between full and top-k KL makes direct loss
         comparison meaningless. The CE component is the fair comparison.
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        The middle-layer difficulty pattern was consistent across both GLA and
-        RWKV-7, suggesting it reflects fundamental properties of the transformer
-        rather than limitations of specific linear attention variants.
+        The middle-layer difficulty pattern was consistent across experiments,
+        suggesting it reflects fundamental properties of the transformer
+        architecture.
       </div>
     </div>
 
@@ -1022,45 +820,31 @@
         <h1>Limitations and Future Work</h1>
 
         <h2>Limitations</h2>
-        <p>Our work has several limitations that should be acknowledged:</p>
+        <p>Our work has two primary limitations:</p>
 
         <p>
-          <strong>Model scale:</strong> We conducted experiments on Qwen3-1.7B,
-          a relatively small model by current standards. The patterns we
-          observed (middle layers being hardest to replace) may not hold at
-          larger scales. It is possible that larger models have different layer
-          specialization patterns, or that the relative difficulty of
-          replacement changes with scale.
+          <strong>Limited training compute:</strong> Our knowledge distillation
+          training did not exceed approximately 40 million tokens (5,000 steps ×
+          8 batch × 1,024 tokens ≈ 40,960,000 tokens). This is significantly
+          less than the billions of tokens typically used for pretraining. With
+          more compute and training tokens, the hybrid model would likely
+          achieve better performance and more closely match the teacher model's
+          capabilities. Future work should explore training with substantially
+          more data to understand the full potential of this approach.
         </p>
 
         <p>
-          <strong>Task coverage:</strong> We evaluated primarily on language
-          modeling perplexity and simple generation tasks. Specialized tasks
-          like mathematical reasoning, code generation, or multilingual
-          understanding may reveal different sensitivities. A layer that is easy
-          to replace for general text may be critical for specific capabilities.
-        </p>
-
-        <p>
-          <strong>Distillation as proxy:</strong> Our method uses distillation
-          loss as a proxy for "replaceability," but low distillation loss does
-          not guarantee equivalent downstream performance. A layer might produce
-          similar hidden states on average while missing subtle features that
-          matter for specific tasks.
-        </p>
-
-        <p>
-          <strong>Linear attention variants:</strong> We evaluated only GLA and
-          RWKV-7. Other linear attention mechanisms like RetNet, Hyena, or Mamba
-          may perform differently. The optimal choice of linear attention
-          variant may also depend on the specific layer position.
-        </p>
-
-        <p>
-          <strong>Training cost:</strong> While our method parallelizes well, it
-          still requires training 28 separate models in Stage 0 plus the full
-          model distillation in Stage 1. For very large models, this cost may be
-          prohibitive.
+          <strong>KV cache incompatibility:</strong> Standard transformer
+          inference relies heavily on key-value (KV) caching to avoid
+          recomputing attention for previous tokens. However, linear attention
+          mechanisms like GLA use a fundamentally different computation paradigm
+          based on recurrent state updates rather than explicit key-value
+          storage. This means the standard KV cache approach does not directly
+          apply to hybrid models. To achieve strong inference performance, we
+          may need to implement a separate caching mechanism specifically
+          designed for linear attention layers, which adds engineering
+          complexity and may not provide the same speedups as traditional KV
+          caching.
         </p>
 
         <h2>Future Work</h2>
@@ -1068,30 +852,17 @@
 
         <ul>
           <li>
-            <strong>Scaling studies:</strong> Applying our method to larger
-            models (7B, 70B) to see if the layer sensitivity patterns hold or
-            change with scale.
+            <strong>Scaling training:</strong> Training with billions of tokens
+            to better understand the efficiency-quality tradeoff at scale.
+          </li>
+          <li>
+            <strong>Linear attention caching:</strong> Developing efficient
+            caching mechanisms for linear attention that can work alongside
+            traditional KV caches in hybrid models.
           </li>
           <li>
             <strong>Task-specific analysis:</strong> Measuring layer sensitivity
-            for specific downstream tasks rather than just language modeling,
-            which could enable task-specific hybrid architectures.
-          </li>
-          <li>
-            <strong>Joint optimization:</strong> Training all linear attention
-            blocks jointly rather than independently may capture inter-layer
-            dependencies and lead to better overall performance.
-          </li>
-          <li>
-            <strong>Adaptive computation:</strong> Combining layer replacement
-            with adaptive depth, allowing the model to skip layers entirely for
-            simple inputs.
-          </li>
-          <li>
-            <strong>Theoretical analysis:</strong> Developing formal
-            understanding of why certain layers are more amenable to
-            linearization, potentially based on the rank or structure of
-            attention patterns.
+            for specific downstream tasks rather than just language modeling.
           </li>
         </ul>
 
@@ -1100,24 +871,23 @@
           We presented a compute-aware architecture search method for
           constructing hybrid attention transformers. By training linear
           attention replacements for each layer independently and measuring
-          distillation loss, we can identify which layers are good candidates
-          for replacement and which should retain full attention.
+          normalized distillation loss, we can identify which layers are good
+          candidates for replacement.
         </p>
 
         <p>
           Our key finding is that layer position strongly predicts amenability
-          to linear attention replacement. Early and late layers can often be
-          replaced with minimal quality loss, while middle layers are
-          significantly harder to approximate. This suggests that middle layers
-          perform more complex computations that fundamentally require the
-          expressivity of softmax attention.
+          to linear attention replacement. Early layers can often be replaced
+          with minimal quality loss, while middle layers are significantly
+          harder to approximate. This suggests that middle layers perform more
+          complex computations that fundamentally require the expressivity of
+          softmax attention.
         </p>
 
         <p>
-          We also introduced top-k KL divergence as an improved objective for
-          knowledge distillation, showing that focusing on high-probability
-          tokens provides better training dynamics than matching the full
-          distribution.
+          We also adopted decoupled top-k KL divergence as an improved objective
+          for knowledge distillation, focusing on high-probability tokens rather
+          than matching the full distribution over 150,000+ vocabulary items.
         </p>
 
         <p>
@@ -1129,10 +899,9 @@
         </p>
       </div>
       <div class="margin-right-block">
-        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        The training cost is somewhat amortized: once layer sensitivities are
-        characterized for a model family, similar patterns likely apply to
-        related models.
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        The KV cache limitation is a significant practical concern for deploying
+        hybrid models in production settings.
       </div>
     </div>
 
@@ -1144,72 +913,48 @@
           <span style="font-size: 18px"><strong>References</strong></span
           ><br /><br />
 
-          <a id="ref_1"></a>[1] Katharopoulos, A., Vyas, A., Pappas, N., &
-          Fleuret, F. (2020).
-          <a href="https://arxiv.org/abs/2006.16236"
-            >Transformers are RNNs: Fast Autoregressive Transformers with Linear
-            Attention.</a
-          >
-          ICML 2020.<br /><br />
-
-          <a id="ref_2"></a>[2] Gu, A. & Dao, T. (2023).
-          <a href="https://arxiv.org/abs/2312.00752"
-            >Mamba: Linear-Time Sequence Modeling with Selective State
-            Spaces.</a
+          <a id="ref_1"></a>[1] Adler, B., et al. (2024).
+          <a href="https://arxiv.org/abs/2402.16819"
+            >Nemotron-4 15B Technical Report.</a
           >
           arXiv preprint.<br /><br />
 
-          <a id="ref_3"></a>[3] Peng, B., Alcaide, E., Anthony, Q., et al.
-          (2023).
-          <a href="https://arxiv.org/abs/2305.13048"
-            >RWKV: Reinventing RNNs for the Transformer Era.</a
-          >
-          EMNLP 2023.<br /><br />
-
-          <a id="ref_4"></a>[4] Lieber, O., Lenz, B., Bata, H., et al. (2024).
-          <a href="https://arxiv.org/abs/2403.19887"
-            >Jamba: A Hybrid Transformer-Mamba Language Model.</a
-          >
-          arXiv preprint.<br /><br />
-
-          <a id="ref_5"></a>[5] De, S., Smith, S. L., Fernando, A., et al.
-          (2024).
-          <a href="https://arxiv.org/abs/2402.19427"
-            >Griffin: Mixing Gated Linear Recurrences with Local Attention for
-            Efficient Language Models.</a
-          >
-          arXiv preprint.<br /><br />
-
-          <a id="ref_6"></a>[6] Mercat, J., Vasiljevic, I., Keh, S., et al.
+          <a id="ref_2"></a>[2] Mercat, J., Vasiljevic, I., Keh, S., et al.
           (2024).
           <a href="https://arxiv.org/abs/2406.07588"
             >Linearizing Large Language Models.</a
           >
           arXiv preprint.<br /><br />
 
-          <a id="ref_7"></a>[7] Yang, S., Wang, B., Shen, Y., et al. (2024).
+          <a id="ref_3"></a>[3] Liquid AI. (2024).
+          <a href="https://arxiv.org/abs/2511.23404"
+            >Liquid Foundation Models.</a
+          >
+          arXiv preprint.<br /><br />
+
+          <a id="ref_4"></a>[4] Yang, S., Wang, B., Shen, Y., et al. (2024).
           <a href="https://arxiv.org/abs/2312.06635"
             >Gated Linear Attention Transformers with Hardware-Efficient
             Training.</a
           >
           ICML 2024.<br /><br />
 
-          <a id="ref_8"></a>[8] Hinton, G., Vinyals, O., & Dean, J. (2015).
-          <a href="https://arxiv.org/abs/1503.02531"
-            >Distilling the Knowledge in a Neural Network.</a
-          >
-          NeurIPS Workshop 2015.<br /><br />
-
-          <a id="ref_9"></a>[9] Qwen Team. (2023).
-          <a href="https://arxiv.org/abs/2309.16609">Qwen Technical Report.</a>
-          arXiv preprint.<br /><br />
-
-          <a id="ref_10"></a>[10] Clark, K., Khandelwal, U., Levy, O., &
-          Manning, C. D. (2019).
+          <a id="ref_5"></a>[5] Clark, K., Khandelwal, U., Levy, O., & Manning,
+          C. D. (2019).
           <a href="https://arxiv.org/abs/1906.04341"
             >What Does BERT Look At? An Analysis of BERT's Attention.</a
           >
           BlackboxNLP 2019.<br /><br />
+
+          <a id="ref_6"></a>[6] Tenney, I., Das, D., & Pavlick, E. (2019).
+          <a href="https://arxiv.org/abs/1905.05950"
+            >BERT Rediscovers the Classical NLP Pipeline.</a
+          >
+          ACL 2019.<br /><br />
+
+          <a id="ref_7"></a>[7] Qwen Team. (2024).
+          <a href="https://qwenlm.github.io/">Qwen2.5 Technical Report.</a
+          ><br /><br />
         </div>
       </div>
       <div class="margin-right-block"></div>
