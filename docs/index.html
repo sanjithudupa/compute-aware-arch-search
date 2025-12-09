@@ -10,6 +10,10 @@
 
     <link rel="shortcut icon" href="images/icon.ico" />
     <style type="text/css">
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         background-color: #f5f9ff;
       }
@@ -18,7 +22,8 @@
         display: flex;
         width: 100%;
         justify-content: left;
-        align-items: center;
+        align-items: flex-start;
+        scroll-margin-top: 20px;
       }
       .main-content-block {
         width: 70%;
@@ -75,6 +80,7 @@
         margin-top: 20px;
         margin-bottom: 10px;
         color: #333;
+        scroll-margin-top: 20px;
       }
 
       h2 {
@@ -236,13 +242,14 @@
       <div class="margin-left-block">
         <div style="position: fixed; max-width: inherit; top: max(20%, 120px)">
           <b style="font-size: 16px">Outline</b><br /><br />
-          <a href="#intro">Introduction</a><br /><br />
+          <a href="#intro">Introduction/Motivation</a><br /><br />
           <a href="#related">Related Work</a><br /><br />
-          <a href="#linear-attention">Gated Linear Attention</a><br /><br />
-          <a href="#stage0">Stage 0 Training</a><br /><br />
-          <a href="#distillation">Knowledge Distillation</a><br /><br />
+          <a href="#linear-attention">Linear Attention</a><br /><br />
+          <a href="#stage0">Stage 0</a><br /><br />
+          <a href="#stage1">Stage 1</a><br /><br />
           <a href="#results">Results</a><br /><br />
-          <a href="#limitations">Limitations</a><br /><br />
+          <a href="#limitations">Limitations/Future</a><br /><br />
+          <a href="#conclusion">Conclusion</a><br /><br />
           <a href="#references">References</a><br /><br />
         </div>
       </div>
@@ -627,7 +634,7 @@
       </div>
     </div>
 
-    <div class="content-margin-container" id="distillation">
+    <div class="content-margin-container" id="stage1">
       <div class="margin-left-block"></div>
       <div class="main-content-block">
         <h1>
@@ -1028,7 +1035,7 @@
           </li>
         </ul>
 
-        <h1>Conclusion</h1>
+        <h1 id="conclusion">Conclusion</h1>
         <p>
           We presented a compute-aware architecture search method for
           constructing hybrid attention transformers. By training linear
