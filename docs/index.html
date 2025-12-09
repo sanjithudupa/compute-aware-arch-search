@@ -509,8 +509,12 @@
           FINAL MODEL]
         </div>
         <p>
-          (**TODO**) Due to these issues with RWKV7, we proceeded with only GLA
-          layers for the final hybrid model configuration.
+          We encountered persistent numerical instability with RWKV7 during
+          training, stemming from mixed precision mismatches between the FLA
+          library's RWKV7 implementation and our teacher model's precision
+          requirements. These floating point arithmetic errors proved difficult
+          to resolve within our compute constraints, so we proceeded with only
+          GLA layers for the final hybrid model configuration.
         </p>
 
         <h2>Identifying the Best Layers</h2>
