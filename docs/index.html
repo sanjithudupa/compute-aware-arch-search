@@ -354,8 +354,9 @@
           transferring capabilities between architectures. The Nemotron and
           RAD-LM projects showed that distillation can effectively transfer
           knowledge from transformer teachers to linear attention students. The
-          Liquid Foundation Models work provided the decoupled top-k KL
-          divergence objective that we adopt for our Stage 1 training.
+          Liquid Foundation Models work explored top-k distillation ideas that
+          inform our approach to handling large vocabulary distributions in
+          Stage 1 training.
         </p>
 
         <p>
@@ -726,9 +727,9 @@
         <p>
           Standard KL divergence over the full vocabulary (150,000+ tokens) is
           dominated by low-probability tokens in the tail of the distribution.
-          Following the approach from Liquid Foundation Models
-          <a href="#ref_3">[3]</a>, we use a decoupled top-k KL divergence that
-          focuses on the most important tokens.
+          To address this, we use a decoupled top-k KL divergence that focuses
+          on the most important tokens, building on the idea of top-k
+          distillation from previous work <a href="#ref_3">[3]</a>.
         </p>
 
         <p>
