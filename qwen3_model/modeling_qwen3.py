@@ -1183,7 +1183,7 @@ class Qwen3WithLinearAttention(Qwen3ForCausalLM):
         
         if "rwkv7" in layer_attention_types:
             if rwkv7_config_path is None:
-                rwkv7_config_path = "linear_attn/rwkv7_config.json"
+                rwkv7_config_path = "../configs/linear_attn_configs/rwkv7_config.json"
             with open(rwkv7_config_path, "r") as f:
                 rwkv7_config_dict = json.load(f)
             from fla.models.rwkv7 import RWKV7Config
@@ -1191,7 +1191,7 @@ class Qwen3WithLinearAttention(Qwen3ForCausalLM):
         
         if "gla" in layer_attention_types:
             if gla_config_path is None:
-                gla_config_path = "linear_attn/gla_config.json"
+                gla_config_path = "../configs/linear_attn_configs/gla_config.json"
             with open(gla_config_path, "r") as f:
                 gla_config_dict = json.load(f)
             try:
@@ -1243,6 +1243,17 @@ class Qwen3WithLinearAttention(Qwen3ForCausalLM):
         if base_model_path is None:
             raise ValueError("base_model_path must be specified in config file")
         
+        # Resolve relative paths relative to project root (parent of configs directory)
+        if not os.path.isabs(base_model_path):
+            # If config is in configs/hybrid_model_configs/, project root is 2 levels up
+            config_dir = os.path.dirname(os.path.abspath(config_path))
+            if "hybrid_model_configs" in config_dir:
+                project_root = os.path.dirname(os.path.dirname(config_dir))
+                base_model_path = os.path.join(project_root, base_model_path)
+            else:
+                # Fallback: resolve relative to current working directory
+                base_model_path = os.path.abspath(base_model_path)
+        
         weights_base_path = config_dict.get("weights_base_path")
         layer_attention_types = config_dict.get("layer_attention_types")
         if layer_attention_types is None:
@@ -1252,8 +1263,8 @@ class Qwen3WithLinearAttention(Qwen3ForCausalLM):
             raise ValueError("layer_attention_types must be a list in the config file")
         
         # Optional config paths
-        rwkv7_config_path = config_dict.get("rwkv7_config_path", "linear_attn/rwkv7_config.json")
-        gla_config_path = config_dict.get("gla_config_path", "linear_attn/gla_config.json")
+        rwkv7_config_path = config_dict.get("rwkv7_config_path", "../configs/linear_attn_configs/rwkv7_config.json")
+        gla_config_path = config_dict.get("gla_config_path", "../configs/linear_attn_configs/gla_config.json")
         
         # Use from_pretrained with extracted values
         return cls.from_pretrained(

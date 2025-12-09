@@ -32,6 +32,6 @@
     "full_attention",
     "full_attention"
   ],
-  "rwkv7_config_path": "models/linear_attn/rwkv7_config.json",
-  "gla_config_path": "models/linear_attn/gla_config.json"
+  "rwkv7_config_path": "configs/linear_attn_configs/rwkv7_config.json",
+  "gla_config_path": "configs/linear_attn_configs/gla_config.json"
 }

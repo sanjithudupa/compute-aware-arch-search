@@ -1,10 +1,10 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-DEVICE = "cuda" # :(
+DEVICE = "cpu" # :(
 
 MODEL_NAMES = [
-    "Qwen/Qwen3-8B",
+    # "Qwen/Qwen3-8B",
     "Qwen/Qwen3-1.7B",
 ]
 
