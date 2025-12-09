@@ -501,7 +501,8 @@
         <p>
           We trained each layer on approximately 40 million tokens from the
           DCLM-baseline-1.0 dataset with batch size 32, sequence length 1024,
-          learning rate 1e-3 with cosine decay to 1e-5, and 10% warmup. All
+          learning rate 1e-3 with cosine decay to 1e-5, and 10% warmup. To
+          prevent early training divergence, we apply gradient clipping. All
           training was performed on NVIDIA A6000 GPUs. We trained GLA for layers
           1-10 and independently trained RWKV7 for layers 1-28. Training time
           scaled superlinearly with layer depth.
@@ -802,8 +803,9 @@
           training for another 5,000 steps with sequence length 1,024 and batch
           size 4. This totals approximately 8,000 steps and 32.8 million tokens
           (3,000 × 8 × 512 + 5,000 × 4 × 1,024 = 32,768,000). We used learning
-          rate 5e-5 with cosine annealing, 200 warmup steps, BF16 precision, and
-          gradient checkpointing.
+          rate 5e-5 with cosine annealing, 200 warmup steps, BF16 precision,
+          gradient checkpointing, and gradient clipping to prevent early
+          training divergence.
         </p>
       </div>
       <div class="margin-right-block">
