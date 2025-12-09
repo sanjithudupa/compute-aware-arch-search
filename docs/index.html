@@ -503,7 +503,7 @@
           learning rate 1e-3 with cosine decay to 1e-5, and 10% warmup. All
           training was performed on NVIDIA A6000 GPUs. We trained GLA for layers
           1-10 and independently trained RWKV7 for layers 1-28. Training time
-          scaled superlinearly with layer dept.
+          scaled superlinearly with layer depth.
         </p>
 
         <h2>Layer-wise Training Results</h2>
@@ -995,7 +995,7 @@
           5,000 × 4 × 1,024 ≈ 32,768,000 tokens). This is significantly less
           than the billions of tokens typically used for pretraining, and also
           far below the 350-700 million tokens used by RADLADS
-          <a href="#ref_2">[2]</a> for their successful linear attention
+          <a href="#ref_8">[8]</a> for their successful linear attention
           conversions. Additionally, we observed that training time for GLA
           layers scaled superlinearly with layer depth, which limited our
           ability to train all layers within the available compute budget. With
@@ -1084,8 +1084,8 @@
           <span style="font-size: 18px"><strong>References</strong></span
           ><br /><br />
 
-          <a id="ref_1"></a>[1] Adler, B., et al. (2024).
-          <a href="https://arxiv.org/abs/2402.16819"
+          <a id="ref_1"></a>[1] Adler, B., et al. (2025).
+          <a href="https://arxiv.org/abs/2508.15884"
             >Nemotron-4 15B Technical Report.</a
           >
           arXiv preprint.<br /><br />
@@ -1133,6 +1133,14 @@
           <a id="ref_7"></a>[7] Qwen Team. (2024).
           <a href="https://qwenlm.github.io/">Qwen2.5 Technical Report.</a
           ><br /><br />
+
+          <a id="ref_8"></a>[8] Goldstein, D., Alcaide, E., Lu, J., & Cheah, E.
+          (2025).
+          <a href="https://arxiv.org/pdf/2505.03005"
+            >RADLADS: Rapid Attention Distillation to Linear Attention Decoders
+            at Scale.</a
+          >
+          arXiv preprint.<br /><br />
         </div>
       </div>
       <div class="margin-right-block"></div>
