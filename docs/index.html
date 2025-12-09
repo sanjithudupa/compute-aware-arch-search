@@ -716,10 +716,14 @@
 
         <h2>Training Configuration</h2>
         <p>
-          Stage 1 distillation uses batch size 1 with 8 gradient accumulation
-          steps, sequence length 512, learning rate 5e-5 with cosine annealing,
-          200 warmup steps, and 10,000 total training steps with BF16 precision
-          and gradient checkpointing.
+          Stage 1 distillation proceeded in two phases. First, we trained for
+          3,000 steps with batch size 8 and sequence length 512. Then, because
+          linear attention can struggle with longer contexts, we continued
+          training for another 5,000 steps with sequence length 1,024 and batch
+          size 4. This totals approximately 8,000 steps and 32.8 million tokens
+          (3,000 × 8 × 512 + 5,000 × 4 × 1,024 = 32,768,000). We used learning
+          rate 5e-5 with cosine annealing, 200 warmup steps, BF16 precision, and
+          gradient checkpointing.
         </p>
       </div>
       <div class="margin-right-block">
@@ -862,14 +866,17 @@
 
         <p>
           <strong>Limited training compute:</strong> Our knowledge distillation
-          training did not exceed approximately 40 million tokens (5,000 steps ×
-          8 batch × 1,024 tokens ≈ 40,960,000 tokens). This is significantly
-          less than the billions of tokens typically used for pretraining.
-          Additionally, we observed that training time scaled superlinearly with
-          layer depth, which limited our ability to train all layers within the
-          available compute budget. With more compute and training tokens, the
-          hybrid model would likely achieve better performance and more closely
-          match the teacher model's capabilities.
+          training used only approximately 33 million tokens (3,000 × 8 × 512 +
+          5,000 × 4 × 1,024 ≈ 32,768,000 tokens). This is significantly less
+          than the billions of tokens typically used for pretraining, and also
+          far below the 350-700 million tokens used by RADLADS
+          <a href="#ref_2">[2]</a> for their successful linear attention
+          conversions. Additionally, we observed that training time for GLA
+          layers scaled superlinearly with layer depth, which limited our
+          ability to train all layers within the available compute budget. With
+          more compute and training tokens, the hybrid model would likely
+          achieve better performance and more closely match the teacher model's
+          capabilities.
         </p>
 
         <p>
