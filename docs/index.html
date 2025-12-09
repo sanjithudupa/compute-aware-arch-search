@@ -169,6 +169,20 @@
         color: #666;
         font-style: italic;
       }
+
+      .figure-container {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .figure-container img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
     </style>
 
     <title>Compute-Aware Hybrid Attention Architecture Search</title>
@@ -624,28 +638,39 @@
           After identifying which layers to replace, we assemble the hybrid
           model and fine-tune it using knowledge distillation from Qwen3-8B. We
           use a two-GPU configuration: the 8B teacher runs on GPU 0 (in FP16)
-          while the 1.7B hybrid student runs on GPU 1. These are both A6000 GPUs,
-          and we specifically chose to distill from a larger model than the base to
-          get the best possible downstream accuracy, while still being able to maintain
-          efficient training with our distributed training approach.
+          while the 1.7B hybrid student runs on GPU 1. These are both A6000
+          GPUs, and we specifically chose to distill from a larger model than
+          the base to get the best possible downstream accuracy, while still
+          being able to maintain efficient training with our distributed
+          training approach.
         </p>
 
         <h2>Hybrid Model Configuration</h2>
         <p>
-          Based on our Stage 0 results, we construct our hybrid models by selectively choosing the top
-          layers within a certain percentile based on their Stage 0 training losses.
-          Our configuration generator takes the Stage 0 distillation losses for each layer type (GLA and RWKV7), filters layers by allowed ranges (GLA: layers 1-10, RWKV7: layers 11-22), sorts them by loss, and selects the top N% of layers for replacement, where N is the target percentile.
-          
-          Below is a list of several hybrid model configurations generated with percentile-based layer selection of the top 10%, 25%, and 50% of layers respectively.
-          We also had a modified version of the top10 configuration where we only used GLA layers (called top10_gla) and this is what we ultimately used for our Stage 1 distillation.
-          We will discuss later why we specifically chose to use GLA only, but given resource constraints for training it was only possible to move forward with one configuration. 
-          However, we still ran performance analysis on all the configurations to get a sense of how the different model configurations would perform downstream in terms of inference speed metrics
-          like time to first token and token throughput, but only measured accuracy for the final top10_gla configuration because we deemed it would be representative of the process as a whole. 
-
-          The top10_gla configuration uses layers 1, 2, 3, 7, and 9 with GLA, keeping the remaining 23 layers as
-          full attention. This configuration was chosen because these layers
-          showed the lowest normalized distillation loss, indicating they could
-          be well-approximated by linear attention.
+          Based on our Stage 0 results, we construct our hybrid models by
+          selectively choosing the top layers within a certain percentile based
+          on their Stage 0 training losses. Our configuration generator takes
+          the Stage 0 distillation losses for each layer type (GLA and RWKV7),
+          filters layers by allowed ranges (GLA: layers 1-10, RWKV7: layers
+          11-22), sorts them by loss, and selects the top N% of layers for
+          replacement, where N is the target percentile. Below is a list of
+          several hybrid model configurations generated with percentile-based
+          layer selection of the top 10%, 25%, and 50% of layers respectively.
+          We also had a modified version of the top10 configuration where we
+          only used GLA layers (called top10_gla) and this is what we ultimately
+          used for our Stage 1 distillation. We will discuss later why we
+          specifically chose to use GLA only, but given resource constraints for
+          training it was only possible to move forward with one configuration.
+          However, we still ran performance analysis on all the configurations
+          to get a sense of how the different model configurations would perform
+          downstream in terms of inference speed metrics like time to first
+          token and token throughput, but only measured accuracy for the final
+          top10_gla configuration because we deemed it would be representative
+          of the process as a whole. The top10_gla configuration uses layers 1,
+          2, 3, 7, and 9 with GLA, keeping the remaining 23 layers as full
+          attention. This configuration was chosen because these layers showed
+          the lowest normalized distillation loss, indicating they could be
+          well-approximated by linear attention.
         </p>
 
         <table class="results">
@@ -835,8 +860,11 @@
 
         <h2>Throughput Comparison</h2>
 
-        <div class="figure-placeholder">
-          <img src="images/throughput_chart.png" alt="Throughput comparison chart" style="width: 100%; max-width: 1200px;">
+        <div class="figure-container">
+          <img
+            src="images/throughput_chart.png"
+            alt="Throughput comparison chart"
+          />
         </div>
         <p class="figure-caption">
           Figure 3: Throughput comparison across model configurations.
@@ -844,11 +872,15 @@
 
         <h2>Time to First Token Comparison</h2>
 
-        <div class="figure-placeholder">
-          <img src="images/ttft_chart_log.png" alt="Time to First Token comparison chart (log scale)" style="width: 100%; max-width: 1200px;">
+        <div class="figure-container">
+          <img
+            src="images/ttft_chart_log.png"
+            alt="Time to First Token comparison chart (log scale)"
+          />
         </div>
         <p class="figure-caption">
-          Figure 4: Time to First Token comparison across model configurations (log scale).
+          Figure 4: Time to First Token comparison across model configurations
+          (log scale).
         </p>
 
         <table class="results">
