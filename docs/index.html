@@ -500,10 +500,10 @@
         <p>
           We trained each layer on approximately 40 million tokens from the
           DCLM-baseline-1.0 dataset with batch size 32, sequence length 1024,
-          learning rate 1e-3 with cosine decay to 1e-5, and 10% warmup. Each
-          layer takes approximately 2 hours to train on a single GPU. We trained
-          GLA for layers 1-10 and RWKV7 for layers 11-22, based on preliminary
-          experiments showing these ranges worked best for each architecture.
+          learning rate 1e-3 with cosine decay to 1e-5, and 10% warmup. All
+          training was performed on NVIDIA A6000 GPUs. We trained GLA for layers
+          1-10 and independently trained RWKV7 for layers 1-28. Training time
+          scaled superlinearly with layer dept.
         </p>
 
         <h2>Layer-wise Training Results</h2>
@@ -644,10 +644,12 @@
         <p>
           After identifying which layers to replace, we assemble the hybrid
           model and fine-tune it using knowledge distillation from Qwen3-8B. We
-          use a two-GPU configuration: the 8B teacher runs on GPU 0 (in FP16)
-          while the 1.7B hybrid student runs on GPU 1. These are both A6000
-          GPUs, and we specifically chose to distill from a larger model than
-          the base to get the best possible downstream accuracy, while still
+          use a two-GPU configuration with NVIDIA A6000 GPUs: the 8B teacher
+          runs on one GPU while the 1.7B hybrid student runs on another. The
+          precision for each model was chosen to fit within GPU memory
+          constraints—the teacher uses FP16 and the student uses BF16. We
+          specifically chose to distill from a larger model than the base
+          architecture to get the best possible downstream accuracy, while still
           being able to maintain efficient training with our distributed
           training approach.
         </p>
