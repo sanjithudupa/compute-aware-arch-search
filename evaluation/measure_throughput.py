@@ -1,5 +1,4 @@
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import sys
 import os
 import time
@@ -11,9 +10,9 @@ if project_root not in sys.path:
 
 from qwen3_model.modeling_qwen3 import Qwen3WithLinearAttention
 
-RESULTS_PATH = os.path.join(project_root, "evaluation", "throughput_results.csv")
+RESULTS_PATH = os.path.join(project_root, "evaluation", "timing_results.csv")
 if not os.path.exists(RESULTS_PATH):
-    df = pd.DataFrame(columns=["config_name", "test_start_timestamp", "n_tokens", "time", "invalidated"])
+    df = pd.DataFrame(columns=["config_name", "test_start_timestamp", "context_length", "n_generated", "time", "ttft", "invalidated"])
     df.to_csv(RESULTS_PATH, index=False)
 else:
     df = pd.read_csv(RESULTS_PATH)
@@ -43,24 +42,38 @@ for i in range(len(config_names)):
 
     test_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 
-    N = [50, 300, 3000]
+    CONTEXT_LENGTHS = [50, 300, 3000]
+    MAX_NEW_TOKENS = 150
 
-    for n in N:
-        # generate a sequence of 300 random tokens, measure the time it takes to generate
-        print(f'{formatted_config_name} generating {n} random tokens')
-        inputs = torch.randint(0, model.config.vocab_size, (1, n)).to(DEVICE)
+    for context_len in CONTEXT_LENGTHS:
+        inputs = torch.randint(0, model.config.vocab_size, (1, context_len)).to(DEVICE)
         attention_mask = torch.ones_like(inputs).to(DEVICE)
 
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
         start_time = time.perf_counter()
-        outputs = model(inputs, attention_mask=attention_mask)
-        end_time = time.perf_counter()
+        _ = model.generate(inputs, attention_mask=attention_mask, max_new_tokens=1, do_sample=False, use_cache=True)
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+        ttft = time.perf_counter() - start_time
+
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+        start_time = time.perf_counter()
+        generated = model.generate(inputs, attention_mask=attention_mask, max_new_tokens=MAX_NEW_TOKENS, do_sample=False, use_cache=True)
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+        total_time = time.perf_counter() - start_time
+        n_generated = generated.shape[1] - context_len
         
-        print(f'{formatted_config_name} time to generate {n} random tokens: {end_time - start_time} seconds')
+        print(f'{formatted_config_name} context={context_len}, generated={n_generated}, ttft={ttft:.4f}s, total={total_time:.4f}s')
         new_row = {
             "config_name": formatted_config_name,
             "test_start_timestamp": test_timestamp,
-            "n_tokens": n,
-            "time": end_time - start_time,
+            "context_length": context_len,
+            "n_generated": n_generated,
+            "time": total_time,
+            "ttft": ttft,
             "invalidated": False
         }
         df.loc[len(df)] = new_row
