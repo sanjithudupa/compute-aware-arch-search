@@ -24,10 +24,13 @@
         justify-content: left;
         align-items: flex-start;
         scroll-margin-top: 20px;
+        min-width: 0;
       }
       .main-content-block {
         width: 70%;
         max-width: 1100px;
+        min-width: 0;
+        flex-shrink: 1;
         background-color: #fff;
         border-left: 1px solid #ddd;
         border-right: 1px solid #ddd;
@@ -40,12 +43,20 @@
         font-size: 14px;
         width: 15%;
         max-width: 130px;
+        min-width: 0;
+        flex-shrink: 0;
         position: relative;
         margin-left: 10px;
         text-align: left;
         font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
           "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
         padding: 5px;
+        overflow: hidden;
+      }
+      .margin-left-block > div {
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
       }
       .margin-right-block {
         font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
@@ -53,10 +64,13 @@
         font-size: 14px;
         width: 25%;
         max-width: 256px;
+        min-width: 0;
+        flex-shrink: 0;
         position: relative;
         text-align: left;
         padding: 10px;
         color: #666;
+        overflow: hidden;
       }
 
       img {
@@ -190,6 +204,18 @@
         border-radius: 4px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
+
+      @media (max-width: 768px) {
+        .margin-left-block,
+        .margin-right-block {
+          display: none;
+        }
+        .main-content-block {
+          width: 100%;
+          max-width: 100%;
+          margin: 0 auto;
+        }
+      }
     </style>
 
     <title>Compute-Aware Hybrid Attention Architecture Search</title>
@@ -243,13 +269,13 @@
       <div class="margin-left-block">
         <div style="position: fixed; max-width: inherit; top: max(20%, 120px)">
           <b style="font-size: 16px">Outline</b><br /><br />
-          <a href="#intro">Introduction/Motivation</a><br /><br />
+          <a href="#intro">Introduction & Motivation</a><br /><br />
           <a href="#related">Related Work</a><br /><br />
           <a href="#linear-attention">Linear Attention</a><br /><br />
-          <a href="#stage0">Stage 0</a><br /><br />
-          <a href="#stage1">Stage 1</a><br /><br />
+          <a href="#stage0">Stage 0 Training</a><br /><br />
+          <a href="#stage1">Stage 1 Training</a><br /><br />
           <a href="#results">Results</a><br /><br />
-          <a href="#limitations">Limitations/Future</a><br /><br />
+          <a href="#limitations">Limitations & Future</a><br /><br />
           <a href="#conclusion">Conclusion</a><br /><br />
           <a href="#references">References</a><br /><br />
         </div>
