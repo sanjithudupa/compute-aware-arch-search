@@ -323,10 +323,13 @@
         </p>
 
         <p>
-          We conducted experiments using Qwen3-1.7B <a href="#ref_8">[8]</a> (28
-          layers, 2048 hidden size) as the student model architecture and
-          Qwen3-8B as the teacher for Stage 1 distillation. We evaluated Gated
-          Linear Attention (GLA) from the Flash Linear Attention library. Our
+          We conducted experiments using pretrained layers from Qwen3-1.7B
+          <a href="#ref_8">[8]</a> (28 layers, 2048 hidden size) to train layer
+          replacements for two different linear attention mechanisms: Gated
+          Linear Attention (GLA) and RWKV7 from the Flash Linear Attention
+          library in Stage 0. We then constructed a hybrid model picking between
+          these trained layer replacements and used Qwen3-8B as the teacher for
+          Stage 1 distillation. We evaluated a hybrid model that used GLA. Our
           results show clear patterns in layer sensitivity, with middle layers
           being significantly harder to replace than early or late layers.
         </p>
@@ -383,8 +386,8 @@
           transferring capabilities between architectures. The Nemotron and
           RAD-LM projects showed that distillation can effectively transfer
           knowledge from transformer teachers to linear attention students. The
-          Liquid Foundation Models work explored top-k distillation ideas that
-          inform our approach to handling large vocabulary distributions in
+          Liquid Foundation Models work explored the top-k distillation ideas
+          that inform our approach to handling large vocabulary distributions in
           Stage 1 training.
         </p>
 
@@ -501,29 +504,13 @@
           We modified the Qwen3 architecture to create a
           <code>Qwen3ForNAS</code> class that outputs the hidden states before
           and after any specified layer. For each layer \(l\), we train separate
-          GLA and RWKV7 blocks to match the teacher's behavior by minimizing
-          MSE:
+          GLA and RWKV7 blocks to match the teacher's behavior by minimizing MSE
+          of the output hidden states of the student and teacher models:
         </p>
         <p style="text-align: center">
           \[\mathcal{L}_{\text{MSE}}^{(l)} = \mathbb{E}_{x \sim \mathcal{D}}
           \left[ \left\| f_{\text{student}}^{(l)}(h^{(l-1)}) -
           f_{\text{teacher}}^{(l)}(h^{(l-1)}) \right\|_2^2 \right]\]
-        </p>
-
-        <h2>Normalized Loss</h2>
-        <p>
-          Different layers have different activation magnitudes, making raw MSE
-          values incomparable. We compute a normalized loss that measures the
-          student's error relative to the magnitude of the teacher's update:
-        </p>
-        <p style="text-align: center">
-          \[\mathcal{L}_{\text{norm}}^{(l)} =
-          \frac{\text{MSE}(f_{\text{student}}^{(l)}(h^{(l-1)}),
-          h^{(l)})}{\text{MSE}(h^{(l-1)}, h^{(l)})}\]
-        </p>
-        <p>
-          A normalized loss of 0.0 means perfect reproduction; 1.0 means the
-          student is no better than passing through the input unchanged.
         </p>
 
         <h2>Training Configuration</h2>
@@ -535,6 +522,25 @@
           training was performed on NVIDIA A6000 GPUs. We trained GLA for layers
           1-10 and independently trained RWKV7 for layers 1-28. Training time
           scaled superlinearly with layer depth.
+        </p>
+
+        <h2>Normalized Loss</h2>
+        <p>
+          After training the individual layers, we needed a way of comparing the
+          student layers' performance to reproduce their teacher model's hidden
+          states. However, different layers have different activation
+          magnitudes, making the raw MSE values incomparable. We compute a
+          normalized loss that measures the student's error relative to the
+          magnitude of the teacher's update:
+        </p>
+        <p style="text-align: center">
+          \[\mathcal{L}_{\text{norm}}^{(l)} =
+          \frac{\text{MSE}(f_{\text{student}}^{(l)}(h^{(l-1)}),
+          h^{(l)})}{\text{MSE}(h^{(l-1)}, h^{(l)})}\]
+        </p>
+        <p>
+          A normalized loss of 0.0 means perfect reproduction; 1.0 means the
+          student is no better than passing through the input unchanged.
         </p>
 
         <h2>Layer-wise Training Results</h2>
@@ -564,19 +570,31 @@
         <h2>RWKV7 Issues</h2>
         <p>
           We encountered persistent numerical instability with RWKV7 during
-          training, stemming from mixed precision mismatches between the FLA
-          library's RWKV7 implementation and our teacher model's precision
-          requirements. These floating point arithmetic errors proved difficult
-          to resolve within our compute constraints, so we proceeded with only
-          GLA layers for the final hybrid model configuration.
+          Stage 1 training (full model distillation), stemming from mixed
+          precision mismatches between the FLA library's RWKV7 implementation
+          and our teacher model's precision requirements. These floating point
+          arithmetic errors proved difficult to resolve within our compute
+          constraints. As a result, we were unable to successfully complete
+          Stage 1 distillation for any hybrid model configurations that included
+          RWKV7 layers. We therefore proceeded with only GLA layers for the
+          final hybrid model configuration used in Stage 1.
         </p>
 
         <h2>Identifying the Best Layers</h2>
         <p>
-          After training, we ranked layers by their final normalized loss. Based
-          on our experiments, we constrained GLA to layers 1-10. The results
+          After training each layer, we ranked them by their final normalized
+          loss. Based on our experiments, we constrained GLA to layers 1-10. For
+          RWKV7, we trained layers 1-28 and observed similar Stage 0 training
+          results with comparable normalized loss values to GLA, indicating that
+          RWKV7 layers were also capable of approximating the teacher model's
+          behavior during Stage 0. However, we ultimately did not use RWKV7
+          layers in our Stage 1 hybrid model because Stage 1 distillation
+          consistently failed with RWKV7 layers due to the numerical instability
+          issues described above. The results for both GLA and RWKV7 in Stage 0
           revealed a clear pattern: middle layers (roughly layers 8-14) have
-          significantly higher normalized loss than early or late layers.
+          significantly higher normalized loss than early or late layers,
+          suggesting this pattern holds across different linear attention
+          mechanisms.
         </p>
 
         <p>
@@ -1192,7 +1210,7 @@
         <hr />
         <p style="font-size: 14px">
           Code available at:
-          <a href="https://github.com/your-repo/compute-aware-arch-search"
+          <a href="https://github.com/sanjithudupa/compute-aware-arch-search"
             >[GitHub Repository]</a
           >
         </p>
