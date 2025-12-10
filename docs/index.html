@@ -323,12 +323,12 @@
         </p>
 
         <p>
-          We conducted experiments using Qwen3-1.7B (28 layers, 2048 hidden
-          size) as the student model architecture and Qwen3-8B as the teacher
-          for Stage 1 distillation. We evaluated Gated Linear Attention (GLA)
-          from the Flash Linear Attention library. Our results show clear
-          patterns in layer sensitivity, with middle layers being significantly
-          harder to replace than early or late layers.
+          We conducted experiments using Qwen3-1.7B <a href="#ref_8">[8]</a> (28
+          layers, 2048 hidden size) as the student model architecture and
+          Qwen3-8B as the teacher for Stage 1 distillation. We evaluated Gated
+          Linear Attention (GLA) from the Flash Linear Attention library. Our
+          results show clear patterns in layer sensitivity, with middle layers
+          being significantly harder to replace than early or late layers.
         </p>
       </div>
       <div class="margin-right-block">
@@ -349,12 +349,14 @@
 
         <h2>Knowledge Distillation for Linear Attention</h2>
         <p>
-          Recent work has demonstrated that linear attention models can be
-          trained effectively through knowledge distillation from transformer
-          teachers. The NVIDIA Nemotron project <a href="#ref_1">[1]</a> showed
-          that distillation can transfer knowledge from large teacher models to
-          more efficient student architectures, achieving competitive
-          performance without full pretraining costs.
+          Recent work has shown that knowledge distillation is an effective
+          strategy for training efficient student models from pretrained
+          transformer teachers. For example, the Jet-Nemotron project
+          <a href="#ref_1">[1]</a> demonstrates that distillation can transfer
+          capabilities from large transformer models to significantly smaller
+          architectures discovered through post-training neural architecture
+          search, reducing training cost while retaining competitive quality.
+          This motivates similar approaches for linear-attention–based models.
         </p>
 
         <p>
@@ -1029,7 +1031,7 @@
           5,000 × 4 × 1,024 ≈ 32,768,000 tokens). This is significantly less
           than the billions of tokens typically used for pretraining, and also
           far below the 350-700 million tokens used by RADLADS
-          <a href="#ref_8">[8]</a> for their successful linear attention
+          <a href="#ref_9">[9]</a> for their successful linear attention
           conversions. Additionally, we observed that training time for GLA
           layers scaled superlinearly with layer depth, which limited our
           ability to train all layers within the available compute budget. With
@@ -1118,23 +1120,22 @@
           <span style="font-size: 18px"><strong>References</strong></span
           ><br /><br />
 
-          <a id="ref_1"></a>[1] Adler, B., et al. (2025).
+          <a id="ref_1"></a>[1] Gu, Y., et al. (2025).
           <a href="https://arxiv.org/abs/2508.15884"
-            >Nemotron-4 15B Technical Report.</a
+            >Jet-Nemotron: Efficient Language Model with Post Neural
+            Architecture Search.</a
           >
           arXiv preprint.<br /><br />
 
           <a id="ref_2"></a>[2] Mercat, J., Vasiljevic, I., Keh, S., et al.
           (2024).
-          <a href="https://arxiv.org/abs/2406.07588"
+          <a href="https://arxiv.org/abs/2405.06640"
             >Linearizing Large Language Models.</a
           >
           arXiv preprint.<br /><br />
 
           <a id="ref_3"></a>[3] Liquid AI. (2024).
-          <a href="https://arxiv.org/abs/2511.23404"
-            >Liquid Foundation Models.</a
-          >
+          <a href="https://arxiv.org/abs/2511.23404">LFM2 Technical Report.</a>
           arXiv preprint.<br /><br />
 
           <a id="ref_4"></a>[4] Yang, S., Wang, B., Shen, Y., et al. (2024).
@@ -1164,13 +1165,15 @@
           >
           ACL 2019.<br /><br />
 
-          <a id="ref_7"></a>[7] Qwen Team. (2024).
-          <a href="https://qwenlm.github.io/">Qwen2.5 Technical Report.</a
-          ><br /><br />
+          <a id="ref_8"></a>[8] Qwen Team. (2024).
+          <a href="https://arxiv.org/abs/2412.15115"
+            >Qwen2.5 Technical Report.</a
+          >
+          arXiv preprint.<br /><br />
 
-          <a id="ref_8"></a>[8] Goldstein, D., Alcaide, E., Lu, J., & Cheah, E.
+          <a id="ref_9"></a>[9] Goldstein, D., Alcaide, E., Lu, J., & Cheah, E.
           (2025).
-          <a href="https://arxiv.org/pdf/2505.03005"
+          <a href="https://arxiv.org/abs/2505.03005"
             >RADLADS: Rapid Attention Distillation to Linear Attention Decoders
             at Scale.</a
           >
