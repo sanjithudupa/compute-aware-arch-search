@@ -1,5 +1,8 @@
 # Compute-Aware Hybrid Attention Architecture Search
 
+Authors:
+Videet Mehta, Sanjith Udupa, Vineet Sharma
+
 We present a two-stage approach for constructing hybrid transformer models that selectively replace full softmax attention layers with linear attention mechanisms. Our method uses knowledge distillation as a measurement tool to identify which layers can be safely replaced without degrading model quality.
 
 In Stage 0, we train linear attention replacements (Gated Linear Attention and RWKV7) for each transformer layer independently, measuring how well each layer's behavior can be approximated. This provides a normalized distillation loss that quantifies each layer's "replaceability." In Stage 1, we assemble hybrid models by selecting the best-performing layers for replacement and fine-tune the complete model using knowledge distillation with a decoupled top-k KL divergence objective.
